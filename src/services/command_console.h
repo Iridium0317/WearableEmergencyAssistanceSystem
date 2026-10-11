@@ -8,6 +8,7 @@
 //   press             -> ButtonPressed (the cancel gesture)
 //   ack <id>          -> HostAck for alert <id>
 //   link up|down      -> simulated host link state + LinkUp/LinkDown event
+//                        (simulated-link builds only; CMD_ERR otherwise)
 //
 // Every line gets exactly one CMD_OK or CMD_ERR reply; malformed input is
 // always reported, never dropped silently. Runs in the Arduino loop thread.
@@ -19,7 +20,8 @@
 
 class CommandConsole {
 public:
-    CommandConsole(AppEventQueue& events, SimulatedLink& link);
+    // link may be null when the real BLE transport is in use.
+    CommandConsole(AppEventQueue& events, SimulatedLink* link);
 
     // Non-blocking: consumes whatever serial bytes are available.
     void poll();
@@ -31,7 +33,7 @@ private:
     bool post(EventType type, AlertType alert = AlertType::None, uint16_t id = 0);
 
     AppEventQueue& events_;
-    SimulatedLink& link_;
+    SimulatedLink* link_;
     char line_[kLineSize];
     size_t length_ = 0;
     bool overflow_ = false;

@@ -22,7 +22,7 @@ bool parseInt(const char* token, long& out) {
 
 }  // namespace
 
-CommandConsole::CommandConsole(AppEventQueue& events, SimulatedLink& link)
+CommandConsole::CommandConsole(AppEventQueue& events, SimulatedLink* link)
     : events_(events), link_(link) {}
 
 void CommandConsole::poll() {
@@ -81,10 +81,12 @@ void CommandConsole::execute(char* line) {
         } else if (post(EventType::HostAck, AlertType::None, static_cast<uint16_t>(value))) {
             diag::log("CMD_OK", "cmd=ack id=%ld", value);
         }
+    } else if (strcmp(cmd, "link") == 0 && link_ == nullptr) {
+        diag::log("CMD_ERR", "cmd=link reason=not_simulated");
     } else if (strcmp(cmd, "link") == 0 && arg != nullptr &&
                (strcmp(arg, "up") == 0 || strcmp(arg, "down") == 0)) {
         const bool up = strcmp(arg, "up") == 0;
-        link_.setUp(up);
+        link_->setUp(up);
         if (post(up ? EventType::LinkUp : EventType::LinkDown)) {
             diag::log("CMD_OK", "cmd=link up=%d", up ? 1 : 0);
         }

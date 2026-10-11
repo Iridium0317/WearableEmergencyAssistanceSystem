@@ -7,30 +7,44 @@
 
 namespace {
 
-// Static stack so starting the thread never allocates from the heap.
-MBED_ALIGN(8) unsigned char g_app_stack[4096];
+// Static stack so starting the thread never allocates from the heap. Sized
+// for ArduinoBLE's poll path (ATT handling uses MTU-sized stack buffers).
+MBED_ALIGN(8) unsigned char g_app_stack[8192];
 
 }  // namespace
 
 EmergencyController::EmergencyController(AppEventQueue& events, AlertTransport& transport)
     : events_(events),
       transport_(transport),
-      // Above normal so state processing preempts the console and logging.
-      thread_(osPriorityAboveNormal, sizeof(g_app_stack), g_app_stack, "app") {}
+      // Must stay BELOW Cordio's bleLoop thread (osPriorityNormal). ArduinoBLE
+      // busy-waits up to 1 s for each HCI command response, and that response
+      // is produced by bleLoop; at AboveNormal this thread starved bleLoop and
+      // BLE.begin() timed out (observed on hardware: op=begin init_failed).
+      thread_(osPriorityBelowNormal, sizeof(g_app_stack), g_app_stack, "app") {}
 
 void EmergencyController::start() {
     thread_.start(mbed::callback(this, &EmergencyController::run));
 }
 
 void EmergencyController::run() {
-    diag::log("SM", "state=%s transport=%s", toString(machine_.state()), transport_.name());
+    // begin() runs here, not in setup(): the transport may only be touched
+    // from this thread (ArduinoBLE is not thread-safe).
+    const bool link_ok = transport_.begin();
+    diag::log("SM", "state=%s transport=%s link_ok=%d", toString(machine_.state()), transport_.name(),
+              link_ok ? 1 : 0);
+    publishState();
     for (;;) {
         Event event;
         if (events_.wait(event, kTickPeriodMs)) {
             dispatch(event);
         }
+        transport_.poll();
         dispatch(Event{EventType::Tick, millis(), AlertType::None, 0});
     }
+}
+
+void EmergencyController::publishState() {
+    transport_.publishState(machine_.state(), machine_.alertId(), machine_.alertType(), machine_.attempts());
 }
 
 void EmergencyController::dispatch(const Event& event) {
@@ -38,6 +52,7 @@ void EmergencyController::dispatch(const Event& event) {
     const uint32_t now = millis();
     report(event, result, now);
     if (result.outcome == Outcome::Transitioned) {
+        publishState();
         execute(result.action, now);
     }
 }
@@ -71,7 +86,7 @@ void EmergencyController::execute(Action action, uint32_t now) {
         }
         case Action::SendCancel: {
             // Best effort: the user already cancelled locally either way.
-            const bool ok = transport_.sendCancel(id);
+            const bool ok = transport_.sendCancel(id, machine_.alertType());
             if (!ok) {
                 diag::log("ERR", "op=send_cancel id=%u reason=link_unavailable", id);
             }

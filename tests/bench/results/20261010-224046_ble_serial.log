@@ -1,0 +1,360 @@
+95061.665931	>>> reboot
+95061.668277	32779 CMD_OK cmd=reboot
+95063.083221	>>> ping
+95063.085100	796 CMD_OK cmd=ping
+95063.239527	951 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95063.239872	951 SM state=IDLE transport=BLE link_ok=1
+95064.630599	2342 BLE ev=connected peer=cc:08:fa:72:17:da
+95065.742517	3454 BLE ev=subscribed char=alert
+95065.803403	3515 BLE ev=subscribed char=status
+95065.824994	>>> hold 2
+95065.827215	3539 CMD_OK cmd=hold alert=MEDICAL
+95065.827905	3539 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95067.288176	5000 HB q_dropped=0
+95068.829550	6541 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95068.830031	6541 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95068.833596	6545 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=4 reason=-
+95068.895434	6607 BLE_RX msg=ACK id=1
+95068.898058	6607 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95069.220545	>>> reboot
+95069.224385	6936 CMD_OK cmd=reboot
+95070.441331	>>> ping
+95070.441943	598 CMD_OK cmd=ping
+95070.600560	756 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95070.600819	756 SM state=IDLE transport=BLE link_ok=1
+95071.458523	1614 BLE ev=connected peer=cc:08:fa:72:17:da
+95072.574672	2730 BLE ev=subscribed char=alert
+95072.642396	2798 BLE ev=subscribed char=status
+95072.665164	>>> hold 2
+95072.666234	2822 CMD_OK cmd=hold alert=MEDICAL
+95072.666878	2822 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95074.844286	5000 HB q_dropped=0
+95075.675546	5831 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95075.676947	5831 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95075.677437	5833 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=2 reason=-
+95075.732096	5888 BLE_RX msg=ACK id=1
+95075.735996	5888 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95076.059528	>>> reboot
+95076.062076	6218 CMD_OK cmd=reboot
+95077.484668	>>> ping
+95077.487727	805 CMD_OK cmd=ping
+95077.638346	956 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95077.638772	956 SM state=IDLE transport=BLE link_ok=1
+95078.499300	1817 BLE ev=connected peer=cc:08:fa:72:17:da
+95079.628193	2946 BLE ev=subscribed char=alert
+95079.687341	3005 BLE ev=subscribed char=status
+95079.714901	>>> hold 2
+95079.715945	3034 CMD_OK cmd=hold alert=MEDICAL
+95079.721713	3037 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=3 reason=-
+95081.683130	5000 HB q_dropped=0
+95082.720202	6038 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95082.721777	6038 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95082.722297	6040 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=2 reason=-
+95082.781987	6100 BLE_RX msg=ACK id=1
+95082.785763	6100 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95083.107691	>>> reboot
+95083.108834	6427 CMD_OK cmd=reboot
+95084.328859	>>> ping
+95084.329693	601 CMD_OK cmd=ping
+95084.481284	752 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95084.481716	752 SM state=IDLE transport=BLE link_ok=1
+95085.340222	1611 BLE ev=connected peer=cc:08:fa:72:17:da
+95086.465350	2736 BLE ev=subscribed char=alert
+95086.525311	2796 BLE ev=subscribed char=status
+95086.555566	>>> hold 2
+95086.556794	2828 CMD_OK cmd=hold alert=MEDICAL
+95086.560665	2828 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95088.730953	5002 HB q_dropped=0
+95089.559167	5830 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95089.560592	5830 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95089.561097	5832 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=2 reason=-
+95089.615125	5886 BLE_RX msg=ACK id=1
+95089.616834	5886 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95089.948402	>>> reboot
+95089.950695	6222 CMD_OK cmd=reboot
+95091.163289	>>> ping
+95091.165582	595 CMD_OK cmd=ping
+95091.313355	742 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95091.313766	742 SM state=IDLE transport=BLE link_ok=1
+95092.176126	1605 BLE ev=connected peer=cc:08:fa:72:17:da
+95093.313949	2743 BLE ev=subscribed char=alert
+95093.372844	2802 BLE ev=subscribed char=status
+95093.395240	>>> hold 2
+95093.396681	2826 CMD_OK cmd=hold alert=MEDICAL
+95093.397399	2826 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95095.574031	5002 HB q_dropped=0
+95096.406078	5835 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95096.407520	5835 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95096.408034	5837 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=2 reason=-
+95096.457014	5886 BLE_RX msg=ACK id=1
+95096.458781	5886 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95096.789030	>>> reboot
+95096.790689	6220 CMD_OK cmd=reboot
+95098.212457	>>> ping
+95098.213490	803 CMD_OK cmd=ping
+95098.365204	954 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95098.367386	954 SM state=IDLE transport=BLE link_ok=1
+95099.536356	2125 BLE ev=connected peer=cc:08:fa:72:17:da
+95100.655154	3244 BLE ev=subscribed char=alert
+95100.722841	3312 BLE ev=subscribed char=status
+95100.745698	>>> hold 2
+95100.747810	3337 CMD_OK cmd=hold alert=MEDICAL
+95100.751478	3337 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95102.411540	5000 HB q_dropped=0
+95103.751079	6340 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95103.752379	6340 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95103.752915	6342 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=2 reason=-
+95103.808754	6398 BLE_RX msg=ACK id=1
+95103.812467	6398 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95104.139295	>>> reboot
+95104.140523	6730 CMD_OK cmd=reboot
+95105.361413	>>> ping
+95105.362376	602 CMD_OK cmd=ping
+95105.510048	749 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95105.510491	749 SM state=IDLE transport=BLE link_ok=1
+95105.830087	1069 BLE ev=connected peer=cc:08:fa:72:17:da
+95106.958946	2198 BLE ev=subscribed char=alert
+95107.018757	2258 BLE ev=subscribed char=status
+95107.045000	>>> hold 2
+95107.047453	2287 CMD_OK cmd=hold alert=MEDICAL
+95107.048158	2287 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95109.761572	5001 HB q_dropped=0
+95110.053656	5293 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95110.055224	5293 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95110.055797	5295 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=2 reason=-
+95110.113408	5353 BLE_RX msg=ACK id=1
+95110.118289	5353 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95110.438153	>>> reboot
+95110.439423	5679 CMD_OK cmd=reboot
+95111.658393	>>> ping
+95111.659285	600 CMD_OK cmd=ping
+95111.802774	743 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95111.803746	743 SM state=IDLE transport=BLE link_ok=1
+95112.128534	1069 BLE ev=connected peer=cc:08:fa:72:17:da
+95113.257704	2198 BLE ev=subscribed char=alert
+95113.317755	2258 BLE ev=subscribed char=status
+95113.345141	>>> hold 2
+95113.347502	2288 CMD_OK cmd=hold alert=MEDICAL
+95113.348120	2288 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95116.059392	5000 HB q_dropped=0
+95116.349834	5290 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95116.351241	5290 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95116.351778	5292 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=2 reason=-
+95116.409634	5350 BLE_RX msg=ACK id=1
+95116.409923	5350 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95116.739717	>>> reboot
+95116.741344	5682 CMD_OK cmd=reboot
+95118.161832	>>> ping
+95118.167188	806 CMD_OK cmd=ping
+95118.316757	955 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95118.317061	955 SM state=IDLE transport=BLE link_ok=1
+95119.177488	1816 BLE ev=connected peer=cc:08:fa:72:17:da
+95120.338853	2977 BLE ev=subscribed char=alert
+95120.395931	3034 BLE ev=subscribed char=status
+95120.425579	>>> hold 2
+95120.427350	3066 CMD_OK cmd=hold alert=MEDICAL
+95120.428065	3066 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95122.363455	5002 HB q_dropped=0
+95123.429775	6068 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95123.433402	6068 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95123.433965	6072 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=4 reason=-
+95123.489493	6128 BLE_RX msg=ACK id=1
+95123.495311	6128 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95123.820103	>>> reboot
+95123.822177	6461 CMD_OK cmd=reboot
+95125.033677	>>> ping
+95125.036024	594 CMD_OK cmd=ping
+95125.180649	738 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95125.181167	738 SM state=IDLE transport=BLE link_ok=1
+95125.720542	1278 BLE ev=connected peer=cc:08:fa:72:17:da
+95126.856235	2414 BLE ev=subscribed char=alert
+95126.913256	2471 BLE ev=subscribed char=status
+95126.935699	>>> hold 2
+95126.937253	2495 CMD_OK cmd=hold alert=MEDICAL
+95126.940028	2495 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95129.443232	5000 HB q_dropped=0
+95129.939608	5497 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95129.941053	5497 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95129.941552	5499 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=2 reason=-
+95129.998772	5556 BLE_RX msg=ACK id=1
+95130.000312	5556 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95130.329992	>>> reboot
+95130.332162	5890 CMD_OK cmd=reboot
+95131.749629	>>> ping
+95131.751030	799 CMD_OK cmd=ping
+95131.891724	939 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95131.892021	939 SM state=IDLE transport=BLE link_ok=1
+95132.433388	1481 BLE ev=connected peer=cc:08:fa:72:17:da
+95133.542297	2590 BLE ev=subscribed char=alert
+95133.631308	2679 BLE ev=subscribed char=status
+95133.655893	>>> hold 2
+95133.657208	2705 CMD_OK cmd=hold alert=MEDICAL
+95133.665021	2707 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=2 reason=-
+95135.953089	5001 HB q_dropped=0
+95136.666580	5714 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95136.668001	5714 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95136.668480	5716 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=2 reason=-
+95136.720271	5768 BLE_RX msg=ACK id=1
+95136.720753	5768 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95137.047956	>>> reboot
+95137.049993	6098 CMD_OK cmd=reboot
+95138.269670	>>> ping
+95138.272004	602 CMD_OK cmd=ping
+95138.423420	753 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95138.423917	753 SM state=IDLE transport=BLE link_ok=1
+95139.285471	1615 BLE ev=connected peer=cc:08:fa:72:17:da
+95140.441205	2771 BLE ev=subscribed char=alert
+95140.503281	2833 BLE ev=subscribed char=status
+95140.525781	>>> hold 2
+95140.529269	2859 CMD_OK cmd=hold alert=MEDICAL
+95140.529884	2859 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95142.670965	5000 HB q_dropped=0
+95143.532337	5862 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95143.532823	5862 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95143.537439	5867 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=5 reason=-
+95143.590357	5920 BLE_RX msg=ACK id=1
+95143.592904	5920 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95143.920086	>>> reboot
+95143.922093	6252 CMD_OK cmd=reboot
+95145.339998	>>> ping
+95145.340927	799 CMD_OK cmd=ping
+95145.488561	946 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95145.488879	946 SM state=IDLE transport=BLE link_ok=1
+95148.237422	3695 BLE ev=connected peer=cc:08:fa:72:17:da
+95149.351295	4809 BLE ev=subscribed char=alert
+95149.411170	4869 BLE ev=subscribed char=status
+95149.436336	>>> hold 2
+95149.438032	4896 CMD_OK cmd=hold alert=MEDICAL
+95149.441854	4896 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95149.543990	5001 HB q_dropped=0
+95152.442215	7900 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95152.442759	7900 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95152.447392	7905 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=5 reason=-
+95152.497399	7955 BLE_RX msg=ACK id=1
+95152.501107	7955 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95152.828506	>>> reboot
+95152.829884	8288 CMD_OK cmd=reboot
+95154.253064	>>> ping
+95154.253860	804 CMD_OK cmd=ping
+95154.400538	950 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95154.400703	950 SM state=IDLE transport=BLE link_ok=1
+95155.256521	1806 BLE ev=connected peer=cc:08:fa:72:17:da
+95156.404960	2955 BLE ev=subscribed char=alert
+95156.457218	3007 BLE ev=subscribed char=status
+95156.485816	>>> hold 2
+95156.486921	3037 CMD_OK cmd=hold alert=MEDICAL
+95156.487675	3037 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95158.451047	5000 HB q_dropped=0
+95159.490144	6040 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95159.494881	6040 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95159.495328	6045 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=5 reason=-
+95159.555148	6105 BLE_RX msg=ACK id=1
+95159.557814	6105 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95159.881341	>>> reboot
+95159.883970	6434 CMD_OK cmd=reboot
+95161.104817	>>> ping
+95161.106693	602 CMD_OK cmd=ping
+95161.257276	753 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95161.257597	753 SM state=IDLE transport=BLE link_ok=1
+95162.747524	2243 BLE ev=connected peer=cc:08:fa:72:17:da
+95163.871078	3367 BLE ev=subscribed char=alert
+95163.929148	3425 BLE ev=subscribed char=status
+95163.956609	>>> hold 2
+95163.958774	3455 CMD_OK cmd=hold alert=MEDICAL
+95163.960510	3456 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=1 reason=-
+95165.505891	5002 HB q_dropped=0
+95166.967946	6464 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95166.969516	6464 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95166.970061	6466 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=2 reason=-
+95167.020100	6516 BLE_RX msg=ACK id=1
+95167.021859	6516 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95167.349836	>>> reboot
+95167.350837	6847 CMD_OK cmd=reboot
+95168.568317	>>> ping
+95168.569568	598 CMD_OK cmd=ping
+95168.719262	748 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95168.719951	748 SM state=IDLE transport=BLE link_ok=1
+95169.997096	2026 BLE ev=connected peer=cc:08:fa:72:17:da
+95171.125994	3155 BLE ev=subscribed char=alert
+95171.193717	3223 BLE ev=subscribed char=status
+95171.215829	>>> hold 2
+95171.217645	3247 CMD_OK cmd=hold alert=MEDICAL
+95171.221477	3247 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95172.971821	5001 HB q_dropped=0
+95174.223925	6253 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95174.225512	6253 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95174.226057	6255 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=2 reason=-
+95174.284944	6314 BLE_RX msg=ACK id=1
+95174.285428	6314 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95174.610743	>>> reboot
+95174.611511	6641 CMD_OK cmd=reboot
+95176.036456	>>> ping
+95176.037452	806 CMD_OK cmd=ping
+95176.190938	959 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95176.193235	959 SM state=IDLE transport=BLE link_ok=1
+95176.513107	1281 BLE ev=connected peer=cc:08:fa:72:17:da
+95177.637034	2405 BLE ev=subscribed char=alert
+95177.705501	2474 BLE ev=subscribed char=status
+95177.726691	>>> hold 2
+95177.728732	2497 CMD_OK cmd=hold alert=MEDICAL
+95177.731335	2497 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95180.231728	5000 HB q_dropped=0
+95180.728880	5497 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95180.731503	5497 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95180.732042	5500 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=3 reason=-
+95180.795641	5564 BLE_RX msg=ACK id=1
+95180.799364	5564 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95181.118915	>>> reboot
+95181.121435	5890 CMD_OK cmd=reboot
+95182.338056	>>> ping
+95182.339286	598 CMD_OK cmd=ping
+95182.490859	749 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95182.491163	749 SM state=IDLE transport=BLE link_ok=1
+95182.811747	1070 BLE ev=connected peer=cc:08:fa:72:17:da
+95183.966925	2225 BLE ev=subscribed char=alert
+95184.027105	2285 BLE ev=subscribed char=status
+95184.056547	>>> hold 2
+95184.058614	2317 CMD_OK cmd=hold alert=MEDICAL
+95184.060241	2317 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+95186.742650	5001 HB q_dropped=0
+95187.065662	5324 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95187.069312	5324 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95187.069835	5328 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=4 reason=-
+95187.126402	5385 BLE_RX msg=ACK id=1
+95187.130255	5385 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95187.449588	>>> reboot
+95187.451347	5710 CMD_OK cmd=reboot
+95188.873420	>>> ping
+95188.874154	803 CMD_OK cmd=ping
+95189.020485	949 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95189.020771	949 SM state=IDLE transport=BLE link_ok=1
+95189.562100	1487 BLE ev=connected peer=cc:08:fa:72:17:da
+95190.721463	2650 BLE ev=subscribed char=alert
+95190.778761	2707 BLE ev=subscribed char=status
+95190.807149	>>> hold 2
+95190.808281	2737 CMD_OK cmd=hold alert=MEDICAL
+95190.813077	2739 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=2 reason=-
+95193.072180	5001 HB q_dropped=0
+95193.811417	5740 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95193.813023	5740 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95193.813624	5742 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=2 reason=-
+95193.876455	5805 BLE_RX msg=ACK id=1
+95193.879093	5805 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95194.201870	>>> reboot
+95194.204416	6133 CMD_OK cmd=reboot
+95195.426555	>>> ping
+95195.428015	604 CMD_OK cmd=ping
+95195.572658	748 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+95195.573110	748 SM state=IDLE transport=BLE link_ok=1
+95195.999831	1175 BLE ev=connected peer=cc:08:fa:72:17:da
+95197.147195	2323 BLE ev=subscribed char=alert
+95197.207359	2383 BLE ev=subscribed char=status
+95197.227004	>>> hold 2
+95197.228232	2404 CMD_OK cmd=hold alert=MEDICAL
+95197.234002	2406 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=2 reason=-
+95199.826138	5001 HB q_dropped=0
+95200.230531	5406 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+95200.236080	5406 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+95200.236597	5412 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=6 reason=-
+95200.293344	5469 BLE_RX msg=ACK id=1
+95200.296979	5469 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-

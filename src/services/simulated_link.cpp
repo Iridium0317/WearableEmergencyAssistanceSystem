@@ -9,7 +9,8 @@ bool SimulatedLink::sendAlert(uint16_t alert_id, AlertType type, uint8_t attempt
     return up;
 }
 
-bool SimulatedLink::sendCancel(uint16_t alert_id) {
+bool SimulatedLink::sendCancel(uint16_t alert_id, AlertType type) {
+    (void)type;
     const bool up = isUp();
     diag::log("LINK", "tx=CANCEL id=%u up=%d", alert_id, up ? 1 : 0);
     return up;

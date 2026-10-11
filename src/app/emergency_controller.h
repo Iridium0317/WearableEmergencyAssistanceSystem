@@ -25,6 +25,7 @@ private:
     void dispatch(const Event& event);
     void report(const Event& event, const Result& result, uint32_t now) const;
     void execute(Action action, uint32_t now);
+    void publishState();
 
     AppEventQueue& events_;
     AlertTransport& transport_;

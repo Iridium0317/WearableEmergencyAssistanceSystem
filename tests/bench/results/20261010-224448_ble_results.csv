@@ -1,0 +1,8 @@
+run_id,scenario,result,duration_s,detail
+20261010-224448,happy_path,PASS,6.63,
+20261010-224448,no_host,PASS,8.39,
+20261010-224448,not_subscribed,PASS,10.45,
+20261010-224448,ack_timeout_then_recover,PASS,13.23,
+20261010-224448,disconnect_mid_alert,PASS,9.60,
+20261010-224448,malformed_ack,PASS,9.56,
+20261010-224448,cancel_after_send,PASS,6.74,

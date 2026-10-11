@@ -2,11 +2,16 @@
 #include <Arduino.h>
 #include <inttypes.h>
 
-#include "emergency_controller.h"
-#include "event_queue.h"
 #include "command_console.h"
 #include "diagnostics.h"
+#include "emergency_controller.h"
+#include "event_queue.h"
+
+#ifdef USE_SIMULATED_LINK
 #include "simulated_link.h"
+#else
+#include "ble_link.h"
+#endif
 
 namespace {
 
@@ -14,9 +19,16 @@ constexpr uint32_t kHeartbeatPeriodMs = 5000;
 constexpr uint32_t kSerialWaitMs = 3000;
 
 AppEventQueue g_events;
+
+#ifdef USE_SIMULATED_LINK
 SimulatedLink g_link;
+CommandConsole g_console(g_events, &g_link);
+#else
+BleLink g_link(g_events);
+CommandConsole g_console(g_events, nullptr);
+#endif
+
 EmergencyController g_controller(g_events, g_link);
-CommandConsole g_console(g_events, g_link);
 
 }  // namespace
 
@@ -27,7 +39,7 @@ void setup() {
     const uint32_t start = millis();
     while (!Serial && (millis() - start) < kSerialWaitMs) {
     }
-    diag::log("BOOT", "fw=wearable-emergency");
+    diag::log("BOOT", "fw=wearable-emergency transport=%s", g_link.name());
     g_controller.start();
 }
 

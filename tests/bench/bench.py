@@ -205,6 +205,16 @@ def check_window(name: str, actual_ms: int, nominal_ms: int, m: Metrics) -> None
         raise BenchFailure(f"{name}={actual_ms} ms, expected {nominal_ms}..{nominal_ms + TIMING_TOLERANCE_MS}")
 
 
+def event_ms(line: Line) -> int:
+    """Device time of the event behind a transition line.
+
+    Firmware deadlines start at the event's timestamp, but the line is stamped
+    when it is printed, lat_ms later (queueing + processing). Measuring from
+    the print time under-reports timeouts by that amount.
+    """
+    return line.dev_ms - int(line.fields.get("lat_ms", "0"))
+
+
 def ms(a: float, b: float) -> float:
     return round((b - a) * 1000.0, 2)
 
@@ -225,16 +235,16 @@ def scenario_happy_path(dev: Device, m: Metrics) -> None:
     pend = dev.expect("SM", 1.0, to="PENDING", alert="EMERGENCY")
     m.add("cmd_to_pending_host_ms", ms(t_cmd, pend.host_t))
     conf = dev.expect("SM", PENDING_MS / 1000 + 1, to="CONFIRMED")
-    check_window("pending_window_dev_ms", conf.dev_ms - pend.dev_ms, PENDING_MS, m)
+    check_window("pending_window_dev_ms", conf.dev_ms - event_ms(pend), PENDING_MS, m)
     dev.expect("LINK", 1.0, tx="ALERT", attempt="1")
     sent = dev.expect("SM", 1.0, to="ALERT_SENT")
-    m.add("confirmed_to_alert_sent_dev_ms", sent.dev_ms - conf.dev_ms)
+    m.add("confirmed_to_alert_sent_dev_ms", sent.dev_ms - event_ms(conf))
 
     t_ack = dev.send(f"ack {sent.fields['id']}")
     ackd = dev.expect("SM", 1.0, to="ACKNOWLEDGED")
     m.add("ack_cmd_to_acknowledged_host_ms", ms(t_ack, ackd.host_t))
     idle = dev.expect("SM", ACK_DISPLAY_MS / 1000 + 1, to="IDLE")
-    check_window("ack_display_dev_ms", idle.dev_ms - ackd.dev_ms, ACK_DISPLAY_MS, m)
+    check_window("ack_display_dev_ms", idle.dev_ms - event_ms(ackd), ACK_DISPLAY_MS, m)
 
 
 def scenario_cancel_in_pending(dev: Device, m: Metrics) -> None:
@@ -246,7 +256,7 @@ def scenario_cancel_in_pending(dev: Device, m: Metrics) -> None:
     canc = dev.expect("SM", 1.0, to="CANCELLED", reason="user_cancel")
     m.add("cancel_cmd_to_cancelled_host_ms", ms(t_cancel, canc.host_t))
     idle = dev.expect("SM", CANCEL_DISPLAY_MS / 1000 + 1, to="IDLE")
-    check_window("cancel_display_dev_ms", idle.dev_ms - canc.dev_ms, CANCEL_DISPLAY_MS, m)
+    check_window("cancel_display_dev_ms", idle.dev_ms - event_ms(canc), CANCEL_DISPLAY_MS, m)
     time.sleep(PENDING_MS / 1000)  # past where the alert would have gone out
     if dev.find(start, None, "LINK", tx="ALERT"):
         raise BenchFailure("alert transmitted despite cancel during PENDING")
@@ -260,12 +270,12 @@ def scenario_ack_timeout_to_error(dev: Device, m: Metrics) -> None:
     sent = dev.expect("SM", PENDING_MS / 1000 + 1, to="ALERT_SENT")
     for attempt in range(1, MAX_ATTEMPTS):
         retry = dev.expect("SM", ACK_TIMEOUT_MS / 1000 + 1, to="RETRY", reason="ack_timeout")
-        check_window(f"ack_timeout_dev_ms_attempt{attempt}", retry.dev_ms - sent.dev_ms, ACK_TIMEOUT_MS, m)
+        check_window(f"ack_timeout_dev_ms_attempt{attempt}", retry.dev_ms - event_ms(sent), ACK_TIMEOUT_MS, m)
         conf = dev.expect("SM", RETRY_BACKOFF_MS / 1000 + 1, to="CONFIRMED", attempt=str(attempt + 1))
-        check_window(f"retry_backoff_dev_ms_attempt{attempt}", conf.dev_ms - retry.dev_ms, RETRY_BACKOFF_MS, m)
+        check_window(f"retry_backoff_dev_ms_attempt{attempt}", conf.dev_ms - event_ms(retry), RETRY_BACKOFF_MS, m)
         sent = dev.expect("SM", 1.0, to="ALERT_SENT")
     err = dev.expect("SM", ACK_TIMEOUT_MS / 1000 + 1, to="ERROR", reason="ack_timeout")
-    m.add("last_send_to_error_dev_ms", err.dev_ms - sent.dev_ms)
+    m.add("last_send_to_error_dev_ms", err.dev_ms - event_ms(sent))
 
     # ERROR must be sticky: still no transition after a while.
     mark = dev.mark()
@@ -289,7 +299,7 @@ def scenario_link_down_send_fails(dev: Device, m: Metrics) -> None:
             raise BenchFailure(f"attempt mismatch: {retry.raw}")
     err = dev.expect("SM", RETRY_BACKOFF_MS / 1000 + 1, to="ERROR", reason="send_failed")
     expected = PENDING_MS + (MAX_ATTEMPTS - 1) * RETRY_BACKOFF_MS
-    check_window("hold_to_error_link_down_dev_ms", err.dev_ms - pend.dev_ms, expected, m)
+    check_window("hold_to_error_link_down_dev_ms", err.dev_ms - event_ms(pend), expected, m)
 
 
 def scenario_link_drop_then_recover(dev: Device, m: Metrics) -> None:
@@ -301,7 +311,7 @@ def scenario_link_drop_then_recover(dev: Device, m: Metrics) -> None:
     dev.send("link up")
     dev.expect("CMD_OK", 1.0, cmd="link", up="1")
     resent = dev.expect("SM", RETRY_BACKOFF_MS / 1000 + 1, to="ALERT_SENT", attempt="2")
-    m.add("link_drop_to_resent_dev_ms", resent.dev_ms - retry.dev_ms)
+    m.add("link_drop_to_resent_dev_ms", resent.dev_ms - event_ms(retry))
     dev.send(f"ack {resent.fields['id']}")
     dev.expect("SM", 1.0, to="ACKNOWLEDGED")
 
