@@ -1,0 +1,181 @@
+90536.865196	>>> reboot
+90536.867060	10415 CMD_OK cmd=reboot
+90538.086483	>>> ping
+90538.088568	604 CMD_OK cmd=ping
+90538.088637	>>> ping
+90538.090544	606 CMD_OK cmd=ping
+90538.090586	>>> ping
+90538.092549	608 CMD_OK cmd=ping
+90538.092585	>>> ping
+90538.094531	610 CMD_OK cmd=ping
+90538.094563	>>> ping
+90538.096542	612 CMD_OK cmd=ping
+90538.096568	>>> ping
+90538.098578	614 CMD_OK cmd=ping
+90538.098608	>>> ping
+90538.100512	616 CMD_OK cmd=ping
+90538.100582	>>> ping
+90538.102565	618 CMD_OK cmd=ping
+90538.102598	>>> ping
+90538.104520	620 CMD_OK cmd=ping
+90538.104550	>>> ping
+90538.106568	622 CMD_OK cmd=ping
+90538.106595	>>> ping
+90538.108553	624 CMD_OK cmd=ping
+90538.108580	>>> ping
+90538.110545	626 CMD_OK cmd=ping
+90538.110571	>>> ping
+90538.112568	628 CMD_OK cmd=ping
+90538.112602	>>> ping
+90538.114535	630 CMD_OK cmd=ping
+90538.114565	>>> ping
+90538.116542	632 CMD_OK cmd=ping
+90538.116567	>>> ping
+90538.118519	634 CMD_OK cmd=ping
+90538.118545	>>> ping
+90538.120541	636 CMD_OK cmd=ping
+90538.120566	>>> ping
+90538.122626	638 CMD_OK cmd=ping
+90538.122719	>>> ping
+90538.124569	640 CMD_OK cmd=ping
+90538.124630	>>> ping
+90538.126541	642 CMD_OK cmd=ping
+90538.126587	>>> ping
+90538.128539	644 CMD_OK cmd=ping
+90538.128766	>>> reboot
+90538.130570	646 CMD_OK cmd=reboot
+90539.343993	>>> ping
+90539.345151	597 CMD_OK cmd=ping
+90539.345290	>>> hold 1
+90539.347508	599 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=0 reason=-
+90539.347836	600 CMD_OK cmd=hold alert=EMERGENCY
+90542.347158	3599 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+90542.347475	3600 LINK tx=ALERT id=1 alert=EMERGENCY attempt=1 up=1
+90542.348027	3600 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=1 lat_ms=1 reason=-
+90542.348061	>>> ack 1
+90542.350340	3602 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+90542.363862	3603 CMD_OK cmd=ack id=1
+90543.749064	5001 HB q_dropped=0
+90545.350356	6602 SM from=ACKNOWLEDGED to=IDLE ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+90545.350833	>>> reboot
+90545.352991	6605 CMD_OK cmd=reboot
+90546.790056	>>> ping
+90546.792445	822 CMD_OK cmd=ping
+90546.792526	>>> hold 2
+90546.794897	824 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+90546.795261	825 CMD_OK cmd=hold alert=MEDICAL
+90547.799983	>>> press
+90547.801815	1831 SM from=PENDING to=CANCELLED ev=BUTTON_PRESSED alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=user_cancel
+90547.802075	1832 CMD_OK cmd=press
+90548.801678	2831 SM from=CANCELLED to=IDLE ev=TICK alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+90550.970732	5000 HB q_dropped=0
+90551.807356	>>> reboot
+90551.808451	5838 CMD_OK cmd=reboot
+90553.233817	>>> ping
+90553.234857	809 CMD_OK cmd=ping
+90553.234944	>>> hold 3
+90553.237209	811 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=FAMILY id=1 attempt=0 lat_ms=0 reason=-
+90553.237507	812 CMD_OK cmd=hold alert=FAMILY
+90556.237187	3811 SM from=PENDING to=CONFIRMED ev=TICK alert=FAMILY id=1 attempt=1 lat_ms=0 reason=-
+90556.237483	3812 LINK tx=ALERT id=1 alert=FAMILY attempt=1 up=1
+90556.237914	3812 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=FAMILY id=1 attempt=1 lat_ms=1 reason=-
+90557.425722	5000 HB q_dropped=0
+90561.238136	8812 SM from=ALERT_SENT to=RETRY ev=TICK alert=FAMILY id=1 attempt=1 lat_ms=0 reason=ack_timeout
+90562.425801	10000 HB q_dropped=0
+90563.238094	10812 SM from=RETRY to=CONFIRMED ev=TICK alert=FAMILY id=1 attempt=2 lat_ms=0 reason=-
+90563.238337	10813 LINK tx=ALERT id=1 alert=FAMILY attempt=2 up=1
+90563.238758	10813 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=FAMILY id=1 attempt=2 lat_ms=1 reason=-
+90567.426722	15001 HB q_dropped=0
+90568.238886	15813 SM from=ALERT_SENT to=RETRY ev=TICK alert=FAMILY id=1 attempt=2 lat_ms=0 reason=ack_timeout
+90570.238629	17813 SM from=RETRY to=CONFIRMED ev=TICK alert=FAMILY id=1 attempt=3 lat_ms=0 reason=-
+90570.238986	17814 LINK tx=ALERT id=1 alert=FAMILY attempt=3 up=1
+90570.239553	17814 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=FAMILY id=1 attempt=3 lat_ms=1 reason=-
+90572.427632	20002 HB q_dropped=0
+90575.239608	22814 SM from=ALERT_SENT to=ERROR ev=TICK alert=FAMILY id=1 attempt=3 lat_ms=0 reason=ack_timeout
+90577.245295	>>> hold 1
+90577.247766	24822 SM from=ERROR to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=2 attempt=0 lat_ms=0 reason=-
+90577.248036	24823 CMD_OK cmd=hold alert=EMERGENCY
+90577.248898	>>> reboot
+90577.250250	24825 CMD_OK cmd=reboot
+90578.475781	>>> ping
+90578.476780	609 CMD_OK cmd=ping
+90578.476859	>>> link down
+90578.479045	611 CMD_OK cmd=link up=0
+90578.479124	>>> hold 1
+90578.481380	613 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=0 reason=-
+90578.481484	614 CMD_OK cmd=hold alert=EMERGENCY
+90581.480866	3613 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+90581.481209	3614 LINK tx=ALERT id=1 alert=EMERGENCY attempt=1 up=0
+90581.481757	3614 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=1 lat_ms=1 reason=send_failed
+90582.867751	5000 HB q_dropped=0
+90583.481980	5614 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+90583.482377	5615 LINK tx=ALERT id=1 alert=EMERGENCY attempt=2 up=0
+90583.482886	5615 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=2 lat_ms=1 reason=send_failed
+90585.482965	7615 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+90585.483173	7616 LINK tx=ALERT id=1 alert=EMERGENCY attempt=3 up=0
+90585.483725	7616 SM from=CONFIRMED to=ERROR ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=3 lat_ms=1 reason=send_failed
+90585.484038	>>> reboot
+90585.485647	7618 CMD_OK cmd=reboot
+90586.707132	>>> ping
+90586.709137	606 CMD_OK cmd=ping
+90586.709300	>>> hold 1
+90586.711569	608 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=0 reason=-
+90586.711889	609 CMD_OK cmd=hold alert=EMERGENCY
+90589.711664	3608 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+90589.712025	3609 LINK tx=ALERT id=1 alert=EMERGENCY attempt=1 up=1
+90589.712234	3609 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=1 lat_ms=1 reason=-
+90589.712321	>>> link down
+90589.714412	3611 SM from=ALERT_SENT to=RETRY ev=LINK_DOWN alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=link_down
+90589.714523	>>> link up
+90589.714770	3612 CMD_OK cmd=link up=0
+90589.717201	3614 CMD_OK cmd=link up=1
+90591.103352	5000 HB q_dropped=0
+90591.717470	5614 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+90591.717701	5615 LINK tx=ALERT id=1 alert=EMERGENCY attempt=2 up=1
+90591.718008	5615 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=2 lat_ms=1 reason=-
+90591.718084	>>> ack 1
+90591.720328	5617 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+90591.720608	5618 CMD_OK cmd=ack id=1
+90591.720708	>>> reboot
+90591.722951	5620 CMD_OK cmd=reboot
+90593.140204	>>> ping
+90593.141465	801 CMD_OK cmd=ping
+90593.141549	>>> ack 1
+90593.143761	803 SM_REJECT state=IDLE ev=HOST_ACK ev_id=1 reason=ack_without_alert
+90593.143795	>>> hold 2
+90593.144036	804 CMD_OK cmd=ack id=1
+90593.144935	804 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
+90593.145506	805 CMD_OK cmd=hold alert=MEDICAL
+90596.144621	3804 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+90596.144914	3805 LINK tx=ALERT id=1 alert=MEDICAL attempt=1 up=1
+90596.145561	3805 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=1 reason=-
+90596.145595	>>> ack 101
+90596.147684	3807 SM_REJECT state=ALERT_SENT ev=HOST_ACK ev_id=101 reason=ack_id_mismatch
+90596.147718	>>> ack 1
+90596.148046	3808 CMD_OK cmd=ack id=101
+90596.148809	3808 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+90596.148909	>>> reboot
+90596.149196	3809 CMD_OK cmd=ack id=1
+90596.149571	3809 CMD_OK cmd=reboot
+90597.366053	>>> ping
+90597.367883	601 CMD_OK cmd=ping
+90597.368033	>>> hold 9
+90597.369951	603 CMD_ERR cmd=hold reason=bad_button expected=1..3
+90597.370024	>>> hold x
+90597.371939	605 CMD_ERR cmd=hold reason=bad_button expected=1..3
+90597.371990	>>> hold
+90597.373895	607 CMD_ERR cmd=hold reason=bad_button expected=1..3
+90597.373938	>>> ack abc
+90597.376056	609 CMD_ERR cmd=ack reason=bad_id expected=1..65535
+90597.376128	>>> ack 0
+90597.377988	611 CMD_ERR cmd=ack reason=bad_id expected=1..65535
+90597.378063	>>> frobnicate
+90597.380115	613 CMD_ERR cmd=frobnicate reason=unknown_or_bad_args
+90597.380199	>>> link sideways
+90597.382120	615 CMD_ERR cmd=link reason=unknown_or_bad_args
+90597.382210	>>> hold 1 2
+90597.383934	617 CMD_ERR cmd=hold reason=too_many_args
+90597.383971	>>> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+90597.387811	621 CMD_ERR reason=line_too_long max=47
+90597.387903	>>> ping
+90597.389886	623 CMD_OK cmd=ping

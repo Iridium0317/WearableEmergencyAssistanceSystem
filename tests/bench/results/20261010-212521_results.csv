@@ -1,0 +1,9 @@
+run_id,scenario,result,duration_s,detail
+20261010-212521,ping,PASS,1.26,
+20261010-212521,happy_path,PASS,7.22,
+20261010-212521,cancel_in_pending,PASS,6.46,
+20261010-212521,ack_timeout_to_error,PASS,25.44,
+20261010-212521,link_down_send_fails,PASS,8.23,
+20261010-212521,link_drop_then_recover,PASS,6.24,
+20261010-212521,wrong_ack_rejected,PASS,4.43,
+20261010-212521,malformed_commands,PASS,1.24,

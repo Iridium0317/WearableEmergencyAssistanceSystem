@@ -1,76 +1,44 @@
-// Bring-up smoke test: proves toolchain, flashing, USB serial, and the
-// internal IMU I2C bus (Wire1) all work before real firmware is written.
+// Wiring only: construct modules, start the app thread, run the console.
 #include <Arduino.h>
-#include <Wire.h>
+#include <inttypes.h>
+
+#include "emergency_controller.h"
+#include "event_queue.h"
+#include "command_console.h"
+#include "diagnostics.h"
+#include "simulated_link.h"
 
 namespace {
 
-constexpr uint32_t kBlinkPeriodMs = 500;
-constexpr uint32_t kReportPeriodMs = 1000;
-constexpr uint8_t kBmi270Addr = 0x68;
-constexpr uint8_t kBmm150Addr = 0x10;
+constexpr uint32_t kHeartbeatPeriodMs = 5000;
+constexpr uint32_t kSerialWaitMs = 3000;
 
-bool i2cDevicePresent(uint8_t addr) {
-    Wire1.beginTransmission(addr);
-    return Wire1.endTransmission() == 0;
-}
-
-void scanImuBus() {
-    Serial.println("[I2C] scanning Wire1 (internal sensor bus)");
-    uint8_t found = 0;
-    for (uint8_t addr = 0x08; addr < 0x78; ++addr) {
-        if (i2cDevicePresent(addr)) {
-            Serial.print("[I2C]   device at 0x");
-            Serial.println(addr, HEX);
-            ++found;
-        }
-    }
-    Serial.print("[I2C] total devices: ");
-    Serial.println(found);
-    Serial.print("[I2C] BMI270 (0x68): ");
-    Serial.println(i2cDevicePresent(kBmi270Addr) ? "OK" : "MISSING");
-    Serial.print("[I2C] BMM150 (0x10): ");
-    Serial.println(i2cDevicePresent(kBmm150Addr) ? "OK" : "MISSING");
-}
+AppEventQueue g_events;
+SimulatedLink g_link;
+EmergencyController g_controller(g_events, g_link);
+CommandConsole g_console(g_events, g_link);
 
 }  // namespace
 
 void setup() {
-    pinMode(LED_BUILTIN, OUTPUT);
     Serial.begin(115200);
-
-    // USB CDC: wait briefly for the host so the boot report isn't lost,
-    // but never block forever when running untethered.
+    // Give a host time to open the port so the boot line isn't lost, but
+    // never block forever: the device must also run untethered.
     const uint32_t start = millis();
-    while (!Serial && (millis() - start) < 3000) {
+    while (!Serial && (millis() - start) < kSerialWaitMs) {
     }
-
-    Serial.println("[BOOT] Nano 33 BLE smoke test");
-    Wire1.begin();
-    scanImuBus();
+    diag::log("BOOT", "fw=wearable-emergency");
+    g_controller.start();
 }
 
 void loop() {
-    static uint32_t lastBlink = 0;
-    static uint32_t lastReport = 0;
-    static bool ledOn = false;
+    static uint32_t last_heartbeat = 0;
+    g_console.poll();
+
     const uint32_t now = millis();
-
-    if (now - lastBlink >= kBlinkPeriodMs) {
-        lastBlink = now;
-        ledOn = !ledOn;
-        digitalWrite(LED_BUILTIN, ledOn ? HIGH : LOW);
+    if (now - last_heartbeat >= kHeartbeatPeriodMs) {
+        last_heartbeat = now;
+        diag::log("HB", "q_dropped=%" PRIu32, g_events.dropped());
     }
-
-    if (now - lastReport >= kReportPeriodMs) {
-        lastReport = now;
-        Serial.print("[HB] uptime_ms=");
-        Serial.println(now);
-    }
-
-    // 's' lets the host re-request the scan, since the boot report is
-    // usually printed before the host opens the port.
-    if (Serial.available() > 0 && Serial.read() == 's') {
-        scanImuBus();
-    }
+    delay(2);  // yields this thread; console latency is not critical
 }
