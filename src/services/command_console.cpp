@@ -22,8 +22,8 @@ bool parseInt(const char* token, long& out) {
 
 }  // namespace
 
-CommandConsole::CommandConsole(AppEventQueue& events, SimulatedLink* link)
-    : events_(events), link_(link) {}
+CommandConsole::CommandConsole(AppEventQueue& events, SimulatedLink* link, ButtonInput& buttons)
+    : events_(events), link_(link), buttons_(buttons) {}
 
 void CommandConsole::poll() {
     while (Serial.available() > 0) {
@@ -60,6 +60,9 @@ void CommandConsole::execute(char* line) {
         diag::log("CMD_ERR", "cmd=%s reason=too_many_args", cmd);
     } else if (strcmp(cmd, "ping") == 0 && arg == nullptr) {
         diag::log("CMD_OK", "cmd=ping");
+    } else if (strcmp(cmd, "btn") == 0 && arg == nullptr) {
+        buttons_.reportDiagnostics();
+        diag::log("CMD_OK", "cmd=btn");
     } else if (strcmp(cmd, "reboot") == 0 && arg == nullptr) {
         diag::log("CMD_OK", "cmd=reboot");
         delay(100);  // let the reply drain over USB before the reset

@@ -33,6 +33,17 @@ public:
     ButtonEvent update(uint32_t now_ms);
 
     bool isPressed() const { return stable_pressed_; }
+    // True while time alone can still produce an event (debounce window open,
+    // or pressed but not yet held). The task sleeps indefinitely otherwise.
+    bool needsService() const {
+        return candidate_pressed_ != stable_pressed_ || (stable_pressed_ && !held_reported_);
+    }
+    // Re-sync to the actual pin level after edges were lost (ring overflow).
+    void resync(bool pressed, uint32_t now_ms) {
+        if (pressed != candidate_pressed_) {
+            onEdge(pressed, now_ms);
+        }
+    }
     // Debounced press start; valid after Pressed. Used for latency reporting.
     uint32_t pressStartMs() const { return press_start_ms_; }
     // Raw edges seen since construction; edges per press shows bounce severity.

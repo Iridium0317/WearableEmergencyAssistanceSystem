@@ -93,6 +93,34 @@ void test_timing_survives_millis_wraparound() {
     TEST_ASSERT_EQUAL(ButtonEvent::Held, drainOne(b, start + 1500));
 }
 
+void test_needs_service_only_while_time_matters() {
+    ButtonDebouncer b(kDebounce, kHold);
+    TEST_ASSERT_FALSE(b.needsService());  // idle: task may sleep forever
+    b.onEdge(true, 0);
+    TEST_ASSERT_TRUE(b.needsService());   // debounce window open
+    drainOne(b, 30);
+    TEST_ASSERT_TRUE(b.needsService());   // pressed, waiting for hold
+    drainOne(b, 1500);
+    TEST_ASSERT_FALSE(b.needsService());  // held already reported
+    b.onEdge(false, 2000);
+    TEST_ASSERT_TRUE(b.needsService());
+    drainOne(b, 2030);
+    TEST_ASSERT_FALSE(b.needsService());
+}
+
+void test_resync_recovers_missed_release() {
+    ButtonDebouncer b(kDebounce, kHold);
+    b.onEdge(true, 0);
+    drainOne(b, 30);
+    // Release edge lost (ring overflow); the pin now reads released.
+    b.resync(false, 500);
+    TEST_ASSERT_EQUAL(ButtonEvent::Released, drainOne(b, 530));
+    // Resync to the level we already track is a no-op.
+    const uint32_t edges = b.rawEdgeCount();
+    b.resync(false, 600);
+    TEST_ASSERT_EQUAL_UINT32(edges, b.rawEdgeCount());
+}
+
 int main() {
     UNITY_BEGIN();
     RUN_TEST(test_clean_press_reports_after_debounce_window);
@@ -103,5 +131,7 @@ int main() {
     RUN_TEST(test_late_update_reports_press_then_hold);
     RUN_TEST(test_second_press_can_hold_again);
     RUN_TEST(test_timing_survives_millis_wraparound);
+    RUN_TEST(test_needs_service_only_while_time_matters);
+    RUN_TEST(test_resync_recovers_missed_release);
     return UNITY_END();
 }

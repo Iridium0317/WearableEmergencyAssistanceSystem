@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <inttypes.h>
 
+#include "buttons.h"
 #include "command_console.h"
 #include "diagnostics.h"
 #include "emergency_controller.h"
@@ -22,10 +23,12 @@ AppEventQueue g_events;
 
 #ifdef USE_SIMULATED_LINK
 SimulatedLink g_link;
-CommandConsole g_console(g_events, &g_link);
+ButtonInput g_buttons(g_events);
+CommandConsole g_console(g_events, &g_link, g_buttons);
 #else
 BleLink g_link(g_events);
-CommandConsole g_console(g_events, nullptr);
+ButtonInput g_buttons(g_events);
+CommandConsole g_console(g_events, nullptr, g_buttons);
 #endif
 
 EmergencyController g_controller(g_events, g_link);
@@ -41,6 +44,7 @@ void setup() {
     }
     diag::log("BOOT", "fw=wearable-emergency transport=%s", g_link.name());
     g_controller.start();
+    g_buttons.start();
 }
 
 void loop() {
