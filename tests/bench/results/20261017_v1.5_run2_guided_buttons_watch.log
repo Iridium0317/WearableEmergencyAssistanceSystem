@@ -1,0 +1,111 @@
+# button_watch.py output, firmware 1b5c10a (V1.5), guided run (LED check, 4 s hold, finger flicks),
+# pasted from the terminal into the dev session.
+# Columns: host seconds since start, then the device log line (device ms first) or a pin-level snapshot.
+watching /dev/cu.usbmodem1201 for 600 s (Ctrl+C to stop)
+   0.3s  d2=1 d3=1 d4=1  isr_edges=40
+  16.9s  3526600 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=29 isr_to_task_max_us=25 lift_ms=2780642
+  17.2s  d2=1 d3=0 d4=1  isr_edges=41
+  18.5s  3528070 BTN ev=HELD btn=2 alert=MEDICAL held_late_ms=4 bridged=0 max_lift_ms=0
+  18.5s  3528075 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=5 attempt=0 lat_ms=5 reason=-
+  19.4s  3529176 BTN ev=RELEASED btn=2 edges=30 isr_to_task_max_us=60 bridged=0 max_lift_ms=0
+  19.4s  3529178 SM_INFO state=PENDING ev=BUTTON_RELEASED alert=MEDICAL id=5 reason=cancel_window_started
+  19.7s  d2=1 d3=1 d4=1  isr_edges=42
+  24.3s  3534185 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=5 attempt=1 lat_ms=0 reason=-
+  24.3s  3534188 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=MEDICAL id=5 attempt=1 lat_ms=3 reason=send_failed
+  26.5s  3536186 SM from=RETRY to=CONFIRMED ev=TICK alert=MEDICAL id=5 attempt=2 lat_ms=0 reason=-
+  26.5s  3536188 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=MEDICAL id=5 attempt=2 lat_ms=1 reason=send_failed
+  28.3s  3538192 SM from=RETRY to=CONFIRMED ev=TICK alert=MEDICAL id=5 attempt=3 lat_ms=0 reason=-
+  28.3s  3538197 SM from=CONFIRMED to=ERROR ev=ALERT_SEND_FAILED alert=MEDICAL id=5 attempt=3 lat_ms=5 reason=send_failed
+  35.4s  3545019 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=31 isr_to_task_max_us=25 lift_ms=15843
+  35.7s  d2=1 d3=0 d4=1  isr_edges=43
+  36.6s  3546489 BTN ev=HELD btn=2 alert=MEDICAL held_late_ms=4 bridged=0 max_lift_ms=0
+  36.6s  3546492 SM from=ERROR to=PENDING ev=BUTTON_HELD alert=MEDICAL id=6 attempt=0 lat_ms=3 reason=-
+  37.2s  3546865 BTN ev=RELEASED btn=2 edges=32 isr_to_task_max_us=26 bridged=0 max_lift_ms=0
+  37.2s  3546867 SM_INFO state=PENDING ev=BUTTON_RELEASED alert=MEDICAL id=6 reason=cancel_window_started
+  37.2s  3546917 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=30 edges=33 isr_to_task_max_us=29 lift_ms=56
+  37.2s  3546923 SM_REJECT state=PENDING ev=BUTTON_PRESSED ev_id=0 reason=cancel_lockout
+  37.2s  3547082 BTN ev=RELEASED btn=2 edges=34 isr_to_task_max_us=25 bridged=0 max_lift_ms=0
+  37.5s  d2=1 d3=1 d4=1  isr_edges=46
+  39.4s  d2=1 d3=1 d4=0  isr_edges=47
+  39.4s  3548979 BTN ev=PRESSED btn=3 alert=FAMILY debounce_ms=34 edges=13 isr_to_task_max_us=24 lift_ms=2805201
+  39.4s  3548984 SM from=PENDING to=CANCELLED ev=BUTTON_PRESSED alert=MEDICAL id=6 attempt=0 lat_ms=5 reason=user_cancel
+  39.4s  3549194 BTN ev=RELEASED btn=3 edges=14 isr_to_task_max_us=24 bridged=0 max_lift_ms=0
+  39.7s  d2=1 d3=1 d4=1  isr_edges=48
+  40.3s  3549981 SM from=CANCELLED to=IDLE ev=TICK alert=MEDICAL id=6 attempt=0 lat_ms=0 reason=-
+  47.1s  3556879 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=35 isr_to_task_max_us=25 lift_ms=9917
+  47.4s  d2=1 d3=0 d4=1  isr_edges=49
+  48.6s  3558349 BTN ev=HELD btn=2 alert=MEDICAL held_late_ms=4 bridged=0 max_lift_ms=0
+  48.6s  3558352 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=7 attempt=0 lat_ms=3 reason=-
+  51.1s  3560774 BTN ev=RELEASED btn=2 edges=36 isr_to_task_max_us=26 bridged=0 max_lift_ms=0
+  51.1s  3560776 SM_INFO state=PENDING ev=BUTTON_RELEASED alert=MEDICAL id=7 reason=cancel_window_started
+  51.4s  d2=1 d3=1 d4=1  isr_edges=50
+  56.0s  3565782 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=7 attempt=1 lat_ms=0 reason=-
+  56.0s  3565785 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=MEDICAL id=7 attempt=1 lat_ms=3 reason=send_failed
+  58.1s  3567782 SM from=RETRY to=CONFIRMED ev=TICK alert=MEDICAL id=7 attempt=2 lat_ms=0 reason=-
+  58.1s  3567785 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=MEDICAL id=7 attempt=2 lat_ms=3 reason=send_failed
+  60.0s  3569791 SM from=RETRY to=CONFIRMED ev=TICK alert=MEDICAL id=7 attempt=3 lat_ms=0 reason=-
+  60.0s  3569794 SM from=CONFIRMED to=ERROR ev=ALERT_SEND_FAILED alert=MEDICAL id=7 attempt=3 lat_ms=3 reason=send_failed
+  79.7s  3589465 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=37 isr_to_task_max_us=26 lift_ms=28691
+  80.0s  d2=1 d3=0 d4=1  isr_edges=51
+  80.3s  d2=1 d3=1 d4=1  isr_edges=54
+  80.3s  3589910 BTN ev=RELEASED btn=2 edges=40 isr_to_task_max_us=26 bridged=1 max_lift_ms=101
+  81.8s  d2=1 d3=0 d4=1  isr_edges=55
+  81.8s  3591425 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=30 edges=41 isr_to_task_max_us=25 lift_ms=1639
+  82.4s  d2=1 d3=1 d4=1  isr_edges=58
+  82.4s  3592133 BTN ev=RELEASED btn=2 edges=44 isr_to_task_max_us=26 bridged=1 max_lift_ms=119
+  82.4s  3592290 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=45 isr_to_task_max_us=26 lift_ms=273
+  82.8s  3592623 BTN ev=RELEASED btn=2 edges=48 isr_to_task_max_us=25 bridged=1 max_lift_ms=58
+  87.7s  3597427 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=30 edges=49 isr_to_task_max_us=26 lift_ms=4924
+  88.0s  d2=1 d3=0 d4=1  isr_edges=63
+  88.0s  3597820 BTN ev=RELEASED btn=2 edges=50 isr_to_task_max_us=60 bridged=0 max_lift_ms=0
+  88.3s  d2=1 d3=1 d4=1  isr_edges=64
+  88.9s  3598542 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=51 isr_to_task_max_us=26 lift_ms=842
+  88.9s  3598728 BTN ev=RELEASED btn=2 edges=52 isr_to_task_max_us=60 bridged=0 max_lift_ms=0
+  91.4s  3601188 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=53 isr_to_task_max_us=60 lift_ms=2580
+  91.7s  d2=1 d3=0 d4=1  isr_edges=67
+  92.9s  3602654 BTN ev=HELD btn=2 alert=MEDICAL held_late_ms=0 bridged=1 max_lift_ms=70
+  92.9s  3602655 SM from=ERROR to=PENDING ev=BUTTON_HELD alert=MEDICAL id=8 attempt=0 lat_ms=1 reason=-
+  94.1s  3603992 BTN ev=RELEASED btn=2 edges=56 isr_to_task_max_us=25 bridged=1 max_lift_ms=70
+  94.1s  3603993 SM_INFO state=PENDING ev=BUTTON_RELEASED alert=MEDICAL id=8 reason=cancel_window_started
+  94.4s  d2=1 d3=1 d4=1  isr_edges=70
+  96.0s  3605801 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=57 isr_to_task_max_us=25 lift_ms=1809
+  96.0s  3605802 SM from=PENDING to=CANCELLED ev=BUTTON_PRESSED alert=MEDICAL id=8 attempt=0 lat_ms=1 reason=user_cancel
+  96.3s  d2=1 d3=0 d4=1  isr_edges=71
+  96.3s  3606073 BTN ev=RELEASED btn=2 edges=58 isr_to_task_max_us=25 bridged=0 max_lift_ms=0
+  96.6s  d2=1 d3=1 d4=1  isr_edges=72
+  97.2s  3606801 SM from=CANCELLED to=IDLE ev=TICK alert=MEDICAL id=8 attempt=0 lat_ms=0 reason=-
+ 101.8s  3611459 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=30 edges=59 isr_to_task_max_us=53 lift_ms=5510
+ 102.1s  3611838 BTN ev=RELEASED btn=2 edges=62 isr_to_task_max_us=26 bridged=1 max_lift_ms=88
+ 102.7s  3612501 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=63 isr_to_task_max_us=59 lift_ms=783
+ 103.1s  d2=1 d3=0 d4=1  isr_edges=77
+ 103.1s  3612844 BTN ev=RELEASED btn=2 edges=64 isr_to_task_max_us=60 bridged=0 max_lift_ms=0
+ 103.4s  d2=1 d3=1 d4=1  isr_edges=78
+ 104.0s  3613685 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=65 isr_to_task_max_us=26 lift_ms=961
+ 104.3s  3613944 BTN ev=RELEASED btn=2 edges=66 isr_to_task_max_us=25 bridged=0 max_lift_ms=0
+ 104.9s  3614793 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=67 isr_to_task_max_us=25 lift_ms=969
+ 105.2s  d2=1 d3=0 d4=1  isr_edges=81
+ 106.1s  d2=1 d3=1 d4=1  isr_edges=82
+ 106.1s  3615749 BTN ev=RELEASED btn=2 edges=68 isr_to_task_max_us=26 bridged=0 max_lift_ms=0
+ 106.7s  3616453 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=69 isr_to_task_max_us=59 lift_ms=824
+ 107.0s  d2=1 d3=0 d4=1  isr_edges=83
+ 107.7s  3617473 BTN ev=RELEASED btn=2 edges=70 isr_to_task_max_us=25 bridged=0 max_lift_ms=0
+ 108.0s  d2=1 d3=1 d4=1  isr_edges=84
+ 111.7s  d2=1 d3=0 d4=1  isr_edges=85
+ 111.7s  3621266 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=30 edges=71 isr_to_task_max_us=53 lift_ms=3917
+ 111.7s  3621527 BTN ev=RELEASED btn=2 edges=72 isr_to_task_max_us=26 bridged=0 max_lift_ms=0
+ 112.0s  d2=1 d3=1 d4=1  isr_edges=86
+ 113.8s  3623593 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=73 isr_to_task_max_us=25 lift_ms=2186
+ 114.1s  3623852 BTN ev=RELEASED btn=2 edges=74 isr_to_task_max_us=25 bridged=0 max_lift_ms=0
+ 114.4s  3624098 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=75 isr_to_task_max_us=26 lift_ms=366
+ 114.7s  d2=1 d3=0 d4=1  isr_edges=89
+ 116.0s  3625568 BTN ev=HELD btn=2 alert=MEDICAL held_late_ms=4 bridged=0 max_lift_ms=0
+ 116.0s  3625571 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=9 attempt=0 lat_ms=3 reason=-
+ 116.6s  3626402 BTN ev=RELEASED btn=2 edges=76 isr_to_task_max_us=25 bridged=0 max_lift_ms=0
+ 116.6s  3626403 SM_INFO state=PENDING ev=BUTTON_RELEASED alert=MEDICAL id=9 reason=cancel_window_started
+ 116.9s  d2=1 d3=1 d4=1  isr_edges=90
+ 117.2s  d2=1 d3=1 d4=0  isr_edges=91
+ 117.2s  3626793 BTN ev=PRESSED btn=3 alert=FAMILY debounce_ms=30 edges=15 isr_to_task_max_us=24 lift_ms=77723
+ 117.2s  3626796 SM from=PENDING to=CANCELLED ev=BUTTON_PRESSED alert=MEDICAL id=9 attempt=0 lat_ms=3 reason=user_cancel
+ 117.2s  3627073 BTN ev=RELEASED btn=3 edges=16 isr_to_task_max_us=24 bridged=0 max_lift_ms=0
+ 117.5s  d2=1 d3=1 d4=1  isr_edges=92
+ 118.1s  3627798 SM from=CANCELLED to=IDLE ev=TICK alert=MEDICAL id=9 attempt=0 lat_ms=0 reason=-

@@ -1,0 +1,85 @@
+# button_watch.py output, firmware 1b5c10a (V1.5), guided round 2 (never released, two-finger cancel,
+# simultaneous holds, then reset). Pasted from the terminal into the dev session. The watcher of that
+# time crashed when the reset dropped USB (traceback kept as-is); it reconnects since.
+# Columns: host seconds since start, then the device log line (device ms first) or a pin-level snapshot.
+watching /dev/cu.usbmodem1201 for 600 s (Ctrl+C to stop)
+   0.3s  d2=1 d3=1 d4=1  isr_edges=0
+   5.6s  8331 BTN ev=PRESSED btn=3 alert=FAMILY debounce_ms=30 edges=1 isr_to_task_max_us=51 lift_ms=8301
+   5.9s  d2=1 d3=1 d4=0  isr_edges=1
+   7.1s  9801 BTN ev=HELD btn=3 alert=FAMILY held_late_ms=0 bridged=0 max_lift_ms=0
+   7.1s  9802 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=FAMILY id=1 attempt=0 lat_ms=1 reason=-
+  12.0s  14810 SM from=PENDING to=CONFIRMED ev=TICK alert=FAMILY id=1 attempt=1 lat_ms=0 reason=-
+  12.0s  14815 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=FAMILY id=1 attempt=1 lat_ms=5 reason=send_failed
+  14.2s  16814 SM from=RETRY to=CONFIRMED ev=TICK alert=FAMILY id=1 attempt=2 lat_ms=0 reason=-
+  14.2s  16817 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=FAMILY id=1 attempt=2 lat_ms=2 reason=send_failed
+  16.0s  18814 SM from=RETRY to=CONFIRMED ev=TICK alert=FAMILY id=1 attempt=3 lat_ms=0 reason=-
+  16.0s  18819 SM from=CONFIRMED to=ERROR ev=ALERT_SEND_FAILED alert=FAMILY id=1 attempt=3 lat_ms=5 reason=send_failed
+  18.8s  21510 BTN ev=RELEASED btn=3 edges=2 isr_to_task_max_us=24 bridged=0 max_lift_ms=0
+  19.1s  d2=1 d3=1 d4=1  isr_edges=2
+  20.9s  23694 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=30 edges=1 isr_to_task_max_us=25 lift_ms=23664
+  20.9s  23802 BTN ev=PRESSED btn=3 alert=FAMILY debounce_ms=34 edges=3 isr_to_task_max_us=24 lift_ms=2292
+  21.3s  d2=1 d3=0 d4=0  isr_edges=4
+  22.5s  25167 BTN ev=HELD btn=2 alert=MEDICAL held_late_ms=3 bridged=0 max_lift_ms=0
+  22.5s  25170 SM from=ERROR to=PENDING ev=BUTTON_HELD alert=MEDICAL id=2 attempt=0 lat_ms=3 reason=-
+  22.5s  25272 BTN ev=HELD btn=3 alert=FAMILY held_late_ms=4 bridged=0 max_lift_ms=0
+  22.5s  25275 SM_REJECT state=PENDING ev=BUTTON_HELD ev_id=0 reason=alert_in_progress
+  27.4s  30168 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=2 attempt=1 lat_ms=0 reason=-
+  27.4s  30175 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=MEDICAL id=2 attempt=1 lat_ms=7 reason=send_failed
+  28.6s  d2=1 d3=0 d4=1  isr_edges=5
+  28.6s  31262 BTN ev=RELEASED btn=3 edges=4 isr_to_task_max_us=24 bridged=0 max_lift_ms=0
+  28.6s  31363 BTN ev=RELEASED btn=2 edges=2 isr_to_task_max_us=26 bridged=0 max_lift_ms=0
+  29.0s  d2=1 d3=1 d4=1  isr_edges=6
+  29.6s  32178 SM from=RETRY to=CONFIRMED ev=TICK alert=MEDICAL id=2 attempt=2 lat_ms=0 reason=-
+  29.6s  32190 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=MEDICAL id=2 attempt=2 lat_ms=12 reason=send_failed
+  31.4s  34092 BTN ev=PRESSED btn=1 alert=EMERGENCY debounce_ms=34 edges=1 isr_to_task_max_us=27 lift_ms=34058
+  31.4s  34093 SM from=RETRY to=CANCELLED ev=BUTTON_PRESSED alert=MEDICAL id=2 attempt=2 lat_ms=1 reason=user_cancel
+  31.4s  34096 ERR op=send_cancel id=2 reason=link_unavailable cancel_delivery=unknown
+  31.4s  34167 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=3 isr_to_task_max_us=26 lift_ms=2804
+  31.7s  d2=0 d3=0 d4=1  isr_edges=8
+  32.3s  35099 SM from=CANCELLED to=IDLE ev=TICK alert=MEDICAL id=2 attempt=2 lat_ms=0 reason=-
+  32.9s  35562 BTN ev=HELD btn=1 alert=EMERGENCY held_late_ms=4 bridged=0 max_lift_ms=0
+  32.9s  35565 SM_REJECT state=IDLE ev=BUTTON_HELD ev_id=0 reason=hold_after_consumed_press
+  32.9s  35637 BTN ev=HELD btn=2 alert=MEDICAL held_late_ms=4 bridged=0 max_lift_ms=0
+  32.9s  35640 SM_REJECT state=IDLE ev=BUTTON_HELD ev_id=0 reason=hold_after_consumed_press
+  39.1s  41968 BTN ev=RELEASED btn=2 edges=20 isr_to_task_max_us=159 bridged=0 max_lift_ms=0
+  39.4s  d2=1 d3=1 d4=1  isr_edges=26
+  39.4s  42026 BTN ev=RELEASED btn=1 edges=2 isr_to_task_max_us=44 bridged=0 max_lift_ms=0
+  40.0s  42909 BTN ev=PRESSED btn=1 alert=EMERGENCY debounce_ms=34 edges=3 isr_to_task_max_us=26 lift_ms=883
+  40.3s  d2=0 d3=1 d4=1  isr_edges=27
+  40.3s  43063 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=21 isr_to_task_max_us=25 lift_ms=1095
+  40.6s  d2=0 d3=0 d4=1  isr_edges=28
+  40.6s  43544 BTN ev=RELEASED btn=2 edges=22 isr_to_task_max_us=26 bridged=0 max_lift_ms=0
+  40.9s  d2=1 d3=1 d4=1  isr_edges=32
+  40.9s  43564 BTN ev=RELEASED btn=1 edges=6 isr_to_task_max_us=60 bridged=0 max_lift_ms=0
+  42.2s  44951 BTN ev=PRESSED btn=1 alert=EMERGENCY debounce_ms=30 edges=7 isr_to_task_max_us=59 lift_ms=1511
+  42.2s  45044 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=23 isr_to_task_max_us=25 lift_ms=1617
+  42.5s  d2=0 d3=0 d4=1  isr_edges=34
+  43.7s  46424 BTN ev=HELD btn=1 alert=EMERGENCY held_late_ms=3 bridged=0 max_lift_ms=0
+  43.7s  46432 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=3 attempt=0 lat_ms=8 reason=-
+  43.7s  46514 BTN ev=HELD btn=2 alert=MEDICAL held_late_ms=4 bridged=0 max_lift_ms=0
+  43.7s  46515 SM_REJECT state=PENDING ev=BUTTON_HELD ev_id=0 reason=alert_in_progress
+  48.6s  51435 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=3 attempt=1 lat_ms=0 reason=-
+  48.6s  51438 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=3 attempt=1 lat_ms=3 reason=send_failed
+  49.2s  51923 BTN ev=RELEASED btn=2 edges=24 isr_to_task_max_us=25 bridged=0 max_lift_ms=0
+  49.5s  d2=0 d3=1 d4=1  isr_edges=35
+  50.8s  53442 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=3 attempt=2 lat_ms=0 reason=-
+  50.8s  53445 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=3 attempt=2 lat_ms=3 reason=send_failed
+  52.6s  55449 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=3 attempt=3 lat_ms=0 reason=-
+  52.6s  55453 SM from=CONFIRMED to=ERROR ev=ALERT_SEND_FAILED alert=EMERGENCY id=3 attempt=3 lat_ms=4 reason=send_failed
+Traceback (most recent call last):
+  File "/Users/yihan/Documents/GitHub/WearableEmergencyAssistanceSystem/.venv/lib/python3.11/site-packages/serial/serialposix.py", line 575, in read
+    buf = os.read(self.fd, size - len(read))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 6] Device not configured
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/yihan/Documents/GitHub/WearableEmergencyAssistanceSystem/tests/bench/button_watch.py", line 48, in <module>
+    main()
+  File "/Users/yihan/Documents/GitHub/WearableEmergencyAssistanceSystem/tests/bench/button_watch.py", line 29, in main
+    buf += port.read(4000)
+           ^^^^^^^^^^^^^^^
+  File "/Users/yihan/Documents/GitHub/WearableEmergencyAssistanceSystem/.venv/lib/python3.11/site-packages/serial/serialposix.py", line 581, in read
+    raise SerialException('read failed: {}'.format(e))
+serial.serialutil.SerialException: read failed: [Errno 6] Device not configured

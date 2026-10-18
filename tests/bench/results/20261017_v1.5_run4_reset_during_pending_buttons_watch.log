@@ -1,0 +1,28 @@
+# button_watch.py output (reconnecting version), firmware 1b5c10a (V1.5): board reset button pressed
+# during PENDING, then a new alert after reboot. Pasted from the terminal into the dev session.
+# Columns: host seconds since start, then the device log line (device ms first) or a pin-level snapshot.
+watching /dev/cu.usbmodem1201 for 600 s (Ctrl+C to stop)
+   0.3s  d2=1 d3=1 d4=1  isr_edges=0
+   4.9s  63973 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=1 isr_to_task_max_us=25 lift_ms=63939
+   5.2s  d2=1 d3=0 d4=1  isr_edges=1
+   6.5s  65443 BTN ev=HELD btn=2 alert=MEDICAL held_late_ms=4 bridged=0 max_lift_ms=0
+   6.5s  65446 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=3 reason=-
+   7.1s  66040 BTN ev=RELEASED btn=2 edges=2 isr_to_task_max_us=26 bridged=0 max_lift_ms=0
+   7.1s  66042 SM_INFO state=PENDING ev=BUTTON_RELEASED alert=MEDICAL id=1 reason=cancel_window_started
+   7.4s  d2=1 d3=1 d4=1  isr_edges=2
+  10.1s  --- device disconnected (reset?), waiting
+  11.3s  --- reconnected to /dev/cu.usbmodem1201
+  11.6s  d2=1 d3=1 d4=1  isr_edges=0
+  11.6s  878 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+  11.6s  878 SM state=IDLE transport=BLE link_ok=1
+  15.9s  5063 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=30 edges=1 isr_to_task_max_us=26 lift_ms=5033
+  16.2s  d2=1 d3=0 d4=1  isr_edges=1
+  17.2s  6533 BTN ev=HELD btn=2 alert=MEDICAL held_late_ms=0 bridged=0 max_lift_ms=0
+  17.2s  6536 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=3 reason=-
+  17.8s  7175 BTN ev=RELEASED btn=2 edges=2 isr_to_task_max_us=53 bridged=0 max_lift_ms=0
+  17.8s  7177 SM_INFO state=PENDING ev=BUTTON_RELEASED alert=MEDICAL id=1 reason=cancel_window_started
+  18.1s  d2=1 d3=1 d4=1  isr_edges=2
+  19.6s  8791 BTN ev=PRESSED btn=3 alert=FAMILY debounce_ms=30 edges=1 isr_to_task_max_us=24 lift_ms=8761
+  19.6s  8796 SM from=PENDING to=CANCELLED ev=BUTTON_PRESSED alert=MEDICAL id=1 attempt=0 lat_ms=5 reason=user_cancel
+  19.9s  9067 BTN ev=RELEASED btn=3 edges=2 isr_to_task_max_us=24 bridged=0 max_lift_ms=0
+  20.5s  9797 SM from=CANCELLED to=IDLE ev=TICK alert=MEDICAL id=1 attempt=0 lat_ms=0 reason=-
