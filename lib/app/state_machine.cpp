@@ -43,7 +43,7 @@ Result StateMachine::onPending(const Event& event) {
             }
             return unchanged();
         case EventType::ButtonHeld: return reject("alert_in_progress");
-        case EventType::ButtonReleased: return noteRelease(event);
+        case EventType::ButtonReleased: return onPendingRelease(event);  // T13
         case EventType::HostAck: return reject("ack_before_send");
         case EventType::AlertSendOk:
         case EventType::AlertSendFailed: return reject("stale_send_result");
@@ -160,7 +160,8 @@ Result StateMachine::startAlert(const Event& event) {
     }
     attempts_ = 0;
     lockout_armed_ = false;
-    setDeadline(event.timestamp_ms, timing_.pending_ms);
+    awaiting_release_ = timing_.pending_from_release;
+    setDeadline(event.timestamp_ms, timing_.pending_ms);  // fallback if never released
     return transition(State::Pending, Action::None);
 }
 
@@ -196,6 +197,19 @@ Result StateMachine::cancelInFlight(const Event& event) {
     return transition(State::Cancelled, Action::SendCancel, "user_cancel");
 }
 
+Result StateMachine::onPendingRelease(const Event& event) {
+    noteRelease(event);
+    if (!awaiting_release_ || event.alert != alert_type_) {
+        return unchanged();
+    }
+    awaiting_release_ = false;
+    if (deadlineReached(event.timestamp_ms)) {
+        return unchanged();  // window already ran out while held; the next Tick sends
+    }
+    setDeadline(event.timestamp_ms, timing_.pending_ms);
+    return note("cancel_window_started");
+}
+
 Result StateMachine::noteRelease(const Event& event) {
     if (event.alert == alert_type_) {
         lockout_until_ms_ = event.timestamp_ms + timing_.cancel_lockout_ms;
@@ -213,7 +227,7 @@ void StateMachine::trackPress(const Event& event) {
         // Decided by the state the press arrives in. A press outside an alert
         // also clears a stale mark, so a lost release event cannot lock a
         // button out of starting alerts.
-        if (alertActive()) {
+        if (consumesPresses()) {
             consumed_presses_ |= bit;
         } else {
             consumed_presses_ &= static_cast<uint8_t>(~bit);
@@ -227,9 +241,9 @@ bool StateMachine::pressConsumed(AlertType alert) const {
     return (consumed_presses_ & (1u << static_cast<uint8_t>(alert))) != 0;
 }
 
-bool StateMachine::alertActive() const {
+bool StateMachine::consumesPresses() const {
     return state_ == State::Pending || state_ == State::Confirmed || state_ == State::AlertSent ||
-           state_ == State::Retry;
+           state_ == State::Retry || state_ == State::Cancelled;
 }
 
 bool StateMachine::inCancelLockout(const Event& event) const {
@@ -246,6 +260,10 @@ Result StateMachine::transition(State to, Action action, const char* reason) {
 
 Result StateMachine::unchanged() const {
     return Result{Outcome::Unchanged, state_, state_, Action::None, nullptr};
+}
+
+Result StateMachine::note(const char* reason) const {
+    return Result{Outcome::Unchanged, state_, state_, Action::None, reason};
 }
 
 Result StateMachine::reject(const char* reason) const {

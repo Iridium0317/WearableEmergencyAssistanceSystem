@@ -20,7 +20,8 @@ ButtonInput::ButtonInput(AppEventQueue& events)
       pin1_(digitalPinToPinName(D3), PullUp),
       pin2_(digitalPinToPinName(D4), PullUp),
       pins_{&pin0_, &pin1_, &pin2_},
-      debouncers_{{kDebounceMs, kHoldMs}, {kDebounceMs, kHoldMs}, {kDebounceMs, kHoldMs}},
+      debouncers_{{kDebounceMs, kHoldMs, kHoldGapMs}, {kDebounceMs, kHoldMs, kHoldGapMs},
+                  {kDebounceMs, kHoldMs, kHoldGapMs}},
       // Above the app thread so hold timing stays accurate. Safe because this
       // task never busy-waits and does bounded work per wake-up, so it cannot
       // starve Cordio's bleLoop the way a spinning thread would.
@@ -37,7 +38,8 @@ void ButtonInput::start() {
     pin2_.rise(mbed::callback(this, &ButtonInput::onEdge2));
     pin2_.fall(mbed::callback(this, &ButtonInput::onEdge2));
     started_ = true;
-    diag::log("BTN", "ev=started pins=D2,D3,D4 debounce_ms=%" PRIu32 " hold_ms=%" PRIu32, kDebounceMs, kHoldMs);
+    diag::log("BTN", "ev=started pins=D2,D3,D4 debounce_ms=%" PRIu32 " hold_ms=%" PRIu32 " hold_gap_ms=%" PRIu32,
+              kDebounceMs, kHoldMs, kHoldGapMs);
 }
 
 void ButtonInput::onEdge(uint8_t button) {
@@ -112,9 +114,9 @@ void ButtonInput::serviceButton(uint8_t button, uint32_t now_ms) {
                     diag::log("BTN_ERR", "reason=queue_full btn=%u", button + 1);
                 }
                 diag::log("BTN", "ev=PRESSED btn=%u alert=%s debounce_ms=%" PRIu32 " edges=%" PRIu32
-                          " isr_to_task_max_us=%" PRIu32,
+                          " isr_to_task_max_us=%" PRIu32 " lift_ms=%" PRIu32,
                           button + 1, toString(alert), now_ms - d.pressStartMs(), d.rawEdgeCount(),
-                          max_isr_to_task_us_[button]);
+                          max_isr_to_task_us_[button], d.liftBeforePressMs());
                 max_isr_to_task_us_[button] = 0;
                 break;
             case ButtonEvent::Held: {
@@ -124,16 +126,19 @@ void ButtonInput::serviceButton(uint8_t button, uint32_t now_ms) {
                 if (!events_.post(Event{EventType::ButtonHeld, now_ms, alert, 0})) {
                     diag::log("BTN_ERR", "reason=queue_full btn=%u", button + 1);
                 }
-                diag::log("BTN", "ev=HELD btn=%u alert=%s held_late_ms=%" PRIu32, button + 1, toString(alert),
-                          late);
+                diag::log("BTN", "ev=HELD btn=%u alert=%s held_late_ms=%" PRIu32 " bridged=%" PRIu32
+                          " max_lift_ms=%" PRIu32,
+                          button + 1, toString(alert), late, d.bridgedLifts(), d.maxBridgedLiftMs());
                 break;
             }
             case ButtonEvent::Released:
                 if (!events_.post(Event{EventType::ButtonReleased, now_ms, alert, 0})) {
                     diag::log("BTN_ERR", "reason=queue_full btn=%u", button + 1);
                 }
-                diag::log("BTN", "ev=RELEASED btn=%u edges=%" PRIu32 " isr_to_task_max_us=%" PRIu32, button + 1,
-                          d.rawEdgeCount(), max_isr_to_task_us_[button]);
+                diag::log("BTN", "ev=RELEASED btn=%u edges=%" PRIu32 " isr_to_task_max_us=%" PRIu32
+                          " bridged=%" PRIu32 " max_lift_ms=%" PRIu32,
+                          button + 1, d.rawEdgeCount(), max_isr_to_task_us_[button], d.bridgedLifts(),
+                          d.maxBridgedLiftMs());
                 max_isr_to_task_us_[button] = 0;
                 break;
             case ButtonEvent::None:

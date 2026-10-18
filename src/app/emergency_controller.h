@@ -9,10 +9,11 @@
 #include "alert_transport.h"
 #include "event_queue.h"
 #include "state_machine.h"
+#include "status_led.h"
 
 class EmergencyController {
 public:
-    EmergencyController(AppEventQueue& events, AlertTransport& transport);
+    EmergencyController(AppEventQueue& events, AlertTransport& transport, StatusLed& led);
 
     void start();
 
@@ -29,6 +30,8 @@ private:
 
     AppEventQueue& events_;
     AlertTransport& transport_;
+    StatusLed& led_;
     StateMachine machine_;
+    uint32_t state_since_ms_ = 0;  // when the current state was entered, for LED rhythm
     rtos::Thread thread_;
 };

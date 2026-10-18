@@ -1,5 +1,9 @@
 # Test Results
 
+Board: all runs below used the same board, an Arduino Nano 33 BLE **Sense** Rev2.
+Entries before 2026-10-17 call it "Nano 33 BLE Rev2"; the T0 I2C scan already
+showed the Sense-only sensors (0x39 APDS9960, 0x44 HS3003, 0x5C LPS22HB).
+
 ## T0 — Board bring-up smoke test (2026-10-10)
 
 | Field | Value |

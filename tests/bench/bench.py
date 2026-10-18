@@ -32,7 +32,7 @@ ARDUINO_VID = 0x2341
 LINE_RE = re.compile(r"^(\d+) ([A-Z_]+)(?: (.*))?$")
 
 # Firmware timing constants (kDefaultTiming in lib/app/state_machine.h).
-PENDING_MS = 3000
+PENDING_MS = 5000  # console holds never release, so the window is timed from HELD
 ACK_TIMEOUT_MS = 5000
 RETRY_BACKOFF_MS = 2000
 MAX_ATTEMPTS = 3

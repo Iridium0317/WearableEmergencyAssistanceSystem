@@ -23,6 +23,9 @@ class ButtonInput {
 public:
     static constexpr uint32_t kDebounceMs = 30;
     static constexpr uint32_t kHoldMs = 1500;
+    // Tremor tolerance: lifts shorter than this do not restart a hold.
+    // Prototype default, not validated with users.
+    static constexpr uint32_t kHoldGapMs = 150;
 
     explicit ButtonInput(AppEventQueue& events);
 

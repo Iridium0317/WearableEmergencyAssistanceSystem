@@ -6,6 +6,7 @@ namespace {
 
 constexpr uint32_t kDebounce = 30;
 constexpr uint32_t kHold = 1500;
+constexpr uint32_t kGap = 150;
 
 ButtonEvent drainOne(ButtonDebouncer& b, uint32_t now) { return b.update(now); }
 
@@ -121,6 +122,104 @@ void test_resync_recovers_missed_release() {
     TEST_ASSERT_EQUAL_UINT32(edges, b.rawEdgeCount());
 }
 
+// --- hold gap tolerance (tremor) -------------------------------------------
+
+void test_gap_within_tolerance_keeps_hold_progress() {
+    ButtonDebouncer b(kDebounce, kHold, kGap);
+    b.onEdge(true, 0);
+    TEST_ASSERT_EQUAL(ButtonEvent::Pressed, drainOne(b, 30));
+    b.onEdge(false, 700);
+    TEST_ASSERT_EQUAL(ButtonEvent::None, drainOne(b, 760));  // past 30 ms debounce, inside gap
+    b.onEdge(true, 849);                                     // 149 ms lift
+    TEST_ASSERT_EQUAL(ButtonEvent::None, drainOne(b, 1499));
+    TEST_ASSERT_EQUAL(ButtonEvent::Held, drainOne(b, 1500));  // still timed from 0
+    TEST_ASSERT_EQUAL_UINT32(0, b.pressStartMs());
+}
+
+void test_gap_at_tolerance_releases_and_resets_hold() {
+    ButtonDebouncer b(kDebounce, kHold, kGap);
+    b.onEdge(true, 0);
+    drainOne(b, 30);
+    b.onEdge(false, 700);
+    TEST_ASSERT_EQUAL(ButtonEvent::None, drainOne(b, 849));
+    TEST_ASSERT_EQUAL(ButtonEvent::Released, drainOne(b, 850));
+    b.onEdge(true, 900);
+    TEST_ASSERT_EQUAL(ButtonEvent::Pressed, drainOne(b, 930));
+    TEST_ASSERT_EQUAL(ButtonEvent::None, drainOne(b, 2399));  // hold restarted at 900
+    TEST_ASSERT_EQUAL(ButtonEvent::Held, drainOne(b, 2400));
+}
+
+void test_held_waits_for_contact_during_gap() {
+    ButtonDebouncer b(kDebounce, kHold, kGap);
+    b.onEdge(true, 0);
+    drainOne(b, 30);
+    b.onEdge(false, 1450);
+    TEST_ASSERT_EQUAL(ButtonEvent::None, drainOne(b, 1500));  // threshold reached while lifted
+    b.onEdge(true, 1550);
+    TEST_ASSERT_EQUAL(ButtonEvent::Held, drainOne(b, 1550));
+}
+
+void test_release_after_held_uses_normal_debounce() {
+    ButtonDebouncer b(kDebounce, kHold, kGap);
+    b.onEdge(true, 0);
+    drainOne(b, 30);
+    TEST_ASSERT_EQUAL(ButtonEvent::Held, drainOne(b, 1500));
+    b.onEdge(false, 2000);
+    TEST_ASSERT_EQUAL(ButtonEvent::None, drainOne(b, 2029));
+    TEST_ASSERT_EQUAL(ButtonEvent::Released, drainOne(b, 2030));
+}
+
+void test_taps_closer_than_gap_merge_into_one_press() {
+    ButtonDebouncer b(kDebounce, kHold, kGap);
+    b.onEdge(true, 0);
+    TEST_ASSERT_EQUAL(ButtonEvent::Pressed, drainOne(b, 30));
+    b.onEdge(false, 200);
+    b.onEdge(true, 300);
+    b.onEdge(false, 400);
+    TEST_ASSERT_EQUAL(ButtonEvent::None, drainOne(b, 549));
+    TEST_ASSERT_EQUAL(ButtonEvent::Released, drainOne(b, 550));
+    TEST_ASSERT_EQUAL(ButtonEvent::None, drainOne(b, 3000));
+}
+
+void test_gap_tolerance_survives_millis_wraparound() {
+    ButtonDebouncer b(kDebounce, kHold, kGap);
+    const uint32_t start = 0xFFFFFFFFu - 800;
+    b.onEdge(true, start);
+    drainOne(b, start + 30);
+    b.onEdge(false, start + 700);
+    b.onEdge(true, start + 840);  // lift straddles the wrap
+    TEST_ASSERT_EQUAL(ButtonEvent::None, drainOne(b, start + 1499));
+    TEST_ASSERT_EQUAL(ButtonEvent::Held, drainOne(b, start + 1500));
+}
+
+// Bench evidence: lift durations from edge timestamps, at 1 ms resolution.
+void test_bridged_lifts_are_counted_and_measured() {
+    ButtonDebouncer b(kDebounce, kHold, kGap);
+    b.onEdge(true, 0);
+    drainOne(b, 30);
+    b.onEdge(false, 300);
+    b.onEdge(true, 310);  // 10 ms: bounce, not counted
+    b.onEdge(false, 500);
+    b.onEdge(true, 620);  // 120 ms: bridged
+    b.onEdge(false, 900);
+    b.onEdge(true, 1049);  // 149 ms: bridged
+    TEST_ASSERT_EQUAL(ButtonEvent::Held, drainOne(b, 1500));
+    TEST_ASSERT_EQUAL_UINT32(2, b.bridgedLifts());
+    TEST_ASSERT_EQUAL_UINT32(149, b.maxBridgedLiftMs());
+}
+
+void test_lift_that_restarts_hold_is_measured_on_next_press() {
+    ButtonDebouncer b(kDebounce, kHold, kGap);
+    b.onEdge(true, 0);
+    drainOne(b, 30);
+    b.onEdge(false, 700);
+    TEST_ASSERT_EQUAL(ButtonEvent::Released, drainOne(b, 850));
+    b.onEdge(true, 862);  // up for 162 ms
+    TEST_ASSERT_EQUAL(ButtonEvent::Pressed, drainOne(b, 892));
+    TEST_ASSERT_EQUAL_UINT32(162, b.liftBeforePressMs());
+    TEST_ASSERT_EQUAL_UINT32(0, b.bridgedLifts());  // fresh press, counters reset
+}
+
 int main() {
     UNITY_BEGIN();
     RUN_TEST(test_clean_press_reports_after_debounce_window);
@@ -133,5 +232,13 @@ int main() {
     RUN_TEST(test_timing_survives_millis_wraparound);
     RUN_TEST(test_needs_service_only_while_time_matters);
     RUN_TEST(test_resync_recovers_missed_release);
+    RUN_TEST(test_gap_within_tolerance_keeps_hold_progress);
+    RUN_TEST(test_gap_at_tolerance_releases_and_resets_hold);
+    RUN_TEST(test_held_waits_for_contact_during_gap);
+    RUN_TEST(test_release_after_held_uses_normal_debounce);
+    RUN_TEST(test_taps_closer_than_gap_merge_into_one_press);
+    RUN_TEST(test_gap_tolerance_survives_millis_wraparound);
+    RUN_TEST(test_bridged_lifts_are_counted_and_measured);
+    RUN_TEST(test_lift_that_restarts_hold_is_measured_on_next_press);
     return UNITY_END();
 }

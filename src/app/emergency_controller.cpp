@@ -13,9 +13,10 @@ MBED_ALIGN(8) unsigned char g_app_stack[8192];
 
 }  // namespace
 
-EmergencyController::EmergencyController(AppEventQueue& events, AlertTransport& transport)
+EmergencyController::EmergencyController(AppEventQueue& events, AlertTransport& transport, StatusLed& led)
     : events_(events),
       transport_(transport),
+      led_(led),
       // Must stay BELOW Cordio's bleLoop thread (osPriorityNormal). ArduinoBLE
       // busy-waits up to 1 s for each HCI command response, and that response
       // is produced by bleLoop; at AboveNormal this thread starved bleLoop and
@@ -39,7 +40,16 @@ void EmergencyController::run() {
             dispatch(event);
         }
         transport_.poll();
-        dispatch(Event{EventType::Tick, millis(), AlertType::None, 0});
+        // poll() can block (ArduinoBLE busy-waits on HCI). Handle whatever
+        // queued up meanwhile before time advances, so a press timestamped
+        // before a deadline is not beaten by the Tick that expires it.
+        // Bounded so a flood of events cannot starve the Tick.
+        for (uint32_t i = 0; i < AppEventQueue::kCapacity && events_.wait(event, 0); ++i) {
+            dispatch(event);
+        }
+        const uint32_t now = millis();
+        dispatch(Event{EventType::Tick, now, AlertType::None, 0});
+        led_.show(statusPattern(machine_.state(), now - state_since_ms_));
     }
 }
 
@@ -52,6 +62,7 @@ void EmergencyController::dispatch(const Event& event) {
     const uint32_t now = millis();
     report(event, result, now);
     if (result.outcome == Outcome::Transitioned) {
+        state_since_ms_ = now;
         publishState();
         execute(result.action, now);
     }
@@ -65,6 +76,9 @@ void EmergencyController::report(const Event& event, const Result& result, uint3
                   toString(result.from), toString(result.to), toString(event.type),
                   toString(machine_.alertType()), machine_.alertId(), machine_.attempts(),
                   latency, result.reason ? result.reason : "-");
+    } else if (result.outcome == Outcome::Unchanged && result.reason != nullptr) {
+        diag::log("SM_INFO", "state=%s ev=%s alert=%s id=%u reason=%s", toString(result.from),
+                  toString(event.type), toString(machine_.alertType()), machine_.alertId(), result.reason);
     } else if (result.outcome == Outcome::Rejected) {
         diag::log("SM_REJECT", "state=%s ev=%s ev_id=%u reason=%s",
                   toString(result.from), toString(event.type), event.alert_id, result.reason);

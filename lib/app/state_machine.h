@@ -19,10 +19,22 @@
 //  T10 CONFIRMED|ALERT_SENT|RETRY   ButtonPressed      CANCELLED     SendCancel (host may hold the alert)
 //  T11 ACKNOWLEDGED|CANCELLED       Tick >= deadline   IDLE          status display period over
 //  T12 ACKNOWLEDGED|CANCELLED|ERROR ButtonHeld(type)   PENDING       never drop a new alert
+//  T13 PENDING                      ButtonReleased     (PENDING)     own button's first release restarts
+//                                                                    the window (no state change)
+//
+// Pending window start: with pending_from_release, the window is timed from
+// the first debounced release of the alert's own button, so a user who keeps
+// holding does not lose the cancel time. Until that release the deadline is
+// HELD + pending_ms, so an alert still goes out if the button is never let go
+// (e.g. the user is lying on it); a release after that deadline does not
+// extend it.
+//
 // Overlapping buttons: any button's press is the cancel gesture (T2/T10).
 // Cancelling and starting an alert are separate actions: a press that arrives
-// while an alert is active is consumed, and its own ButtonHeld can never start
-// a new alert (T1/T12 reject it), even after the machine has left the alert.
+// while an alert is active, or during the CANCELLED display (so the second of
+// two near-simultaneous cancel presses is covered), is consumed, and its own
+// ButtonHeld can never start a new alert (T1/T12 reject it), even after the
+// machine has left the alert.
 // Only a release followed by a fresh press can. So a user who held the wrong
 // button cancels it, lets go, and holds the intended one. Holds that arrive
 // while an alert is active are rejected, so for holds in the same instant the
@@ -65,7 +77,7 @@ enum class Action : uint8_t {
 };
 
 enum class Outcome : uint8_t {
-    Unchanged,     // event irrelevant in this state; not worth logging
+    Unchanged,     // no transition; worth logging only if reason is set
     Transitioned,
     Rejected,      // event invalid in this state; caller should report it
 };
@@ -86,16 +98,19 @@ struct Timing {
     uint32_t ack_display_ms;    // how long ACKNOWLEDGED is shown before IDLE
     uint32_t cancel_display_ms; // how long CANCELLED is shown before IDLE
     uint32_t cancel_lockout_ms; // own-button re-press ignored this long after its release
+    bool pending_from_release;  // time the pending window from the own button's release (T13)
 };
 
+// Prototype defaults, not medically or ergonomically validated.
 constexpr Timing kDefaultTiming = {
-    3000,  // pending_ms
+    5000,  // pending_ms
     5000,  // ack_timeout_ms
     2000,  // retry_backoff_ms
     3,     // max_attempts
     3000,  // ack_display_ms
     1000,  // cancel_display_ms
-    300,   // cancel_lockout_ms (prototype default, not validated with users)
+    300,   // cancel_lockout_ms
+    true,  // pending_from_release
 };
 
 class StateMachine {
@@ -124,13 +139,15 @@ private:
     Result acknowledge(const Event& event);
     Result cancelInFlight(const Event& event);
     Result noteRelease(const Event& event);
+    Result onPendingRelease(const Event& event);
     bool inCancelLockout(const Event& event) const;
     void trackPress(const Event& event);
     bool pressConsumed(AlertType alert) const;
-    bool alertActive() const;
+    bool consumesPresses() const;
 
     Result transition(State to, Action action, const char* reason = nullptr);
     Result unchanged() const;
+    Result note(const char* reason) const;  // Unchanged, but worth logging
     Result reject(const char* reason) const;
 
     bool deadlineReached(uint32_t now) const;
@@ -146,6 +163,7 @@ private:
     bool lockout_armed_ = false;
     uint32_t lockout_until_ms_ = 0;
     uint8_t consumed_presses_ = 0;  // bit per AlertType: press arrived during an alert
+    bool awaiting_release_ = false;  // pending window not yet restarted by T13
 };
 
 const char* toString(State state);

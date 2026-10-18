@@ -7,6 +7,7 @@
 #include "diagnostics.h"
 #include "emergency_controller.h"
 #include "event_queue.h"
+#include "status_led.h"
 
 #ifdef USE_SIMULATED_LINK
 #include "simulated_link.h"
@@ -31,7 +32,8 @@ ButtonInput g_buttons(g_events);
 CommandConsole g_console(g_events, nullptr, g_buttons);
 #endif
 
-EmergencyController g_controller(g_events, g_link);
+StatusLed g_led;
+EmergencyController g_controller(g_events, g_link, g_led);
 
 }  // namespace
 
