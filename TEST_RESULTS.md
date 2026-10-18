@@ -153,3 +153,31 @@ Limits:
 Limitations confirmed here:
 - Alert state lives in RAM only. A reset (button, brown-out, crash) during PENDING/CONFIRMED/RETRY drops the alert silently. Candidate mitigations, not implemented: persist the active alert across reset, signal a lost alert at boot, add a boot/session counter to the protocol (protocol change, needs approval).
 - Alert IDs restart at 1 after reset, so host dedup must be scoped per connection/boot (README).
+
+## T9 — V1.5 regression: BLE bench with a real host, serial bench (2026-10-17)
+
+| Field | Value |
+|---|---|
+| Setup | Same board, firmware `1b5c10a`. BLE: production build (image SHA-256 `b93f111d…a19a`), Mac + bleak as BLE central (`tests/bench/ble_bench.py`), button events injected over serial. Serial: `nano33ble_sim` build, `tests/bench/bench.py`; the production build was flashed back afterwards and produced the same image hash. Console `hold` posts PRESSED+HELD with no release, so these runs exercise the never-released path: the window is timed from HELD (`PENDING_MS = 5000`). Runs `20261017-211515` (BLE full suite), `20261017-211750` (BLE happy path ×20), `20261017-212210` (serial suite). |
+| Expected | Same scenarios and pass criteria as T5 and T2b, with the 5 s window. |
+| Observed | BLE full suite 7/7 PASS, happy path 20/20 PASS, serial suite 8/8 PASS. |
+| Result | PASS |
+
+BLE happy path (n=20, run `20261017-211750`; p95 nearest-rank):
+
+| Metric | min | median | p95 | max |
+|---|---|---|---|---|
+| Event queueing latency, device (ms) | 0 | 1 | 6 | 7 |
+| Pending window, device (ms, nominal 5000) | 5000 | 5007 | 5011 | 5012 |
+| CONFIRMED log line → BLE notification at host (ms) | 3.9 | 27.7 | 31.8 | 32.8 |
+| BLE ack write → ACKNOWLEDGED log line at host (ms) | 29.5 | 36.9 | 42.3 | 42.9 |
+
+BLE failure paths (single runs, `20261017-211515`): no host, hold → ERROR 9017 ms (nominal 9000 = 5000 + 2 × 2000); ack timeout 5001 ms; retry → acknowledged 2051 ms; host disconnect → device RETRY 74 ms (host clock); disconnect → alert redelivered 4109 ms, on attempt 3 of 3; malformed acks rejected; cancel after send → CANCEL notify 30 ms after the console `press` command (host clock).
+
+Serial suite (`20261017-212210`): pending window 5001 ms, ack display 3001 ms, cancel display 1001 ms, ack timeout 5001 ms (×3), retry backoff 2000 ms (×2), hold → ERROR with link down 9004 ms (nominal 9000), link drop → resent 2003 ms; ping RTT 1.86–2.02 ms (n=20).
+
+Notes:
+- Compared with T5, latencies are unchanged within run-to-run spread. The controller change in V1.5 (drain the queue before the Tick) showed no regression; the race it closes was not provoked here.
+- Redelivery after disconnect again landed on the last attempt (3 of 3), as in one T5 run. The retry budget after a disconnect is tight; "retry immediately on LinkUp" remains a candidate improvement.
+- An earlier attempt (`20261017-211349`) is invalid and not counted: an operator's `button_watch.py` was still holding the serial port, so the two programs split the serial input and the bench missed lines, then failed at a reboot.
+- iPhone not tested; the Mac stands in for the gateway.

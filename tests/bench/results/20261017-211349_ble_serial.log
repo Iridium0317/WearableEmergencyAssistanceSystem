@@ -1,0 +1,227 @@
+18759.508246	>>> reboot
+18759.509698	140208 CMD_OK cmd=reboot
+18760.725613	>>> ping
+18760.728132	597 CMD_OK cmd=ping
+18760.817274	686 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18760.821938	691 CMD_OK cmd=btn
+18760.888746	758 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+18760.889012	758 SM state=IDLE transport=BLE link_ok=1
+18761.129523	998 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18761.129754	999 CMD_OK cmd=btn
+18761.436363	1305 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18761.436536	1306 CMD_OK cmd=btn
+18761.743483	1612 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18761.743624	1613 CMD_OK cmd=btn
+18762.053274	1922 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18762.053391	1923 CMD_OK cmd=btn
+18762.359187	2228 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18762.359423	2229 CMD_OK cmd=btn
+18762.670533	2539 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18762.670687	2540 CMD_OK cmd=btn
+18762.975436	2844 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18762.975576	2845 CMD_OK cmd=btn
+18763.288232	3157 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18763.288784	3158 CMD_OK cmd=btn
+18763.590341	3459 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18763.590417	3460 CMD_OK cmd=btn
+18763.739883	3609 BLE ev=connected peer=cc:08:fa:72:17:da
+18763.902444	3771 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18763.902585	3772 CMD_OK cmd=btn
+18764.205322	4074 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18764.205439	4075 CMD_OK cmd=btn
+18764.511361	4380 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18764.511441	4381 CMD_OK cmd=btn
+18764.815255	4684 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18764.815485	4685 CMD_OK cmd=btn
+18764.871294	4740 BLE ev=subscribed char=alert
+18764.933315	4802 BLE ev=subscribed char=status
+18764.954869	>>> hold 2
+18764.956346	4825 CMD_OK cmd=hold alert=MEDICAL
+18764.956877	4826 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=MEDICAL id=1 attempt=0 lat_ms=1 reason=-
+18765.120255	4989 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18765.120534	4990 CMD_OK cmd=btn
+18765.131907	5001 HB q_dropped=0
+18765.427318	5296 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18765.427500	5297 CMD_OK cmd=btn
+18765.737227	5606 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18765.740434	5610 CMD_OK cmd=btn
+18766.047394	5916 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18766.047635	5917 CMD_OK cmd=btn
+18766.356222	6225 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18766.356557	6226 CMD_OK cmd=btn
+18766.666287	6535 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18766.666494	6536 CMD_OK cmd=btn
+18766.973432	6842 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18766.973641	6843 CMD_OK cmd=btn
+18767.282317	7151 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18767.282570	7152 CMD_OK cmd=btn
+18767.599931	7463 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18767.600340	7464 CMD_OK cmd=btn
+18767.900316	7769 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18767.900579	7770 CMD_OK cmd=btn
+18768.210446	8079 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18768.210644	8080 CMD_OK cmd=btn
+18768.513399	8382 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18768.513606	8383 CMD_OK cmd=btn
+18768.823228	8692 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18768.823477	8693 CMD_OK cmd=btn
+18769.130189	8999 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18769.134872	9004 CMD_OK cmd=btn
+18769.436229	9305 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18769.436893	9306 CMD_OK cmd=btn
+18769.745343	9614 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18769.745587	9615 CMD_OK cmd=btn
+18769.963362	9832 SM from=PENDING to=CONFIRMED ev=TICK alert=MEDICAL id=1 attempt=1 lat_ms=0 reason=-
+18769.970207	9833 BLE_TX msg=ALERT id=1 alert=MEDICAL attempt=1 ok=1 reason=-
+18769.970558	9840 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=MEDICAL id=1 attempt=1 lat_ms=8 reason=-
+18770.050343	999919 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18770.050486	9920 CMD_OK cmd=btn
+18770.140301	10003 HB q_dropped=0
+18770.350195	10219 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18770.352402	10222 CMD_OK cmd=btn
+18770.656252	10525 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18770.657412	10527 CMD_OK cmd=btn
+18770.963191	10832 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18770.963433	10833 CMD_OK cmd=btn
+18771.062035	>>> reboot
+18771.063122	10932 CMD_OK cmd=reboot
+18772.277465	>>> ping
+18772.279583	595 CMD_OK cmd=ping
+18772.341773	657 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18772.342308	658 CMD_OK cmd=btn
+18772.442021	758 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+18772.442345	>>> hold 1
+18772.444451	758 SM state=IDLE transport=BLE link_ok=1
+18772.444682	761 CMD_OK cmd=hold alert=EMERGENCY
+18772.452452	761 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=2 reason=-
+18772.647606	963 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18772.648273	964 CMD_OK cmd=btn
+18772.953713	1269 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18772.954285	1270 CMD_OK cmd=btn
+18773.256603	1572 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18773.257265	1573 CMD_OK cmd=btn
+18773.561650	1877 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18773.562289	1878 CMD_OK cmd=btn
+18773.870595	2186 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18773.871289	2187 CMD_OK cmd=btn
+18774.178571	2494 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18774.179262	2495 CMD_OK cmd=btn
+18774.486752	2802 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18774.487287	2803 CMD_OK cmd=btn
+18774.794744	3110 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18774.795245	3111 CMD_OK cmd=btn
+18775.103539	3419 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18775.104271	3420 CMD_OK cmd=btn
+18775.410739	3726 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18775.411247	3727 CMD_OK cmd=btn
+18775.719089	4032 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18775.719192	4033 CMD_OK cmd=btn
+18776.024656	4340 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18776.025872	4342 CMD_OK cmd=btn
+18776.333627	4649 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18776.334239	4650 CMD_OK cmd=btn
+18776.639632	4955 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18776.644271	4960 CMD_OK cmd=btn
+18776.684660	5000 HB q_dropped=0
+18776.950524	5266 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18776.951263	5267 CMD_OK cmd=btn
+18777.252832	5568 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18777.253102	5569 CMD_OK cmd=btn
+18777.450687	5766 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+18777.451216	5767 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=1 ok=0 reason=not_connected
+18777.451791	5767 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=1 lat_ms=1 reason=send_failed
+18777.557565	5873 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18777.558242	5874 CMD_OK cmd=btn
+18777.864622	6180 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18777.865260	6181 CMD_OK cmd=btn
+18778.169718	6485 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18778.174258	6490 CMD_OK cmd=btn
+18778.477499	6793 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18778.482256	6798 CMD_OK cmd=btn
+18778.786582	7102 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18778.787188	7103 CMD_OK cmd=btn
+18779.095676	7411 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18779.096193	7412 CMD_OK cmd=btn
+18779.404779	7721 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18779.405022	7721 CMD_OK cmd=btn
+18779.452675	7768 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+18779.453197	7769 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=2 ok=0 reason=not_connected
+18779.453777	7769 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=2 lat_ms=1 reason=send_failed
+18779.712624	8028 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18779.713188	8029 CMD_OK cmd=btn
+18780.021497	8337 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18780.026280	8342 CMD_OK cmd=btn
+18780.327432	8643 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18780.332236	8648 CMD_OK cmd=btn
+18780.631529	8947 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18780.633758	8950 CMD_OK cmd=btn
+18780.937766	9253 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18780.937966	9254 CMD_OK cmd=btn
+18781.237596	9553 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18781.242415	9558 CMD_OK cmd=btn
+18781.453685	9769 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+18781.455236	9770 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=3 ok=0 reason=not_connected
+18781.455805	9772 SM from=CONFIRMED to=ERROR ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=3 lat_ms=2 reason=send_failed
+18781.456045	>>> reboot
+18781.457345	9773 CMD_OK cmd=reboot
+18782.873847	>>> ping
+18782.875953	797 CMD_OK cmd=ping
+18782.987433	909 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+18782.988848	909 SM state=IDLE transport=BLE link_ok=1
+18783.142922	1064 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18783.143172	1065 CMD_OK cmd=btn
+18783.454958	1376 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18783.456181	1378 CMD_OK cmd=btn
+18783.767699	1688 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18783.772134	1691 CMD_OK cmd=btn
+18784.068961	1990 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18784.071187	1993 CMD_OK cmd=btn
+18784.379086	2300 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18784.379264	2301 CMD_OK cmd=btn
+18784.589078	2511 BLE ev=connected peer=cc:08:fa:72:17:da
+18784.684096	2605 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18784.684302	2606 CMD_OK cmd=btn
+18784.991040	2912 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18784.995671	2917 CMD_OK cmd=btn
+18785.294012	3215 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18785.294641	3216 CMD_OK cmd=btn
+18785.604448	3525 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18785.604540	3526 CMD_OK cmd=btn
+18785.774454	>>> hold 1
+18785.778096	3700 CMD_OK cmd=hold alert=EMERGENCY
+18785.781809	3700 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=0 reason=-
+18785.910062	3831 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18785.910276	3832 CMD_OK cmd=btn
+18786.219073	4140 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18786.219275	4141 CMD_OK cmd=btn
+18786.528128	4449 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18786.528357	4450 CMD_OK cmd=btn
+18786.836034	4757 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18786.836304	4758 CMD_OK cmd=btn
+18787.079941	5001 HB q_dropped=0
+18787.138164	5059 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18787.138425	5060 CMD_OK cmd=btn
+18787.447985	5369 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18787.448243	5370 CMD_OK cmd=btn
+18787.755863	5677 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18787.757165	5679 CMD_OK cmd=btn
+18788.064324	5985 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18788.064584	5986 CMD_OK cmd=btn
+18788.370134	6291 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18788.370620	6292 CMD_OK cmd=btn
+18788.676941	6598 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18788.678204	6600 CMD_OK cmd=btn
+18788.986052	6907 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18788.986219	6908 CMD_OK cmd=btn
+18789.295063	7216 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18789.295221	7217 CMD_OK cmd=btn
+18789.602014	7523 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18789.603209	7525 CMD_OK cmd=btn
+18789.909995	7831 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18789.911179	7833 CMD_OK cmd=btn
+18790.219839	8141 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18790.221064	8143 CMD_OK cmd=btn
+18790.531935	8453 BTN_DIAG started=1 d2=1 d3=1 d4=1 isr_edges=0 overflows=0
+18790.532226	8454 CMD_OK cmd=btn
+18791.789448	>>> reboot
+18793.791549	>>> reboot

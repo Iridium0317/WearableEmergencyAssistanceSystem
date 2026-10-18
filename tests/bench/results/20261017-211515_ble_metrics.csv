@@ -1,0 +1,12 @@
+run_id,scenario,metric,value,unit
+20261017-211515,happy_path,button_event_queue_latency_dev_ms,1,ms
+20261017-211515,happy_path,pending_window_dev_ms,5010,ms
+20261017-211515,happy_path,confirmed_log_to_notify_host_ms,28.42,ms
+20261017-211515,happy_path,ack_write_to_acknowledged_host_ms,37.38,ms
+20261017-211515,no_host,hold_to_error_no_host_dev_ms,9017,ms
+20261017-211515,ack_timeout_then_recover,ack_timeout_dev_ms,5001,ms
+20261017-211515,ack_timeout_then_recover,retry_to_acknowledged_dev_ms,2051,ms
+20261017-211515,disconnect_mid_alert,host_disconnect_to_retry_host_ms,74.44,ms
+20261017-211515,disconnect_mid_alert,disconnect_to_redelivered_host_ms,4108.99,ms
+20261017-211515,disconnect_mid_alert,redelivered_on_attempt,3,n
+20261017-211515,cancel_after_send,press_to_cancel_notify_host_ms,30.34,ms
