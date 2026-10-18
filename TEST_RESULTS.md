@@ -181,3 +181,18 @@ Notes:
 - Redelivery after disconnect again landed on the last attempt (3 of 3), as in one T5 run. The retry budget after a disconnect is tight; "retry immediately on LinkUp" remains a candidate improvement.
 - An earlier attempt (`20261017-211349`) is invalid and not counted: an operator's `button_watch.py` was still holding the serial port, so the two programs split the serial input and the bench missed lines, then failed at a reboot.
 - iPhone not tested; the Mac stands in for the gateway.
+
+## T10 — Retry on reconnect: no attempts spent while the host is not ready, 20 s delivery budget (2026-10-17)
+
+| Field | Value |
+|---|---|
+| Setup | Same board. Firmware: V1.5 plus the retry change (production image SHA-256 `d9f03c26…5c81`). Host tests `pio test -e native`; BLE bench (Mac + bleak); serial bench on the sim build. Runs `20261017-213113` (intermediate version, see below), `20261017-220057` (disconnect ×10), `20261017-220343` (BLE full suite), `20261017-220550` (serial suite). |
+| Change | LinkUp is posted when the host subscribes to Alert (was: on connect). The transport checks connected+subscribed before every send and reports NotReady without transmitting; a NotReady probe refunds the attempt. RETRY resends immediately on LinkUp. New `delivery_timeout_ms = 20000` from the first CONFIRMED ends an unacknowledged alert in ERROR (`delivery_timeout`). Packet format, UUIDs and state values unchanged. |
+| Expected | A disconnect mid-alert is redelivered as attempt 2 once the host is back; no host or no subscription → nothing transmitted, `attempt=0`, ERROR after 20 s; three unacked real sends still end by the attempt limit (19 s < 20 s); no other regression. |
+| Observed | Host tests 85/85. Disconnect mid-alert 10/10 PASS, all redelivered on attempt 2, disconnect → redelivered 1528–3749 ms (avg 2357, host clock). BLE full suite 7/7: no host → ERROR 25014 ms after PENDING (5000 + 20000), `attempt=0`; not subscribed → ERROR `delivery_timeout`, no notification delivered; ack timeout path unchanged (5000 ms). Serial suite 8/8: link down → first CONFIRMED to ERROR 20000 ms with `attempt=0`; link drop → resent 5 ms after `link up`; ack timeouts 5001 ms, backoffs 2000 ms, three unacked attempts end `ack_timeout`. |
+| Result | PASS |
+
+Notes:
+- Intermediate version (resend on LinkUp only, run `20261017-213113`): 8/10. The resend itself worked (2–8 ms after subscription), but backoff ticks that fell between reconnect and subscription were still spent with `not_subscribed`; in the 2 failures attempt 3 was spent 550 ms before the subscription and 55 ms before the reconnect. That led to the not-ready refund and the time budget.
+- User-visible trade-off: with no phone at all, the red ERROR light now comes 20 s after the first send instead of about 4 s (9 s after the hold instead of 25 s). 20 s is a prototype value chosen to cover the ~5 s reconnects seen here with margin; it is not validated, and iPhone background reconnects may need a different value.
+- After the serial bench, flashing the production build back failed twice ("No device found" from the bootloader after the 1200-baud touch). A manual double-tap reset by the operator recovered it; the image was then written and verified with bossac and the console confirmed the production build (`link` → `not_simulated`).

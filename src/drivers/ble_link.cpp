@@ -97,18 +97,22 @@ const char* BleLink::unavailableReason() const {
     return nullptr;
 }
 
-bool BleLink::sendAlert(uint16_t alert_id, AlertType type, uint8_t attempt) {
+SendResult BleLink::sendAlert(uint16_t alert_id, AlertType type, uint8_t attempt) {
+    // Readiness is checked here, at send time, not trusted from an earlier
+    // LinkUp: the host may have unsubscribed or dropped since.
     const char* reason = unavailableReason();
-    if (reason == nullptr) {
+    SendResult result = reason == nullptr ? SendResult::Sent : SendResult::NotReady;
+    if (result == SendResult::Sent) {
         uint8_t packet[protocol::kAlertPacketSize];
         protocol::encodeAlert(packet, alert_id, type, attempt);
         if (g_alert_char.writeValue(packet, sizeof(packet)) <= 0) {
             reason = "notify_failed";
+            result = SendResult::Failed;
         }
     }
     diag::log("BLE_TX", "msg=ALERT id=%u alert=%s attempt=%u ok=%d reason=%s", alert_id,
-              toString(type), attempt, reason == nullptr ? 1 : 0, reason ? reason : "-");
-    return reason == nullptr;
+              toString(type), attempt, result == SendResult::Sent ? 1 : 0, reason ? reason : "-");
+    return result;
 }
 
 bool BleLink::sendCancel(uint16_t alert_id, AlertType type) {
@@ -138,7 +142,8 @@ void BleLink::publishState(State state, uint16_t alert_id, AlertType type, uint8
 void BleLink::handleConnected(const char* address) {
     connected_ = true;
     diag::log("BLE", "ev=connected peer=%s", address);
-    post(EventType::LinkUp);
+    // Not LinkUp yet: until the host subscribes to Alert, a send would fail
+    // (not_subscribed) and waste an attempt of the retry budget.
 }
 
 void BleLink::handleDisconnected(const char* address) {
@@ -149,6 +154,9 @@ void BleLink::handleDisconnected(const char* address) {
 
 void BleLink::handleSubscription(const char* characteristic, bool subscribed) {
     diag::log("BLE", "ev=%s char=%s", subscribed ? "subscribed" : "unsubscribed", characteristic);
+    if (subscribed && strcmp(characteristic, "alert") == 0) {
+        post(EventType::LinkUp);  // the host can receive alerts now (T14 resends at once)
+    }
 }
 
 void BleLink::handleAckWrite(const uint8_t* data, int length) {

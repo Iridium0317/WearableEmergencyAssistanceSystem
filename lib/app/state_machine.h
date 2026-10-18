@@ -12,8 +12,12 @@
 //  T3  PENDING                      Tick >= deadline   CONFIRMED     SendAlert (attempt 1)
 //  T4  CONFIRMED                    AlertSendOk(id)    ALERT_SENT    start ack timeout
 //  T5  CONFIRMED                    AlertSendFailed    RETRY|ERROR   ERROR once attempts exhausted
+//  T5b CONFIRMED                    AlertSendNotReady  RETRY         nothing sent: attempt refunded, wait for
+//                                                                    LinkUp (T14) or the next backoff probe
 //  T6  CONFIRMED|ALERT_SENT|RETRY   HostAck(id)        ACKNOWLEDGED  late acks still count: the host has it
 //  T7  ALERT_SENT                   Tick >= deadline   RETRY|ERROR   ack timeout
+//  T7b ALERT_SENT|RETRY             Tick >= delivery   ERROR         delivery_timeout: no ack within
+//                                                                    delivery_timeout_ms of the first send
 //  T8  ALERT_SENT                   LinkDown           RETRY|ERROR   ack can no longer arrive
 //  T9  RETRY                        Tick >= deadline   CONFIRMED     SendAlert (attempt n+1) after backoff
 //  T10 CONFIRMED|ALERT_SENT|RETRY   ButtonPressed      CANCELLED     SendCancel (host may hold the alert)
@@ -21,6 +25,8 @@
 //  T12 ACKNOWLEDGED|CANCELLED|ERROR ButtonHeld(type)   PENDING       never drop a new alert
 //  T13 PENDING                      ButtonReleased     (PENDING)     own button's first release restarts
 //                                                                    the window (no state change)
+//  T14 RETRY                        LinkUp             CONFIRMED     SendAlert (attempt n+1) now: the host
+//                                                                    is back, don't wait out the backoff
 //
 // Pending window start: with pending_from_release, the window is timed from
 // the first debounced release of the alert's own button, so a user who keeps
@@ -45,6 +51,12 @@
 // cancelling (T2/T10). A shaky finger slipping off and back on is a real
 // contact change that debouncing cannot filter (hardware showed a single clean
 // 48 ms open). Other buttons cancel at any time.
+//
+// Delivery budget: at most max_attempts real transmissions (sent, or tried
+// and failed in the transport) and at most delivery_timeout_ms from the first
+// CONFIRMED, whichever ends first. Probes that find the host not ready send
+// nothing and cost no attempt, but the clock keeps running, so an alert with
+// no reachable host still ends in ERROR.
 //
 // ERROR is deliberately sticky (only T12 leaves it): an undelivered emergency
 // must stay visible to the user rather than silently reverting to IDLE. A late
@@ -99,6 +111,7 @@ struct Timing {
     uint32_t cancel_display_ms; // how long CANCELLED is shown before IDLE
     uint32_t cancel_lockout_ms; // own-button re-press ignored this long after its release
     bool pending_from_release;  // time the pending window from the own button's release (T13)
+    uint32_t delivery_timeout_ms;  // first send -> ERROR if still unacknowledged (T7b)
 };
 
 // Prototype defaults, not medically or ergonomically validated.
@@ -111,6 +124,7 @@ constexpr Timing kDefaultTiming = {
     1000,  // cancel_display_ms
     300,   // cancel_lockout_ms
     true,  // pending_from_release
+    20000, // delivery_timeout_ms (covers ~5 s observed BLE reconnects with margin)
 };
 
 class StateMachine {
@@ -136,6 +150,8 @@ private:
     Result startAlert(const Event& event);
     Result sendAttempt(const Event& event);
     Result failAttempt(const Event& event, const char* reason);
+    Result deferAttempt(const Event& event);
+    bool deliveryExpired(uint32_t now) const;
     Result acknowledge(const Event& event);
     Result cancelInFlight(const Event& event);
     Result noteRelease(const Event& event);
@@ -164,6 +180,8 @@ private:
     uint32_t lockout_until_ms_ = 0;
     uint8_t consumed_presses_ = 0;  // bit per AlertType: press arrived during an alert
     bool awaiting_release_ = false;  // pending window not yet restarted by T13
+    bool delivery_armed_ = false;
+    uint32_t delivery_deadline_ms_ = 0;
 };
 
 const char* toString(State state);

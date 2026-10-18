@@ -96,11 +96,13 @@ void EmergencyController::execute(Action action, uint32_t now) {
         case Action::None:
             return;
         case Action::SendAlert: {
-            const bool ok = transport_.sendAlert(id, machine_.alertType(), machine_.attempts());
+            const SendResult sent = transport_.sendAlert(id, machine_.alertType(), machine_.attempts());
+            const EventType result = sent == SendResult::Sent       ? EventType::AlertSendOk
+                                     : sent == SendResult::NotReady ? EventType::AlertSendNotReady
+                                                                    : EventType::AlertSendFailed;
             // Fed straight back in rather than queued: the result belongs to
             // this transition and must not be reordered behind other events.
-            dispatch(Event{ok ? EventType::AlertSendOk : EventType::AlertSendFailed, now,
-                           AlertType::None, id});
+            dispatch(Event{result, now, AlertType::None, id});
             return;
         }
         case Action::SendCancel: {

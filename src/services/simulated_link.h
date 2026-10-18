@@ -9,7 +9,7 @@
 
 class SimulatedLink : public AlertTransport {
 public:
-    bool sendAlert(uint16_t alert_id, AlertType type, uint8_t attempt) override;
+    SendResult sendAlert(uint16_t alert_id, AlertType type, uint8_t attempt) override;
     bool sendCancel(uint16_t alert_id, AlertType type) override;
     const char* name() const override { return "SIM"; }
 

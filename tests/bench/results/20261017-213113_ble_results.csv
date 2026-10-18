@@ -1,0 +1,11 @@
+run_id,scenario,result,duration_s,detail
+20261017-213113,disconnect_mid_alert,PASS,13.28,
+20261017-213113,disconnect_mid_alert,PASS,13.83,
+20261017-213113,disconnect_mid_alert,PASS,11.76,
+20261017-213113,disconnect_mid_alert,PASS,11.13,
+20261017-213113,disconnect_mid_alert,PASS,11.40,
+20261017-213113,disconnect_mid_alert,FAIL,19.84,no alert notification received
+20261017-213113,disconnect_mid_alert,PASS,11.12,
+20261017-213113,disconnect_mid_alert,FAIL,23.65,no alert notification received
+20261017-213113,disconnect_mid_alert,PASS,17.09,
+20261017-213113,disconnect_mid_alert,PASS,10.17,

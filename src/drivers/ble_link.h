@@ -19,7 +19,7 @@ public:
 
     bool begin() override;
     void poll() override;
-    bool sendAlert(uint16_t alert_id, AlertType type, uint8_t attempt) override;
+    SendResult sendAlert(uint16_t alert_id, AlertType type, uint8_t attempt) override;
     bool sendCancel(uint16_t alert_id, AlertType type) override;
     void publishState(State state, uint16_t alert_id, AlertType type, uint8_t attempts) override;
     const char* name() const override { return "BLE"; }

@@ -27,7 +27,8 @@ from pathlib import Path
 
 from bleak import BleakClient, BleakScanner
 
-from bench import (ACK_TIMEOUT_MS, MAX_ATTEMPTS, PENDING_MS, RETRY_BACKOFF_MS, BenchFailure, Device, Metrics,
+from bench import (ACK_TIMEOUT_MS, DELIVERY_TIMEOUT_MS, PENDING_MS, RETRY_BACKOFF_MS, BenchFailure,
+                   Device, Metrics,
                    check_window, event_ms, find_port, ms, print_summary)
 
 DEVICE_NAME = "WEA-Nano33"
@@ -139,22 +140,27 @@ async def scenario_happy_path(dev: Device, host: Host, m: Metrics) -> None:
 async def scenario_no_host(dev: Device, host: Host, m: Metrics) -> None:
     dev.send("hold 1")
     pend = await expect(dev, "SM", 1.0, to="PENDING")
-    for _ in range(MAX_ATTEMPTS):
-        await expect(dev, "BLE_TX", PENDING_MS / 1000 + 1, msg="ALERT", ok="0", reason="not_connected")
-    err = await expect(dev, "SM", 1.0, to="ERROR", reason="send_failed")
-    expected = PENDING_MS + (MAX_ATTEMPTS - 1) * RETRY_BACKOFF_MS
-    check_window("hold_to_error_no_host_dev_ms", err.dev_ms - event_ms(pend), expected, m)
+    await expect(dev, "BLE_TX", PENDING_MS / 1000 + 1, msg="ALERT", ok="0", reason="not_connected")
+    retry = await expect(dev, "SM", 1.0, to="RETRY", reason="link_not_ready")
+    if retry.fields["attempt"] != "0":
+        raise BenchFailure(f"not-ready probe used an attempt: {retry.raw}")
+    err = await expect(dev, "SM", DELIVERY_TIMEOUT_MS / 1000 + 1, to="ERROR", reason="delivery_timeout")
+    if err.fields["attempt"] != "0":
+        raise BenchFailure(f"attempts used with no host: {err.raw}")
+    check_window("hold_to_error_no_host_dev_ms", err.dev_ms - event_ms(pend), PENDING_MS + DELIVERY_TIMEOUT_MS, m)
 
 
 async def scenario_not_subscribed(dev: Device, host: Host, m: Metrics) -> None:
     # Connected but no CCCD subscription: ArduinoBLE would "succeed" silently,
-    # so the firmware must detect this itself and treat it as a failed send.
+    # so the firmware must detect this itself and treat it as not ready.
     await host.connect(subscribe=False)
     await expect(dev, "BLE", 5.0, ev="connected")
     dev.send("hold 1")
     await expect(dev, "SM", 1.0, to="PENDING")
     await expect(dev, "BLE_TX", PENDING_MS / 1000 + 1, msg="ALERT", ok="0", reason="not_subscribed")
-    await expect(dev, "SM", (MAX_ATTEMPTS * RETRY_BACKOFF_MS) / 1000 + 1, to="ERROR", reason="send_failed")
+    err = await expect(dev, "SM", DELIVERY_TIMEOUT_MS / 1000 + 1, to="ERROR", reason="delivery_timeout")
+    if err.fields["attempt"] != "0":
+        raise BenchFailure(f"attempts used while not subscribed: {err.raw}")
     if not host.alerts.empty():
         raise BenchFailure("notification delivered without a subscription")
 
@@ -188,12 +194,12 @@ async def scenario_disconnect_mid_alert(dev: Device, host: Host, m: Metrics) -> 
     retry = await expect(dev, "SM", 5.0, to="RETRY", reason="link_down")
     m.add("host_disconnect_to_retry_host_ms", ms(t_disc, retry.host_t))
 
-    # Reconnect and re-subscribe (the device clears CCCDs on disconnect). The
-    # next attempt may land before reconnection finishes and fail; any of the
-    # remaining bounded attempts reaching us counts as recovery.
+    # Reconnect and re-subscribe (the device clears CCCDs on disconnect). Probes
+    # while the host is not connected+subscribed cost no attempt, and the
+    # subscription itself triggers the resend, so it must arrive as attempt 2.
     await host.connect()
-    t_redelivered, again = await host.next_alert((MAX_ATTEMPTS - 1) * RETRY_BACKOFF_MS / 1000 + 3)
-    if again["id"] != first["id"] or again["attempt"] < 2:
+    t_redelivered, again = await host.next_alert(DELIVERY_TIMEOUT_MS / 1000)
+    if again["id"] != first["id"] or again["attempt"] != 2:
         raise BenchFailure(f"unexpected redelivery {again}")
     m.add("disconnect_to_redelivered_host_ms", ms(t_disc, t_redelivered))
     m.add("redelivered_on_attempt", again["attempt"], "n")

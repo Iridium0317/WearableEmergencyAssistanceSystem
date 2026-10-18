@@ -40,7 +40,11 @@ Advertised name `WEA-Nano33`. No pairing (prototype only).
 
 Notifications are not delivery-confirmed by BLE, so an alert counts as
 delivered only when the host writes an Ack. Unacknowledged alerts are retried
-(3 attempts max, 5 s ack timeout, 2 s backoff) and then end in a sticky ERROR.
+(3 real transmissions max, 5 s ack timeout, 2 s backoff) within a 20 s delivery
+budget from the first send, and then end in a sticky ERROR. Before every send
+the firmware checks that the host is connected **and** subscribed to Alert; if
+not, nothing is transmitted and no attempt is used. The moment the host
+subscribes, a pending retry is sent without waiting for the backoff.
 
 Requirements and limits the host (iPhone gateway) must respect:
 

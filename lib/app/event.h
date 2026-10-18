@@ -18,9 +18,10 @@ enum class EventType : uint8_t {
     ButtonReleased,   // debounced release edge; arms the cancel lockout
     Tick,             // periodic time source for timeouts
     AlertSendOk,      // transport accepted the alert for alert_id
-    AlertSendFailed,  // transport could not send alert_id
+    AlertSendFailed,  // transport tried to send alert_id and failed (counts as an attempt)
+    AlertSendNotReady,  // nothing sent: host not connected+subscribed (attempt refunded)
     HostAck,          // host acknowledged alert_id
-    LinkUp,           // host link (BLE) connected
+    LinkUp,           // host can receive alerts (BLE: connected and subscribed to Alert)
     LinkDown,         // host link (BLE) disconnected
 };
 
@@ -28,7 +29,7 @@ struct Event {
     EventType type;
     uint32_t timestamp_ms;
     AlertType alert;    // ButtonPressed / ButtonHeld / ButtonReleased
-    uint16_t alert_id;  // AlertSendOk / AlertSendFailed / HostAck
+    uint16_t alert_id;  // AlertSendOk / AlertSendFailed / AlertSendNotReady / HostAck
 };
 
 const char* toString(AlertType type);

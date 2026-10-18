@@ -24,7 +24,8 @@ Result StateMachine::onIdle(const Event& event) {
         case EventType::ButtonHeld: return startAlert(event);  // T1
         case EventType::HostAck: return reject("ack_without_alert");
         case EventType::AlertSendOk:
-        case EventType::AlertSendFailed: return reject("stale_send_result");
+        case EventType::AlertSendFailed:
+        case EventType::AlertSendNotReady: return reject("stale_send_result");
         default: return unchanged();
     }
 }
@@ -46,7 +47,8 @@ Result StateMachine::onPending(const Event& event) {
         case EventType::ButtonReleased: return onPendingRelease(event);  // T13
         case EventType::HostAck: return reject("ack_before_send");
         case EventType::AlertSendOk:
-        case EventType::AlertSendFailed: return reject("stale_send_result");
+        case EventType::AlertSendFailed:
+        case EventType::AlertSendNotReady: return reject("stale_send_result");
         default: return unchanged();
     }
 }
@@ -64,6 +66,11 @@ Result StateMachine::onConfirmed(const Event& event) {
                 return reject("stale_send_result");
             }
             return failAttempt(event, "send_failed");  // T5
+        case EventType::AlertSendNotReady:
+            if (event.alert_id != alert_id_) {
+                return reject("stale_send_result");
+            }
+            return deferAttempt(event);  // T5b
         case EventType::HostAck: return acknowledge(event);       // T6
         case EventType::ButtonPressed: return cancelInFlight(event);  // T10
         case EventType::ButtonHeld: return reject("alert_in_progress");
@@ -76,6 +83,10 @@ Result StateMachine::onAlertSent(const Event& event) {
     switch (event.type) {
         case EventType::HostAck: return acknowledge(event);  // T6
         case EventType::Tick:
+            if (deliveryExpired(event.timestamp_ms)) {
+                deadline_armed_ = false;
+                return transition(State::Error, Action::None, "delivery_timeout");  // T7b
+            }
             if (deadlineReached(event.timestamp_ms)) {
                 return failAttempt(event, "ack_timeout");  // T7
             }
@@ -85,7 +96,8 @@ Result StateMachine::onAlertSent(const Event& event) {
         case EventType::ButtonHeld: return reject("alert_in_progress");
         case EventType::ButtonReleased: return noteRelease(event);
         case EventType::AlertSendOk:
-        case EventType::AlertSendFailed: return reject("stale_send_result");
+        case EventType::AlertSendFailed:
+        case EventType::AlertSendNotReady: return reject("stale_send_result");
         default: return unchanged();
     }
 }
@@ -93,16 +105,22 @@ Result StateMachine::onAlertSent(const Event& event) {
 Result StateMachine::onRetry(const Event& event) {
     switch (event.type) {
         case EventType::Tick:
+            if (deliveryExpired(event.timestamp_ms)) {
+                deadline_armed_ = false;
+                return transition(State::Error, Action::None, "delivery_timeout");  // T7b
+            }
             if (deadlineReached(event.timestamp_ms)) {
                 return sendAttempt(event);  // T9
             }
             return unchanged();
         case EventType::HostAck: return acknowledge(event);            // T6
+        case EventType::LinkUp: return sendAttempt(event);            // T14
         case EventType::ButtonPressed: return cancelInFlight(event);  // T10
         case EventType::ButtonHeld: return reject("alert_in_progress");
         case EventType::ButtonReleased: return noteRelease(event);
         case EventType::AlertSendOk:
-        case EventType::AlertSendFailed: return reject("stale_send_result");
+        case EventType::AlertSendFailed:
+        case EventType::AlertSendNotReady: return reject("stale_send_result");
         default: return unchanged();
     }
 }
@@ -123,7 +141,8 @@ Result StateMachine::onDisplay(const Event& event) {
             }
             return reject("unexpected_ack");
         case EventType::AlertSendOk:
-        case EventType::AlertSendFailed: return reject("stale_send_result");
+        case EventType::AlertSendFailed:
+        case EventType::AlertSendNotReady: return reject("stale_send_result");
         default: return unchanged();
     }
 }
@@ -139,7 +158,8 @@ Result StateMachine::onError(const Event& event) {
             }
             return reject("unexpected_ack");
         case EventType::AlertSendOk:
-        case EventType::AlertSendFailed: return reject("stale_send_result");
+        case EventType::AlertSendFailed:
+        case EventType::AlertSendNotReady: return reject("stale_send_result");
         default: return unchanged();
     }
 }
@@ -159,6 +179,7 @@ Result StateMachine::startAlert(const Event& event) {
         alert_id_ = 1;  // 0 is reserved as "no alert" on the wire
     }
     attempts_ = 0;
+    delivery_armed_ = false;
     lockout_armed_ = false;
     awaiting_release_ = timing_.pending_from_release;
     setDeadline(event.timestamp_ms, timing_.pending_ms);  // fallback if never released
@@ -166,8 +187,11 @@ Result StateMachine::startAlert(const Event& event) {
 }
 
 Result StateMachine::sendAttempt(const Event& event) {
-    (void)event;
     ++attempts_;
+    if (!delivery_armed_) {
+        delivery_deadline_ms_ = event.timestamp_ms + timing_.delivery_timeout_ms;
+        delivery_armed_ = true;
+    }
     deadline_armed_ = false;  // CONFIRMED waits on the send result, not time
     return transition(State::Confirmed, Action::SendAlert);
 }
@@ -179,6 +203,16 @@ Result StateMachine::failAttempt(const Event& event, const char* reason) {
     }
     setDeadline(event.timestamp_ms, timing_.retry_backoff_ms);
     return transition(State::Retry, Action::None, reason);
+}
+
+Result StateMachine::deferAttempt(const Event& event) {
+    --attempts_;  // nothing went out, so this probe does not use the budget
+    setDeadline(event.timestamp_ms, timing_.retry_backoff_ms);
+    return transition(State::Retry, Action::None, "link_not_ready");
+}
+
+bool StateMachine::deliveryExpired(uint32_t now) const {
+    return delivery_armed_ && static_cast<int32_t>(now - delivery_deadline_ms_) >= 0;
 }
 
 Result StateMachine::acknowledge(const Event& event) {

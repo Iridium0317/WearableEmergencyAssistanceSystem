@@ -7,7 +7,7 @@ namespace {
 // The original scenarios use the earlier timing (3 s window timed from the
 // hold, no release restart) so their numbers stay readable. The 5 s
 // release-timed defaults have their own tests below.
-constexpr Timing kLegacy = {3000, 5000, 2000, 3, 3000, 1000, 300, false};
+constexpr Timing kLegacy = {3000, 5000, 2000, 3, 3000, 1000, 300, false, 20000};
 
 Event ev(EventType type, uint32_t t, AlertType alert = AlertType::None, uint16_t id = 0) {
     return Event{type, t, alert, id};
@@ -20,6 +20,9 @@ Event tick(uint32_t t) { return ev(EventType::Tick, t); }
 Event sendOk(uint32_t t, uint16_t id) { return ev(EventType::AlertSendOk, t, AlertType::None, id); }
 Event sendFail(uint32_t t, uint16_t id) { return ev(EventType::AlertSendFailed, t, AlertType::None, id); }
 Event ack(uint32_t t, uint16_t id) { return ev(EventType::HostAck, t, AlertType::None, id); }
+Event notReady(uint32_t t, uint16_t id) { return ev(EventType::AlertSendNotReady, t, AlertType::None, id); }
+Event linkUp(uint32_t t) { return ev(EventType::LinkUp, t); }
+Event linkDown(uint32_t t) { return ev(EventType::LinkDown, t); }
 
 void assertTransition(const Result& r, State from, State to, Action action) {
     TEST_ASSERT_EQUAL(Outcome::Transitioned, r.outcome);
@@ -501,6 +504,187 @@ void test_ack_timeout_and_backoff_survive_millis_wraparound_with_same_id() {
     assertTransition(sm.handle(ack(start + 10100, id)), State::AlertSent, State::Acknowledged, Action::None);
 }
 
+// --- resend on LinkUp (T14) -----------------------------------------------
+
+// Host back while waiting out the backoff: resend now, same id, one attempt used.
+void test_link_up_during_retry_resends_immediately() {
+    StateMachine sm(kLegacy);
+    driveToAlertSent(sm);  // attempt 1 sent at 3000
+    assertTransition(sm.handle(linkDown(3500)), State::AlertSent, State::Retry, Action::None);  // resend due 5500
+    assertTransition(sm.handle(linkUp(3800)), State::Retry, State::Confirmed, Action::SendAlert);
+    TEST_ASSERT_EQUAL_UINT8(2, sm.attempts());
+    TEST_ASSERT_EQUAL_UINT16(1, sm.alertId());
+    // The old backoff deadline must not fire a second send.
+    sm.handle(sendOk(3800, 1));
+    TEST_ASSERT_EQUAL(Outcome::Unchanged, sm.handle(tick(5500)).outcome);
+    TEST_ASSERT_EQUAL_STRING("ALERT_SENT", toString(sm.state()));
+    assertTransition(sm.handle(ack(3900, 1)), State::AlertSent, State::Acknowledged, Action::None);
+}
+
+// The attempt budget still bounds the alert: a failed last resend ends in ERROR.
+void test_link_up_resend_respects_attempt_budget() {
+    StateMachine sm(kLegacy);
+    sm.handle(held(0));
+    sm.handle(tick(3000));
+    sm.handle(sendFail(3000, 1));  // attempt 1
+    sm.handle(tick(5000));
+    sm.handle(sendFail(5000, 1));  // attempt 2
+    assertTransition(sm.handle(linkUp(5200)), State::Retry, State::Confirmed, Action::SendAlert);
+    TEST_ASSERT_EQUAL_UINT8(3, sm.attempts());
+    assertTransition(sm.handle(sendFail(5200, 1)), State::Confirmed, State::Error, Action::None);
+    TEST_ASSERT_EQUAL(Outcome::Unchanged, sm.handle(linkUp(6000)).outcome);  // ERROR stays sticky
+}
+
+// LinkUp means nothing outside RETRY.
+void test_link_up_outside_retry_is_ignored() {
+    StateMachine sm(kLegacy);
+    TEST_ASSERT_EQUAL(Outcome::Unchanged, sm.handle(linkUp(0)).outcome);  // IDLE
+    sm.handle(held(100));
+    TEST_ASSERT_EQUAL(Outcome::Unchanged, sm.handle(linkUp(200)).outcome);  // PENDING: no early send
+    TEST_ASSERT_EQUAL_STRING("PENDING", toString(sm.state()));
+    sm.handle(tick(3100));
+    sm.handle(sendOk(3100, 1));
+    TEST_ASSERT_EQUAL(Outcome::Unchanged, sm.handle(linkUp(3200)).outcome);  // ALERT_SENT: no duplicate
+    TEST_ASSERT_EQUAL_UINT8(1, sm.attempts());
+}
+
+// --- host not ready / delivery budget (T5b, T7b) ----------------------------
+
+// Host not connected+subscribed: nothing sent, no attempt used, probe again
+// after the backoff; the first real send then carries attempt 1.
+void test_not_ready_send_refunds_attempt() {
+    StateMachine sm(kLegacy);
+    sm.handle(held(0));
+    assertTransition(sm.handle(tick(3000)), State::Pending, State::Confirmed, Action::SendAlert);
+    const Result r = sm.handle(notReady(3000, 1));
+    assertTransition(r, State::Confirmed, State::Retry, Action::None);
+    TEST_ASSERT_EQUAL_STRING("link_not_ready", r.reason);
+    TEST_ASSERT_EQUAL_UINT8(0, sm.attempts());
+    TEST_ASSERT_EQUAL(Outcome::Unchanged, sm.handle(tick(4999)).outcome);
+    assertTransition(sm.handle(tick(5000)), State::Retry, State::Confirmed, Action::SendAlert);
+    TEST_ASSERT_EQUAL_UINT8(1, sm.attempts());
+    assertTransition(sm.handle(sendOk(5000, 1)), State::Confirmed, State::AlertSent, Action::None);
+}
+
+// Subscription completes between probes: send at once, still attempt 1.
+void test_link_up_after_not_ready_sends_first_attempt_now() {
+    StateMachine sm(kLegacy);
+    sm.handle(held(0));
+    sm.handle(tick(3000));
+    sm.handle(notReady(3000, 1));
+    assertTransition(sm.handle(linkUp(3700)), State::Retry, State::Confirmed, Action::SendAlert);
+    TEST_ASSERT_EQUAL_UINT8(1, sm.attempts());
+}
+
+// The bench failure this fixes: the host reconnects slowly and is still not
+// subscribed at every backoff probe. Not-ready probes must not use up the
+// budget, so the alert is still delivered once the host is back.
+void test_slow_reconnect_does_not_exhaust_attempts() {
+    StateMachine sm(kLegacy);
+    driveToAlertSent(sm);  // attempt 1 sent at 3000
+    sm.handle(linkDown(3100));  // RETRY, probe due 5100
+    for (uint32_t t = 5100; t <= 11100; t += 2000) {
+        assertTransition(sm.handle(tick(t)), State::Retry, State::Confirmed, Action::SendAlert);
+        sm.handle(notReady(t, 1));
+        TEST_ASSERT_EQUAL_UINT8(1, sm.attempts());
+    }
+    assertTransition(sm.handle(linkUp(12000)), State::Retry, State::Confirmed, Action::SendAlert);
+    TEST_ASSERT_EQUAL_UINT8(2, sm.attempts());
+    sm.handle(sendOk(12000, 1));
+    assertTransition(sm.handle(ack(12100, 1)), State::AlertSent, State::Acknowledged, Action::None);
+}
+
+// No host at all: probes never send, and the 20 s budget from the first
+// CONFIRMED ends the alert in ERROR with nothing transmitted.
+void test_no_host_ends_in_error_at_delivery_timeout() {
+    StateMachine sm(kLegacy);
+    sm.handle(held(0));
+    sm.handle(tick(3000));  // first CONFIRMED: budget ends at 23000
+    sm.handle(notReady(3000, 1));
+    for (uint32_t t = 5000; t < 23000; t += 2000) {
+        sm.handle(tick(t));
+        sm.handle(notReady(t, 1));
+    }
+    TEST_ASSERT_EQUAL(Outcome::Unchanged, sm.handle(tick(22999)).outcome);
+    const Result r = sm.handle(tick(23000));
+    assertTransition(r, State::Retry, State::Error, Action::None);
+    TEST_ASSERT_EQUAL_STRING("delivery_timeout", r.reason);
+    TEST_ASSERT_EQUAL_UINT8(0, sm.attempts());
+}
+
+// The budget also cuts an ack wait short: a send made late in the budget does
+// not get its full ack timeout.
+void test_delivery_timeout_cuts_ack_wait() {
+    StateMachine sm(kLegacy);
+    sm.handle(held(0));
+    sm.handle(tick(3000));
+    sm.handle(notReady(3000, 1));
+    sm.handle(linkUp(21000));
+    sm.handle(sendOk(21000, 1));  // ack would time out at 26000
+    TEST_ASSERT_EQUAL(Outcome::Unchanged, sm.handle(tick(22999)).outcome);
+    const Result r = sm.handle(tick(23000));
+    assertTransition(r, State::AlertSent, State::Error, Action::None);
+    TEST_ASSERT_EQUAL_STRING("delivery_timeout", r.reason);
+    // A late ack is still only logged, as for any ERROR.
+    TEST_ASSERT_EQUAL_STRING("late_ack_after_error", sm.handle(ack(23500, 1)).reason);
+}
+
+// Three real attempts with no ack (5 + 2 + 5 + 2 + 5 = 19 s) fit inside the
+// 20 s budget, so the attempt limit, not the clock, ends this case.
+void test_three_unacked_attempts_end_by_attempt_limit_within_budget() {
+    StateMachine sm(kLegacy);
+    driveToAlertSent(sm);  // 3000
+    sm.handle(tick(8000));  // ack timeout -> RETRY
+    sm.handle(tick(10000));
+    sm.handle(sendOk(10000, 1));
+    sm.handle(tick(15000));
+    sm.handle(tick(17000));
+    sm.handle(sendOk(17000, 1));
+    const Result r = sm.handle(tick(22000));
+    assertTransition(r, State::AlertSent, State::Error, Action::None);
+    TEST_ASSERT_EQUAL_STRING("ack_timeout", r.reason);
+    TEST_ASSERT_EQUAL_UINT8(3, sm.attempts());
+}
+
+void test_stale_not_ready_is_rejected() {
+    StateMachine sm(kLegacy);
+    assertRejected(sm.handle(notReady(0, 1)), sm, State::Idle);
+    driveToAlertSent(sm);
+    assertRejected(sm.handle(notReady(3100, 1)), sm, State::AlertSent);
+    sm.handle(linkDown(3200));
+    sm.handle(tick(5200));  // CONFIRMED, attempt 2
+    assertRejected(sm.handle(notReady(5200, 9)), sm, State::Confirmed);  // wrong id
+}
+
+void test_delivery_timeout_survives_millis_wraparound() {
+    StateMachine sm(kLegacy);
+    const uint32_t start = 0xFFFFFFFFu - 10000;
+    sm.handle(held(start));
+    sm.handle(tick(start + 3000));  // budget ends at start + 23000, past the wrap
+    sm.handle(notReady(start + 3000, 1));
+    // 1 ms before the budget ends this is just another not-ready probe.
+    assertTransition(sm.handle(tick(start + 22999)), State::Retry, State::Confirmed, Action::SendAlert);
+    sm.handle(notReady(start + 22999, 1));
+    TEST_ASSERT_EQUAL_STRING("delivery_timeout", sm.handle(tick(start + 23000)).reason);
+}
+
+// A new alert gets a fresh budget.
+void test_new_alert_resets_delivery_budget() {
+    StateMachine sm(kLegacy);
+    sm.handle(held(0));
+    sm.handle(tick(3000));
+    sm.handle(notReady(3000, 1));
+    sm.handle(tick(23000));  // ERROR
+    sm.handle(held(30000, AlertType::Medical));
+    sm.handle(tick(33000));  // budget for alert 2 ends at 53000
+    sm.handle(notReady(33000, 2));
+    // 19999 ms into alert 2's own budget it is still probing (alert 1's budget
+    // ran out at 23000 and must not carry over).
+    assertTransition(sm.handle(tick(52999)), State::Retry, State::Confirmed, Action::SendAlert);
+    sm.handle(notReady(52999, 2));
+    TEST_ASSERT_EQUAL_STRING("delivery_timeout", sm.handle(tick(53000)).reason);
+}
+
 void test_pending_deadline_survives_millis_wraparound() {
     StateMachine sm(kLegacy);
     const uint32_t start = 0xFFFFFFFFu - 1000;
@@ -549,6 +733,18 @@ int main() {
     RUN_TEST(test_cancel_during_retry_kills_pending_resend);
     RUN_TEST(test_late_ack_after_error_is_rejected_and_keeps_alert_id);
     RUN_TEST(test_ack_timeout_and_backoff_survive_millis_wraparound_with_same_id);
+    RUN_TEST(test_link_up_during_retry_resends_immediately);
+    RUN_TEST(test_link_up_resend_respects_attempt_budget);
+    RUN_TEST(test_link_up_outside_retry_is_ignored);
+    RUN_TEST(test_not_ready_send_refunds_attempt);
+    RUN_TEST(test_link_up_after_not_ready_sends_first_attempt_now);
+    RUN_TEST(test_slow_reconnect_does_not_exhaust_attempts);
+    RUN_TEST(test_no_host_ends_in_error_at_delivery_timeout);
+    RUN_TEST(test_delivery_timeout_cuts_ack_wait);
+    RUN_TEST(test_three_unacked_attempts_end_by_attempt_limit_within_budget);
+    RUN_TEST(test_stale_not_ready_is_rejected);
+    RUN_TEST(test_delivery_timeout_survives_millis_wraparound);
+    RUN_TEST(test_new_alert_resets_delivery_budget);
     RUN_TEST(test_pending_deadline_survives_millis_wraparound);
     return UNITY_END();
 }

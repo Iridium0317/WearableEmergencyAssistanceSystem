@@ -1,0 +1,316 @@
+19803.949644	>>> reboot
+19803.950623	2851 CMD_OK cmd=reboot
+19805.173946	>>> ping
+19805.177030	605 CMD_OK cmd=ping
+19805.323955	752 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+19805.324163	752 SM state=IDLE transport=BLE link_ok=1
+19808.182569	3611 BLE ev=connected peer=cc:08:fa:72:17:da
+19809.305692	4734 BLE ev=subscribed char=alert
+19809.371390	4799 BLE ev=subscribed char=status
+19809.398577	>>> hold 1
+19809.400238	4828 CMD_OK cmd=hold alert=EMERGENCY
+19809.409298	4833 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=5 reason=-
+19809.572352	5000 HB q_dropped=0
+19814.402681	9830 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+19814.404121	9831 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=1 ok=1 reason=-
+19814.404652	9833 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=1 lat_ms=3 reason=-
+19814.493914	9922 BLE ev=unsubscribed char=alert
+19814.495038	9922 BLE ev=unsubscribed char=status
+19814.495440	9924 BLE ev=disconnected peer=cc:08:fa:72:17:da
+19814.497664	9926 SM from=ALERT_SENT to=RETRY ev=LINK_DOWN alert=EMERGENCY id=1 attempt=1 lat_ms=2 reason=link_down
+19814.575976	10004 HB q_dropped=0
+19815.965157	11393 BLE ev=connected peer=cc:08:fa:72:17:da
+19816.505791	11933 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+19816.510173	11934 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=2 ok=0 reason=not_subscribed
+19816.510644	11939 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=2 lat_ms=6 reason=send_failed
+19817.084266	12512 BLE ev=subscribed char=alert
+19817.088045	12513 SM from=RETRY to=CONFIRMED ev=LINK_UP alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19817.088531	12517 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=3 ok=1 reason=-
+19817.090266	12517 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=3 lat_ms=4 reason=-
+19817.132748	12561 BLE ev=subscribed char=status
+19817.203373	12631 BLE_RX msg=ACK id=1
+19817.203816	12632 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19817.227012	>>> reboot
+19817.228246	12656 CMD_OK cmd=reboot
+19818.653819	>>> ping
+19818.654485	805 CMD_OK cmd=ping
+19818.808200	959 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+19818.808457	959 SM state=IDLE transport=BLE link_ok=1
+19821.563880	3715 BLE ev=connected peer=cc:08:fa:72:17:da
+19822.717186	4868 BLE ev=subscribed char=alert
+19822.778297	4929 BLE ev=subscribed char=status
+19822.805339	>>> hold 1
+19822.806719	4957 CMD_OK cmd=hold alert=EMERGENCY
+19822.811500	4959 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=2 reason=-
+19822.850570	5001 HB q_dropped=0
+19827.809878	9960 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+19827.815789	9961 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=1 ok=1 reason=-
+19827.817376	9967 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=1 lat_ms=7 reason=-
+19827.851476	10002 HB q_dropped=0
+19827.878911	10029 BLE ev=unsubscribed char=alert
+19827.879141	10030 BLE ev=unsubscribed char=status
+19827.884610	10035 BLE ev=disconnected peer=cc:08:fa:72:17:da
+19827.886977	10038 SM from=ALERT_SENT to=RETRY ev=LINK_DOWN alert=EMERGENCY id=1 attempt=1 lat_ms=2 reason=link_down
+19829.771982	11923 BLE ev=connected peer=cc:08:fa:72:17:da
+19829.892872	12043 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+19829.893313	12044 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=2 ok=0 reason=not_subscribed
+19829.893954	12044 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=2 lat_ms=1 reason=send_failed
+19830.905959	13057 BLE ev=subscribed char=alert
+19830.907535	13057 SM from=RETRY to=CONFIRMED ev=LINK_UP alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19830.913357	13059 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=3 ok=1 reason=-
+19830.913862	13065 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=3 lat_ms=8 reason=-
+19830.965859	13117 BLE ev=subscribed char=status
+19831.032654	13183 BLE_RX msg=ACK id=1
+19831.034314	13184 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19831.054748	>>> reboot
+19831.055472	13206 CMD_OK cmd=reboot
+19832.479419	>>> ping
+19832.483866	807 CMD_OK cmd=ping
+19832.634419	958 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+19832.634803	958 SM state=IDLE transport=BLE link_ok=1
+19833.806139	2130 BLE ev=connected peer=cc:08:fa:72:17:da
+19834.957449	3281 BLE ev=subscribed char=alert
+19835.017375	3341 BLE ev=subscribed char=status
+19835.045014	>>> hold 1
+19835.045927	3369 CMD_OK cmd=hold alert=EMERGENCY
+19835.046590	3370 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=1 reason=-
+19836.676760	5000 HB q_dropped=0
+19840.057161	8380 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+19840.058771	8381 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=1 ok=1 reason=-
+19840.059273	8383 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=1 lat_ms=3 reason=-
+19840.148117	8471 BLE ev=unsubscribed char=alert
+19840.148305	8472 BLE ev=unsubscribed char=status
+19840.152135	8475 BLE ev=disconnected peer=cc:08:fa:72:17:da
+19840.159412	8483 SM from=ALERT_SENT to=RETRY ev=LINK_DOWN alert=EMERGENCY id=1 attempt=1 lat_ms=7 reason=link_down
+19841.537097	9861 BLE ev=connected peer=cc:08:fa:72:17:da
+19841.677702	10001 HB q_dropped=0
+19842.160157	10483 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+19842.164771	10484 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=2 ok=0 reason=not_subscribed
+19842.165243	10489 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=2 lat_ms=6 reason=send_failed
+19842.670006	10993 BLE ev=subscribed char=alert
+19842.671628	10994 SM from=RETRY to=CONFIRMED ev=LINK_UP alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19842.672068	10996 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=3 ok=1 reason=-
+19842.676842	10996 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=3 lat_ms=2 reason=-
+19842.726310	11050 BLE ev=subscribed char=status
+19842.794110	11117 BLE_RX msg=ACK id=1
+19842.795723	11118 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19842.817730	>>> reboot
+19842.819790	11143 CMD_OK cmd=reboot
+19844.241054	>>> ping
+19844.242081	801 CMD_OK cmd=ping
+19844.391551	951 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+19844.397126	951 SM state=IDLE transport=BLE link_ok=1
+19845.148514	1708 BLE ev=connected peer=cc:08:fa:72:17:da
+19846.309052	2860 BLE ev=subscribed char=alert
+19846.355453	2915 BLE ev=subscribed char=status
+19846.383835	>>> hold 1
+19846.386214	2945 CMD_OK cmd=hold alert=EMERGENCY
+19846.387943	2947 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=2 reason=-
+19848.444481	5003 HB q_dropped=0
+19851.393471	7952 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+19851.395019	7953 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=1 ok=1 reason=-
+19851.395638	7955 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=1 lat_ms=3 reason=-
+19851.485766	8045 BLE ev=unsubscribed char=alert
+19851.491230	8045 BLE ev=unsubscribed char=status
+19851.491501	8051 BLE ev=disconnected peer=cc:08:fa:72:17:da
+19851.493588	8053 SM from=ALERT_SENT to=RETRY ev=LINK_DOWN alert=EMERGENCY id=1 attempt=1 lat_ms=2 reason=link_down
+19852.657529	9217 BLE ev=connected peer=cc:08:fa:72:17:da
+19853.444269	10003 HB q_dropped=0
+19853.496012	10054 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+19853.496414	10055 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=2 ok=0 reason=not_subscribed
+19853.499988	10056 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=2 lat_ms=2 reason=send_failed
+19853.799515	10359 BLE ev=subscribed char=alert
+19853.802235	10359 SM from=RETRY to=CONFIRMED ev=LINK_UP alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19853.806047	10362 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=3 ok=1 reason=-
+19853.806571	10366 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=3 lat_ms=7 reason=-
+19853.863776	10422 BLE ev=subscribed char=status
+19853.915690	10474 BLE_RX msg=ACK id=1
+19853.916181	10474 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19853.948622	>>> reboot
+19853.950054	10509 CMD_OK cmd=reboot
+19855.168848	>>> ping
+19855.169490	598 CMD_OK cmd=ping
+19855.326817	756 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+19855.327059	756 SM state=IDLE transport=BLE link_ok=1
+19856.182713	1612 BLE ev=connected peer=cc:08:fa:72:17:da
+19857.343731	2772 BLE ev=subscribed char=alert
+19857.398055	2827 BLE ev=subscribed char=status
+19857.454079	>>> hold 1
+19857.456615	2885 CMD_OK cmd=hold alert=EMERGENCY
+19857.465465	2890 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=5 reason=-
+19859.571547	5000 HB q_dropped=0
+19862.470839	7899 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+19862.475466	7900 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=1 ok=1 reason=-
+19862.476030	7905 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=1 lat_ms=6 reason=-
+19862.556025	7985 BLE ev=unsubscribed char=alert
+19862.556240	7985 BLE ev=unsubscribed char=status
+19862.556568	7985 BLE ev=disconnected peer=cc:08:fa:72:17:da
+19862.558884	7988 SM from=ALERT_SENT to=RETRY ev=LINK_DOWN alert=EMERGENCY id=1 attempt=1 lat_ms=2 reason=link_down
+19864.031045	9460 BLE ev=connected peer=cc:08:fa:72:17:da
+19864.559931	9988 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+19864.566661	9989 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=2 ok=0 reason=not_subscribed
+19864.570232	9996 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=2 lat_ms=8 reason=send_failed
+19864.572287	10001 HB q_dropped=0
+19865.201653	10630 BLE ev=subscribed char=alert
+19865.209529	10631 SM from=RETRY to=CONFIRMED ev=LINK_UP alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19865.209851	10639 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=3 ok=1 reason=-
+19865.211551	10639 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=3 lat_ms=8 reason=-
+19865.263959	10692 BLE ev=subscribed char=status
+19865.320760	10749 BLE_RX msg=ACK id=1
+19865.324467	10750 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19865.346980	>>> reboot
+19865.348542	10778 CMD_OK cmd=reboot
+19866.766295	>>> ping
+19866.767778	798 CMD_OK cmd=ping
+19866.914274	945 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+19866.914735	945 SM state=IDLE transport=BLE link_ok=1
+19867.231522	1262 BLE ev=connected peer=cc:08:fa:72:17:da
+19868.344327	2375 BLE ev=subscribed char=alert
+19868.410890	2441 BLE ev=subscribed char=status
+19868.434885	>>> hold 1
+19868.435972	2467 CMD_OK cmd=hold alert=EMERGENCY
+19868.438714	2467 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=1 reason=-
+19870.970969	5001 HB q_dropped=0
+19873.437289	7467 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+19873.441820	7468 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=1 ok=1 reason=-
+19873.447858	7473 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=1 lat_ms=6 reason=-
+19873.508883	7539 BLE ev=unsubscribed char=alert
+19873.509107	7540 BLE ev=unsubscribed char=status
+19873.513703	7540 BLE ev=disconnected peer=cc:08:fa:72:17:da
+19873.523368	7554 SM from=ALERT_SENT to=RETRY ev=LINK_DOWN alert=EMERGENCY id=1 attempt=1 lat_ms=9 reason=link_down
+19875.517935	9548 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+19875.518519	9549 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=2 ok=0 reason=not_connected
+19875.519159	9550 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=2 lat_ms=2 reason=send_failed
+19875.971800	10002 HB q_dropped=0
+19876.687035	10717 BLE ev=connected peer=cc:08:fa:72:17:da
+19877.519067	11549 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19877.519479	11550 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=3 ok=0 reason=not_subscribed
+19877.520064	11550 SM from=CONFIRMED to=ERROR ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=3 lat_ms=1 reason=send_failed
+19878.071647	12100 BLE ev=subscribed char=alert
+19878.129879	12160 BLE ev=subscribed char=status
+19880.972056	15002 HB q_dropped=0
+19885.187666	>>> reboot
+19885.188693	19219 CMD_OK cmd=reboot
+19886.408414	>>> ping
+19886.410971	601 CMD_OK cmd=ping
+19886.557695	748 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+19886.564004	748 SM state=IDLE transport=BLE link_ok=1
+19887.520514	1711 BLE ev=connected peer=cc:08:fa:72:17:da
+19888.660238	2850 BLE ev=subscribed char=alert
+19888.717599	2908 BLE ev=subscribed char=status
+19888.745469	>>> hold 1
+19888.750304	2941 CMD_OK cmd=hold alert=EMERGENCY
+19888.751893	2941 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=0 reason=-
+19890.812059	5002 HB q_dropped=0
+19893.756448	7946 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+19893.757895	7947 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=1 ok=1 reason=-
+19893.758530	7949 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=1 lat_ms=3 reason=-
+19893.876430	8067 BLE ev=unsubscribed char=alert
+19893.876630	8067 BLE ev=unsubscribed char=status
+19893.878119	8069 BLE ev=disconnected peer=cc:08:fa:72:17:da
+19893.880508	8071 SM from=ALERT_SENT to=RETRY ev=LINK_DOWN alert=EMERGENCY id=1 attempt=1 lat_ms=2 reason=link_down
+19894.931840	9122 BLE ev=connected peer=cc:08:fa:72:17:da
+19895.812081	10002 HB q_dropped=0
+19895.885252	10075 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+19895.887748	10076 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=2 ok=0 reason=not_subscribed
+19895.888343	10078 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=2 lat_ms=3 reason=send_failed
+19896.163227	10353 BLE ev=subscribed char=alert
+19896.172092	10354 SM from=RETRY to=CONFIRMED ev=LINK_UP alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19896.172197	10362 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=3 ok=1 reason=-
+19896.173177	10362 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=3 lat_ms=8 reason=-
+19896.220254	10410 BLE ev=subscribed char=status
+19896.276621	10467 BLE_RX msg=ACK id=1
+19896.279236	10467 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19896.308560	>>> reboot
+19896.310095	10500 CMD_OK cmd=reboot
+19897.730881	>>> ping
+19897.733320	802 CMD_OK cmd=ping
+19897.879512	949 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+19897.879919	949 SM state=IDLE transport=BLE link_ok=1
+19901.362093	4431 BLE ev=connected peer=cc:08:fa:72:17:da
+19901.940533	5003 HB q_dropped=0
+19902.492579	5561 BLE ev=subscribed char=alert
+19902.555562	5624 BLE ev=subscribed char=status
+19902.576044	>>> hold 1
+19902.580586	5650 CMD_OK cmd=hold alert=EMERGENCY
+19902.582080	5650 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=1 reason=-
+19906.935529	10004 HB q_dropped=0
+19907.584594	10653 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+19907.586213	10654 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=1 ok=1 reason=-
+19907.586745	10656 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=1 lat_ms=3 reason=-
+19907.678846	10748 BLE ev=unsubscribed char=alert
+19907.679039	10748 BLE ev=unsubscribed char=status
+19907.679456	10749 BLE ev=disconnected peer=cc:08:fa:72:17:da
+19907.681683	10751 SM from=ALERT_SENT to=RETRY ev=LINK_DOWN alert=EMERGENCY id=1 attempt=1 lat_ms=2 reason=link_down
+19909.690674	12759 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+19909.691851	12760 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=2 ok=0 reason=not_connected
+19909.691875	12760 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=2 lat_ms=1 reason=send_failed
+19911.699455	14768 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19911.699998	14769 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=3 ok=0 reason=not_connected
+19911.700561	14769 SM from=CONFIRMED to=ERROR ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=3 lat_ms=1 reason=send_failed
+19911.754664	14824 BLE ev=connected peer=cc:08:fa:72:17:da
+19911.935374	15004 HB q_dropped=0
+19912.865593	15935 BLE ev=subscribed char=alert
+19912.936368	16005 BLE ev=subscribed char=status
+19916.936121	20005 HB q_dropped=0
+19919.958661	>>> reboot
+19919.960073	23029 CMD_OK cmd=reboot
+19921.178824	>>> ping
+19921.179470	598 CMD_OK cmd=ping
+19921.337054	756 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+19921.337420	756 SM state=IDLE transport=BLE link_ok=1
+19925.581701	5000 HB q_dropped=0
+19927.018827	6438 BLE ev=connected peer=cc:08:fa:72:17:da
+19928.146722	7565 BLE ev=subscribed char=alert
+19928.194951	7614 BLE ev=subscribed char=status
+19928.257513	>>> hold 1
+19928.258557	7677 CMD_OK cmd=hold alert=EMERGENCY
+19928.263282	7682 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=5 reason=-
+19930.584477	10003 HB q_dropped=0
+19933.262801	12681 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+19933.264472	12682 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=1 ok=1 reason=-
+19933.265079	12684 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=1 lat_ms=3 reason=-
+19933.356065	12775 BLE ev=unsubscribed char=alert
+19933.361355	12775 BLE ev=unsubscribed char=status
+19933.361679	12781 BLE ev=disconnected peer=cc:08:fa:72:17:da
+19933.367885	12787 SM from=ALERT_SENT to=RETRY ev=LINK_DOWN alert=EMERGENCY id=1 attempt=1 lat_ms=6 reason=link_down
+19935.366772	14785 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+19935.376307	14786 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=2 ok=0 reason=not_connected
+19935.376353	14793 SM from=CONFIRMED to=RETRY ev=ALERT_SEND_FAILED alert=EMERGENCY id=1 attempt=2 lat_ms=8 reason=send_failed
+19935.586555	15005 HB q_dropped=0
+19935.664912	15084 BLE ev=connected peer=cc:08:fa:72:17:da
+19936.869692	16288 BLE ev=subscribed char=alert
+19936.870079	16289 SM from=RETRY to=CONFIRMED ev=LINK_UP alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19936.872709	16292 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=3 ok=1 reason=-
+19936.874485	16292 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=3 lat_ms=3 reason=-
+19936.959402	16378 BLE ev=subscribed char=status
+19937.014829	16434 BLE_RX msg=ACK id=1
+19937.016434	16434 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=EMERGENCY id=1 attempt=3 lat_ms=0 reason=-
+19937.048236	>>> reboot
+19937.051488	16470 CMD_OK cmd=reboot
+19938.474538	>>> ping
+19938.475676	803 CMD_OK cmd=ping
+19938.631313	959 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+19938.631490	959 SM state=IDLE transport=BLE link_ok=1
+19938.954453	1281 BLE ev=connected peer=cc:08:fa:72:17:da
+19940.080315	2408 BLE ev=subscribed char=alert
+19940.137299	2465 BLE ev=subscribed char=status
+19940.196348	>>> hold 1
+19940.197978	2525 CMD_OK cmd=hold alert=EMERGENCY
+19940.198471	2526 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=1 reason=-
+19942.674823	5002 HB q_dropped=0
+19945.204987	7532 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+19945.207721	7533 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=1 ok=1 reason=-
+19945.212580	7536 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=1 lat_ms=4 reason=-
+19945.296383	7623 BLE ev=unsubscribed char=alert
+19945.296639	7623 BLE ev=unsubscribed char=status
+19945.296855	7624 BLE ev=disconnected peer=cc:08:fa:72:17:da
+19945.298175	7626 SM from=ALERT_SENT to=RETRY ev=LINK_DOWN alert=EMERGENCY id=1 attempt=1 lat_ms=2 reason=link_down
+19945.946099	8273 BLE ev=connected peer=cc:08:fa:72:17:da
+19947.070902	9398 BLE ev=subscribed char=alert
+19947.072581	9399 SM from=RETRY to=CONFIRMED ev=LINK_UP alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-
+19947.073080	9401 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=2 ok=1 reason=-
+19947.074798	9401 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=2 lat_ms=2 reason=-
+19947.129047	9457 BLE ev=subscribed char=status
+19947.189964	9517 BLE_RX msg=ACK id=1
+19947.193826	9518 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=EMERGENCY id=1 attempt=2 lat_ms=0 reason=-

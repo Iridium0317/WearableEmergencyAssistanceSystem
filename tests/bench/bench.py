@@ -36,6 +36,7 @@ PENDING_MS = 5000  # console holds never release, so the window is timed from HE
 ACK_TIMEOUT_MS = 5000
 RETRY_BACKOFF_MS = 2000
 MAX_ATTEMPTS = 3
+DELIVERY_TIMEOUT_MS = 20000  # first CONFIRMED -> ERROR if unacknowledged
 ACK_DISPLAY_MS = 3000
 CANCEL_DISPLAY_MS = 1000
 # Deadlines are polled every 10 ms on the device; allow that plus slack.
@@ -289,17 +290,21 @@ def scenario_ack_timeout_to_error(dev: Device, m: Metrics) -> None:
 
 
 def scenario_link_down_send_fails(dev: Device, m: Metrics) -> None:
+    # Link down = host not ready: probes send nothing and use no attempt, and
+    # the delivery budget ends the alert.
     dev.send("link down")
     dev.expect("CMD_OK", 1.0, cmd="link")
     dev.send("hold 1")
     pend = dev.expect("SM", 1.0, to="PENDING")
-    for attempt in range(1, MAX_ATTEMPTS):
-        retry = dev.expect("SM", PENDING_MS / 1000 + RETRY_BACKOFF_MS / 1000 + 1, to="RETRY", reason="send_failed")
-        if retry.fields["attempt"] != str(attempt):
-            raise BenchFailure(f"attempt mismatch: {retry.raw}")
-    err = dev.expect("SM", RETRY_BACKOFF_MS / 1000 + 1, to="ERROR", reason="send_failed")
-    expected = PENDING_MS + (MAX_ATTEMPTS - 1) * RETRY_BACKOFF_MS
-    check_window("hold_to_error_link_down_dev_ms", err.dev_ms - event_ms(pend), expected, m)
+    conf = dev.expect("SM", PENDING_MS / 1000 + 1, to="CONFIRMED")
+    retry = dev.expect("SM", 1.0, to="RETRY", reason="link_not_ready")
+    if retry.fields["attempt"] != "0":
+        raise BenchFailure(f"not-ready probe used an attempt: {retry.raw}")
+    err = dev.expect("SM", DELIVERY_TIMEOUT_MS / 1000 + 1, to="ERROR", reason="delivery_timeout")
+    if err.fields["attempt"] != "0":
+        raise BenchFailure(f"attempts used with the link down: {err.raw}")
+    check_window("hold_to_error_link_down_dev_ms", err.dev_ms - event_ms(pend), PENDING_MS + DELIVERY_TIMEOUT_MS, m)
+    check_window("first_confirmed_to_error_dev_ms", err.dev_ms - event_ms(conf), DELIVERY_TIMEOUT_MS, m)
 
 
 def scenario_link_drop_then_recover(dev: Device, m: Metrics) -> None:

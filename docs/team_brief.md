@@ -17,7 +17,7 @@ The wearable never places calls itself; it raises a confirmed alert, and the pho
 1. **Hold a button 1.5 s.** Short taps are ignored, so bumping it does not trigger anything. Brief lifts under 150 ms (tremor) do not restart the hold.
 2. **5-second cancel window, counted from letting go.** Pressing any button cancels a false alarm before anything is sent; the LED blinks blue while the window runs. If the button is never released, the alert goes out 5 s after the hold.
 3. **Alert sent over BLE** to the paired phone: alert type, alert ID, attempt number.
-4. **Phone acknowledges.** No ack within 5 s, or Bluetooth drops, means the wearable retries (3 attempts, 2 s apart).
+4. **Phone acknowledges.** No ack within 5 s, or Bluetooth drops, means the wearable retries (up to 3 real sends, 2 s apart, resent the moment the phone reconnects). Waiting for a disconnected phone costs no attempt; after 20 s without an ack the wearable shows the alert as not delivered.
 5. **Phone app acts:** call and text the caregiver (e.g. via Twilio), share location.
 6. **Delivery failed after 3 attempts:** the wearable stays in an ERROR state the user can see, rather than pretending it worked.
 

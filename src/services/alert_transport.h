@@ -12,6 +12,14 @@
 #include "event.h"
 #include "state_machine.h"
 
+// Outcome of one send. Only Sent and Failed count against the attempt budget:
+// NotReady means nothing left the device because the host cannot receive yet.
+enum class SendResult : uint8_t {
+    Sent,      // handed to the link (delivery is still unconfirmed until HostAck)
+    NotReady,  // host not connected and subscribed; nothing transmitted
+    Failed,    // host looked ready but the link refused the packet
+};
+
 class AlertTransport {
 public:
     virtual ~AlertTransport() = default;
@@ -21,9 +29,9 @@ public:
     // Services the link; incoming traffic becomes events on the app queue.
     virtual void poll() {}
 
-    // Returns true if the alert was handed to the link. Delivery is confirmed
-    // only by a later HostAck event, never by this return value.
-    virtual bool sendAlert(uint16_t alert_id, AlertType type, uint8_t attempt) = 0;
+    // Checks host readiness first. Delivery is confirmed only by a later
+    // HostAck event, never by this return value.
+    virtual SendResult sendAlert(uint16_t alert_id, AlertType type, uint8_t attempt) = 0;
     virtual bool sendCancel(uint16_t alert_id, AlertType type) = 0;
 
     // Mirrors the state machine to the host after every transition.

@@ -18,6 +18,7 @@ const char* toString(EventType type) {
         case EventType::Tick: return "TICK";
         case EventType::AlertSendOk: return "ALERT_SEND_OK";
         case EventType::AlertSendFailed: return "ALERT_SEND_FAILED";
+        case EventType::AlertSendNotReady: return "ALERT_SEND_NOT_READY";
         case EventType::HostAck: return "HOST_ACK";
         case EventType::LinkUp: return "LINK_UP";
         case EventType::LinkDown: return "LINK_DOWN";
