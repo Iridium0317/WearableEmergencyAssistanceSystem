@@ -209,3 +209,25 @@ Notes:
 Notes:
 - The bench reboots the board before every scenario, so this shows 100 consecutive reliable alert cycles, not long uptime. A continuous run without reboots is still to do.
 - Notification latency p95 (61 ms) is higher than in T9 (31.8 ms, n=20). The concurrent download may explain it; not established. Well inside the 5 s ack window either way.
+
+## T12 — Host unit tests: iPhone gateway logic (2026-10-18)
+
+| Field | Value |
+|---|---|
+| Setup | `ios/ReachGateway` (new, SwiftUI, iOS 17.0 deployment target), Xcode 27.1, `xcodebuild test` on the iOS 27.1 simulator. Pure logic only: `AlertProtocol`, `EventMatcher`, `UploadOutcome`/`UploadRequest`. No Bluetooth, no network. |
+| Expected | Ack bytes match the firmware layout; malformed alert/status packets rejected; attempt 1 always starts a new event (alert_id restarts at 1 after a board reset); attempt > 1 reuses the newest matching event within 10 min; event_id fits the backend character set and 128-char limit; 201/200 succeed, 401/403/409/413/422 stop, other codes retry; backoff 2, 4, 8 … capped at 60 s; upload body has exactly the three contract fields. |
+| Observed | 15/15 tests passed, no compiler warnings. |
+| Result | PASS |
+
+## T13 — First real iPhone run: button → BLE → App → backend (2026-10-18)
+
+| Field | Value |
+|---|---|
+| Setup | iPhone SE (3rd generation, iPhone14,6), iOS 18.1.1, ReachGateway debug build installed from Xcode 27.1, App in the foreground. Board on USB to the Mac for power and serial; firmware already on the board (not re-flashed for this run, image not re-checked). Backend: the teammate's device inbox through the existing ngrok upload URL. |
+| Expected | App finds `WEA-Nano33`, subscribes to Alert; a hold produces one event stored on the phone, then an Ack; the upload returns 201; a retry of the same alarm reuses its event_id. |
+| Observed | App connected and subscribed. Hold on the middle button produced one `Medical` event, `alert_id 1`, `attempt 1`, event_id `nano-01-87a65e40-14e8-47ac-8dc2-ceaed18e4078`. No retransmission reached the App (attempt stayed 1), consistent with the Ack being accepted; the serial log was not captured for this hold, so ACKNOWLEDGED on the board is not directly shown. First upload: 401, because a read-only dashboard credential had been entered instead of the device credential. After entering the device credential, Retry sent the same event_id and the App showed 201. Wiring re-check (`button_watch.py`, run `20261018-010954`): short presses left/middle/right gave `btn=1 EMERGENCY` (D2), `btn=2 MEDICAL` (D3), `btn=3 FAMILY` (D4), one press and one release each, no extra edges, no alert from short presses. |
+| Result | PASS for BLE receive, store-then-ack and upload (201 after the credential fix). Not yet done: a D2 Emergency end-to-end run, the teammate's backend-side check of this event_id, and contact acceptance (the help tunnel was down: `no tunnel`). |
+
+Notes:
+- The press was on D3, which is correct for `Medical`; the earlier confusion was about which physical button is D2 (the left one).
+- 401 is a stop condition in the App by design (retrying cannot fix a wrong credential); the manual Retry after fixing it is the intended recovery and kept the original event_id.

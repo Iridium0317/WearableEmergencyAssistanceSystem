@@ -1,0 +1,13 @@
+watching /dev/cu.usbmodem1201 for 60 s (Ctrl+C to stop)
+   0.3s  d2=1 d3=1 d4=1  isr_edges=2
+  34.2s  1975365 BTN ev=PRESSED btn=1 alert=EMERGENCY debounce_ms=30 edges=1 isr_to_task_max_us=59 lift_ms=1975335
+  34.5s  d2=0 d3=1 d4=1  isr_edges=3
+  34.8s  d2=1 d3=1 d4=1  isr_edges=4
+  34.8s  1975764 BTN ev=RELEASED btn=1 edges=2 isr_to_task_max_us=61 bridged=0 max_lift_ms=0
+  36.7s  1977791 BTN ev=PRESSED btn=2 alert=MEDICAL debounce_ms=34 edges=3 isr_to_task_max_us=59 lift_ms=182038
+  37.0s  d2=1 d3=0 d4=1  isr_edges=5
+  37.3s  d2=1 d3=1 d4=1  isr_edges=6
+  37.3s  1978164 BTN ev=RELEASED btn=2 edges=4 isr_to_task_max_us=59 bridged=0 max_lift_ms=0
+  41.0s  1981950 BTN ev=PRESSED btn=3 alert=FAMILY debounce_ms=34 edges=1 isr_to_task_max_us=25 lift_ms=1981916
+  41.3s  1982269 BTN ev=RELEASED btn=3 edges=2 isr_to_task_max_us=25 bridged=0 max_lift_ms=0
+stopped
