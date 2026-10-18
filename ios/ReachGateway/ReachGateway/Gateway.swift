@@ -14,6 +14,9 @@ final class Gateway {
     private(set) var events: [AlertEvent] = []
     private(set) var log: [String] = []
     private(set) var configured = false
+    // Test tool: skip the BLE ack for the next alert so the wearable's
+    // retransmission (same alert_id, attempt 2) can be observed.
+    var dropNextAck = false
 
     private let ble = BLEManager()
     private let store = EventStore()
@@ -93,7 +96,10 @@ final class Gateway {
             append("ALERT id=\(packet.alertId) \(packet.type.label) attempt=\(packet.attempt) new \(eventId)")
         }
         events = store.events
-        if !ble.sendAck(alertId: packet.alertId) {
+        if dropNextAck {
+            dropNextAck = false
+            append("ACK skipped on purpose (test tool), id=\(packet.alertId)")
+        } else if !ble.sendAck(alertId: packet.alertId) {
             append("ACK not sent: link down (wearable will retry)")
         }
         upload(eventId)

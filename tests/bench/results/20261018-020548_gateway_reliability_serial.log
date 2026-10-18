@@ -1,0 +1,206 @@
+02:05:48 --- opened /dev/cu.usbmodem1201
+02:05:49 5356090 HB q_dropped=0
+02:05:54 5361091 HB q_dropped=0
+02:05:59 5366092 HB q_dropped=0
+02:06:04 5371092 HB q_dropped=0
+02:06:09 5376093 HB q_dropped=0
+02:06:14 5381093 HB q_dropped=0
+02:06:19 5386094 HB q_dropped=0
+02:06:24 5391095 HB q_dropped=0
+02:06:29 5396096 HB q_dropped=0
+02:06:34 5401097 HB q_dropped=0
+02:06:39 5406097 HB q_dropped=0
+02:06:44 5411097 HB q_dropped=0
+02:06:49 5416097 HB q_dropped=0
+02:06:54 5421098 HB q_dropped=0
+02:06:59 5426099 HB q_dropped=0
+02:07:04 5431099 HB q_dropped=0
+02:07:09 5436099 HB q_dropped=0
+02:07:14 5441099 HB q_dropped=0
+02:07:19 5446100 HB q_dropped=0
+02:07:24 5451102 HB q_dropped=0
+02:07:29 5456102 HB q_dropped=0
+02:07:29 5456204 BLE ev=unsubscribed char=alert
+02:07:29 5456205 BLE ev=unsubscribed char=status
+02:07:29 5456213 BLE ev=disconnected peer=4e:b4:32:1f:02:ff
+02:07:34 5461102 HB q_dropped=0
+02:07:39 5466102 HB q_dropped=0
+02:07:44 5471107 HB q_dropped=0
+02:07:49 5476107 HB q_dropped=0
+02:07:53 5479624 BLE ev=connected peer=47:68:49:9d:c2:1e
+02:07:54 5480721 BLE ev=subscribed char=alert
+02:07:54 5480842 BLE ev=subscribed char=status
+02:07:54 5481108 HB q_dropped=0
+02:07:55 5482229 BTN ev=PRESSED btn=1 alert=EMERGENCY debounce_ms=34 edges=9 isr_to_task_max_us=27 lift_ms=2067555
+02:07:57 5483699 BTN ev=HELD btn=1 alert=EMERGENCY held_late_ms=4 bridged=0 max_lift_ms=0
+02:07:57 5483704 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=3 attempt=0 lat_ms=5 reason=-
+02:07:59 5485694 BTN ev=RELEASED btn=1 edges=10 isr_to_task_max_us=26 bridged=0 max_lift_ms=0
+02:07:59 5485695 SM_INFO state=PENDING ev=BUTTON_RELEASED alert=EMERGENCY id=3 reason=cancel_window_started
+02:07:59 5486110 HB q_dropped=0
+02:08:04 5490704 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=3 attempt=1 lat_ms=0 reason=-
+02:08:04 5490705 BLE_TX msg=ALERT id=3 alert=EMERGENCY attempt=1 ok=1 reason=-
+02:08:04 5490711 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=3 attempt=1 lat_ms=7 reason=-
+02:08:04 5490767 BLE_RX msg=ACK id=3
+02:08:04 5490767 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=EMERGENCY id=3 attempt=1 lat_ms=0 reason=-
+02:08:04 5491111 HB q_dropped=0
+02:08:07 5493767 SM from=ACKNOWLEDGED to=IDLE ev=TICK alert=EMERGENCY id=3 attempt=1 lat_ms=0 reason=-
+02:08:09 5496112 HB q_dropped=0
+02:08:14 5501115 HB q_dropped=0
+02:08:19 5506117 HB q_dropped=0
+02:08:24 5511117 HB q_dropped=0
+02:08:29 5516117 HB q_dropped=0
+02:08:34 5521118 HB q_dropped=0
+02:08:39 5526121 HB q_dropped=0
+02:08:44 5531125 HB q_dropped=0
+02:08:49 5536125 HB q_dropped=0
+02:08:54 5541127 HB q_dropped=0
+02:08:59 5545539 BTN ev=PRESSED btn=1 alert=EMERGENCY debounce_ms=34 edges=11 isr_to_task_max_us=61 lift_ms=59845
+02:08:59 5545826 BTN ev=RELEASED btn=1 edges=12 isr_to_task_max_us=27 bridged=0 max_lift_ms=0
+02:08:59 5546128 HB q_dropped=0
+02:09:04 5551128 HB q_dropped=0
+02:09:09 5556128 HB q_dropped=0
+02:09:14 5561129 HB q_dropped=0
+02:09:19 5566129 HB q_dropped=0
+02:09:24 5571130 HB q_dropped=0
+02:09:29 5576131 HB q_dropped=0
+02:09:34 5581132 HB q_dropped=0
+02:09:39 5586133 HB q_dropped=0
+02:09:44 5591133 HB q_dropped=0
+02:09:49 5596134 HB q_dropped=0
+02:09:54 5601138 HB q_dropped=0
+02:09:59 5606138 HB q_dropped=0
+02:10:04 5611138 HB q_dropped=0
+02:10:09 5616139 HB q_dropped=0
+02:10:14 5621139 HB q_dropped=0
+02:10:19 5626140 HB q_dropped=0
+02:10:24 5631141 HB q_dropped=0
+02:10:29 5636143 HB q_dropped=0
+02:10:34 5641145 HB q_dropped=0
+02:10:39 5646146 HB q_dropped=0
+02:10:44 5651147 HB q_dropped=0
+02:10:49 5656148 HB q_dropped=0
+02:10:54 5661151 HB q_dropped=0
+02:10:59 5666151 HB q_dropped=0
+02:11:04 5671151 HB q_dropped=0
+02:11:09 5676151 HB q_dropped=0
+02:11:14 5681152 HB q_dropped=0
+02:11:19 5686152 HB q_dropped=0
+02:11:24 5691152 HB q_dropped=0
+02:11:29 5696153 HB q_dropped=0
+02:11:34 5701154 HB q_dropped=0
+02:11:39 5706154 HB q_dropped=0
+02:11:44 5711154 HB q_dropped=0
+02:11:44 5711215 BLE ev=unsubscribed char=alert
+02:11:44 5711276 BLE ev=unsubscribed char=status
+02:11:44 5711277 BLE ev=disconnected peer=47:68:49:9d:c2:1e
+02:11:49 5716155 HB q_dropped=0
+02:11:53 5720342 BLE ev=connected peer=47:68:49:9d:c2:1e
+02:11:54 5721159 HB q_dropped=0
+02:11:54 5721397 BLE ev=subscribed char=alert
+02:11:55 5721517 BLE ev=subscribed char=status
+02:11:59 5726161 HB q_dropped=0
+02:12:04 5731162 HB q_dropped=0
+02:12:09 5736162 HB q_dropped=0
+02:12:14 5741162 HB q_dropped=0
+02:12:19 5746162 HB q_dropped=0
+02:12:24 5751162 HB q_dropped=0
+02:12:29 5756162 HB q_dropped=0
+02:12:34 5761166 HB q_dropped=0
+02:12:39 5766168 HB q_dropped=0
+02:12:44 --- port lost
+02:12:46 --- opened /dev/cu.usbmodem1201
+02:12:46 939 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+02:12:46 939 SM state=IDLE transport=BLE link_ok=1
+02:12:46 1155 BLE ev=connected peer=47:68:49:9d:c2:1e
+02:12:47 2216 BLE ev=subscribed char=alert
+02:12:47 2336 BLE ev=subscribed char=status
+02:12:50 5002 HB q_dropped=0
+02:12:55 10002 HB q_dropped=0
+02:13:00 15002 HB q_dropped=0
+02:13:01 --- port lost
+02:13:03 --- opened /dev/cu.usbmodem1201
+02:13:03 1103 BLE ev=advertising name=WEA-Nano33 addr=30:35:ee:83:06:3d
+02:13:03 1103 SM state=IDLE transport=BLE link_ok=1
+02:13:03 1202 BLE ev=connected peer=47:68:49:9d:c2:1e
+02:13:04 2306 BLE ev=subscribed char=alert
+02:13:04 2427 BLE ev=subscribed char=status
+02:13:07 5000 HB q_dropped=0
+02:13:08 6740 BTN ev=PRESSED btn=1 alert=EMERGENCY debounce_ms=34 edges=1 isr_to_task_max_us=60 lift_ms=6706
+02:13:09 7071 BTN ev=RELEASED btn=1 edges=2 isr_to_task_max_us=62 bridged=0 max_lift_ms=0
+02:13:12 10000 HB q_dropped=0
+02:13:17 15000 HB q_dropped=0
+02:13:22 20003 HB q_dropped=0
+02:13:27 25004 HB q_dropped=0
+02:13:32 30004 HB q_dropped=0
+02:13:33 31699 BTN ev=PRESSED btn=1 alert=EMERGENCY debounce_ms=30 edges=3 isr_to_task_max_us=27 lift_ms=24748
+02:13:35 33169 BTN ev=HELD btn=1 alert=EMERGENCY held_late_ms=0 bridged=0 max_lift_ms=0
+02:13:35 33175 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=1 attempt=0 lat_ms=6 reason=-
+02:13:35 33486 BTN ev=RELEASED btn=1 edges=4 isr_to_task_max_us=26 bridged=0 max_lift_ms=0
+02:13:35 33487 SM_INFO state=PENDING ev=BUTTON_RELEASED alert=EMERGENCY id=1 reason=cancel_window_started
+02:13:37 35004 HB q_dropped=0
+02:13:40 38486 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+02:13:40 38487 BLE_TX msg=ALERT id=1 alert=EMERGENCY attempt=1 ok=1 reason=-
+02:13:40 38493 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=1 attempt=1 lat_ms=7 reason=-
+02:13:40 38572 BLE_RX msg=ACK id=1
+02:13:40 38572 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+02:13:42 40005 HB q_dropped=0
+02:13:43 41572 SM from=ACKNOWLEDGED to=IDLE ev=TICK alert=EMERGENCY id=1 attempt=1 lat_ms=0 reason=-
+02:13:47 45007 HB q_dropped=0
+02:13:52 50008 HB q_dropped=0
+02:13:57 55011 HB q_dropped=0
+02:14:02 60014 HB q_dropped=0
+02:14:07 65014 HB q_dropped=0
+02:14:12 70015 HB q_dropped=0
+02:14:17 75016 HB q_dropped=0
+02:14:22 80016 HB q_dropped=0
+02:14:27 85016 HB q_dropped=0
+02:14:32 90016 HB q_dropped=0
+02:14:37 95017 HB q_dropped=0
+02:14:42 100019 HB q_dropped=0
+02:14:47 105019 HB q_dropped=0
+02:14:52 110020 HB q_dropped=0
+02:14:57 115020 HB q_dropped=0
+02:15:02 120021 HB q_dropped=0
+02:15:07 125022 HB q_dropped=0
+02:15:12 130025 HB q_dropped=0
+02:15:17 135025 HB q_dropped=0
+02:15:22 140025 HB q_dropped=0
+02:15:27 145025 HB q_dropped=0
+02:15:32 150025 HB q_dropped=0
+02:15:37 155025 HB q_dropped=0
+02:15:42 160026 HB q_dropped=0
+02:15:47 165026 HB q_dropped=0
+02:15:52 170027 HB q_dropped=0
+02:15:57 175029 HB q_dropped=0
+02:16:02 180029 HB q_dropped=0
+02:16:07 185030 HB q_dropped=0
+02:16:12 190030 HB q_dropped=0
+02:16:17 195031 HB q_dropped=0
+02:16:22 200031 HB q_dropped=0
+02:16:27 205032 HB q_dropped=0
+02:16:32 210034 HB q_dropped=0
+02:16:37 215036 HB q_dropped=0
+02:16:38 216022 BTN ev=PRESSED btn=1 alert=EMERGENCY debounce_ms=34 edges=5 isr_to_task_max_us=27 lift_ms=182532
+02:16:39 217492 BTN ev=HELD btn=1 alert=EMERGENCY held_late_ms=4 bridged=0 max_lift_ms=0
+02:16:39 217496 SM from=IDLE to=PENDING ev=BUTTON_HELD alert=EMERGENCY id=2 attempt=0 lat_ms=4 reason=-
+02:16:40 218561 BTN ev=RELEASED btn=1 edges=6 isr_to_task_max_us=55 bridged=0 max_lift_ms=0
+02:16:40 218563 SM_INFO state=PENDING ev=BUTTON_RELEASED alert=EMERGENCY id=2 reason=cancel_window_started
+02:16:42 220037 HB q_dropped=0
+02:16:45 223565 SM from=PENDING to=CONFIRMED ev=TICK alert=EMERGENCY id=2 attempt=1 lat_ms=0 reason=-
+02:16:45 223566 BLE_TX msg=ALERT id=2 alert=EMERGENCY attempt=1 ok=1 reason=-
+02:16:45 223568 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=2 attempt=1 lat_ms=3 reason=-
+02:16:47 225037 HB q_dropped=0
+02:16:50 228571 SM from=ALERT_SENT to=RETRY ev=TICK alert=EMERGENCY id=2 attempt=1 lat_ms=0 reason=ack_timeout
+02:16:52 230041 HB q_dropped=0
+02:16:52 230571 SM from=RETRY to=CONFIRMED ev=TICK alert=EMERGENCY id=2 attempt=2 lat_ms=0 reason=-
+02:16:52 230572 BLE_TX msg=ALERT id=2 alert=EMERGENCY attempt=2 ok=1 reason=-
+02:16:52 230576 SM from=CONFIRMED to=ALERT_SENT ev=ALERT_SEND_OK alert=EMERGENCY id=2 attempt=2 lat_ms=5 reason=-
+02:16:52 230613 BLE_RX msg=ACK id=2
+02:16:52 230614 SM from=ALERT_SENT to=ACKNOWLEDGED ev=HOST_ACK alert=EMERGENCY id=2 attempt=2 lat_ms=0 reason=-
+02:16:55 233623 SM from=ACKNOWLEDGED to=IDLE ev=TICK alert=EMERGENCY id=2 attempt=2 lat_ms=0 reason=-
+02:16:57 235045 HB q_dropped=0
+02:17:02 240046 HB q_dropped=0
+02:17:07 245047 HB q_dropped=0
+02:17:12 250048 HB q_dropped=0
+02:17:17 255050 HB q_dropped=0
+02:17:22 260051 HB q_dropped=0

@@ -244,3 +244,16 @@ Notes:
 Notes:
 - Contact accepted means a contact took responsibility, not that help arrived; the contact page states this.
 - The temporary help tunnel (localhost.run) dropped three times during the session (`no tunnel`). The ngrok upload URL stayed reachable. For the demo, opening the contact page locally on the backend host avoids that dependency.
+
+## T15 — iPhone gateway reliability: offline backend, app relaunch, board reset, lost ack (2026-10-18)
+
+| Field | Value |
+|---|---|
+| Setup | Same phone and App as T13–T14, plus a test toggle "Skip the next ACK". Board serial logged on the Mac for the whole run (`20261018-020548_gateway_reliability_serial.log`). During the run the teammate's upload endpoint went offline (ngrok `ERR_NGROK_3200`, HTTP 404), so every upload in this run stayed pending. |
+| Expected | A: with the backend unreachable, the App still stores and acks, and keeps retrying with the same event_id. B: killing and relaunching the App keeps a pending event and resumes its upload without a duplicate. C: after a board reset, `alert_id 1` becomes a new event. E: if one ack is lost, the wearable's attempt 2 reuses the original event_id and is acked. |
+| Observed | A: D2 hold, board `BLE_TX ALERT id=3 attempt=1` at 02:08:04.705, `BLE_RX ACK id=3` 62 ms later, ACKNOWLEDGED. App event `…d41518af5a89` showed "Sending to backend… (HTTP 404)" and kept retrying (tries 6, 7, 8 seen). B: App killed from the app switcher; board logged disconnect 02:11:44 and reconnect + Alert subscription 02:11:53–54. After relaunch the same event was listed, still pending, tries went 6 → 7, no new event. C: two board resets (02:12:44, 02:13:01); the App reconnected and subscribed about 1 s after each boot. Next D2 hold: `id=1 attempt=1`, ack after 85 ms; App created a new event `…ed23be6b44fd` (`alert_id 1`), separate from all earlier ones. E: toggle on, D2 hold: attempt 1 sent 02:16:45.566, `ack_timeout` 5.0 s later, attempt 2 sent 02:16:52.572, ack 41 ms later, ACKNOWLEDGED. App showed one event `…0a0ee089d50f`, `alert_id 2`, `attempt 2`. |
+| Result | PASS for A (phone side), B, C and E. Not yet shown: that the pending events upload once with their original event_ids when the backend is back (second half of A and B). |
+
+Notes:
+- Skipped on purpose: cancel inside the 5 s window (nothing reaches the phone; covered by T6–T8) and walking out of range (wearable redelivery after reconnect is covered by T10; the App handles that attempt the same way as in E).
+- The App does not re-upload an event that already got 201/200, so a retransmission after a successful upload produces no second backend request (not exercised here, since the backend was offline).

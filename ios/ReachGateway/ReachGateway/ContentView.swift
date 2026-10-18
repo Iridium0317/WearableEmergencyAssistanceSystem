@@ -29,6 +29,10 @@ struct ContentView: View {
                         EventRow(event: event) { gateway.retryUpload(event.eventId) }
                     }
                 }
+                Section("Test tools") {
+                    @Bindable var gateway = gateway
+                    Toggle("Skip the next ACK", isOn: $gateway.dropNextAck)
+                }
                 Section("Log") {
                     ForEach(Array(gateway.log.prefix(60).enumerated()), id: \.offset) { _, line in
                         Text(line).font(.caption.monospaced())
