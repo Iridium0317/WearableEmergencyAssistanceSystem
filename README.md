@@ -68,6 +68,41 @@ from the wearable over BLE to a real iPhone, was uploaded (HTTP 201), and the
 contact accepted it on the contact page. "Contact accepted" means someone took
 responsibility; it does not mean help arrived.
 
+## Using the pendant
+
+| Button | Pin | Alert type |
+|---|---|---|
+| Left | D2 | Emergency |
+| Middle | D3 | Medical |
+| Right | D4 | Family |
+
+The type reaches the gateway app. The backend does not store it yet, so all
+three buttons currently notify the same contacts.
+
+1. **Hold a button for at least 1.5 s, then let go.** Shorter presses do nothing.
+2. **5 s cancel window** (LED fast blue blink), timed from the release. Pressing
+   any button cancels; nothing is sent (LED steady white).
+3. **Sending** (LED steady blue) until the gateway ACKs.
+4. **Delivered to the gateway** (LED steady green).
+5. **Not delivered** (LED slow red blink): no ACK within 20 s / 3 attempts. It
+   stays red; holding a button again starts a new alert.
+
+Edge cases:
+
+- **Contact bounce:** edges within 30 ms are filtered, so one press is one press.
+- **Held and never released** (e.g. the wearer is lying on the button): the
+  alert still goes out 1.5 s + 5 s after the press began.
+- **Two buttons at once:** the second press is the cancel gesture for the
+  first. To switch, let go and hold the intended button.
+- **Cancel after sending:** a press while sending or retrying (before the
+  ACK) cancels on the pendant and sends a CANCEL packet once, best effort. After
+  the ACK (green) a press no longer cancels. CANCEL is
+  not acknowledged in this protocol version, and the backend does not act on it
+  yet; the owner cancels on the Dashboard.
+
+LED: off = idle · fast blue blink = cancel window · steady blue = sending ·
+green = gateway has it · white = cancelled · slow red blink = not delivered.
+
 ## Design decisions
 
 Each decision, why it was made, and where it is tested.
