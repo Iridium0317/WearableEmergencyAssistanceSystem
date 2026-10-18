@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  firmware:
+    name: Firmware (native tests + Nano 33 builds)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: pio-${{ runner.os }}-${{ hashFiles('platformio.ini') }}
+      - run: pip install platformio
+      - name: Host unit tests
+        run: pio test -e native
+      - name: Build BLE firmware
+        run: pio run -e nano33ble
+      - name: Build simulated-link firmware
+        run: pio run -e nano33ble_sim
+
+  ios:
+    name: iPhone gateway (unit tests)
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: ios/ReachGateway
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pick a simulator
+        run: |
+          id=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          print(next(d["udid"] for runtime, ds in devices.items() if "iOS" in runtime
+                     for d in ds if d["name"].startswith("iPhone")))')
+          echo "SIM_ID=$id" >> "$GITHUB_ENV"
+      - name: Unit tests
+        run: |
+          xcodebuild test -project ReachGateway.xcodeproj -scheme ReachGateway \
+            -destination "id=$SIM_ID" CODE_SIGNING_ALLOWED=NO

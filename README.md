@@ -1,5 +1,7 @@
 # Reach
 
+[![CI](https://github.com/Iridium0317/WearableEmergencyAssistanceSystem/actions/workflows/ci.yml/badge.svg)](https://github.com/Iridium0317/WearableEmergencyAssistanceSystem/actions/workflows/ci.yml)
+
 Reach is an educational prototype of a wearable emergency-alert controller on
 an Arduino Nano 33 BLE Sense Rev2 (nRF52840, Cortex-M4, Mbed OS). It is **not** a medical device
 and does not contact emergency services itself: it raises alert events over BLE,
@@ -141,6 +143,9 @@ Requirements and limits the host (iPhone gateway) must respect:
   logs `late_ack_after_error=1` with the alert id.
 
 ## Build and test
+
+CI (`.github/workflows/ci.yml`) runs the host tests, both firmware builds and
+the iPhone gateway unit tests on every push and pull request.
 
 ```sh
 pio test -e native                    # host unit tests
