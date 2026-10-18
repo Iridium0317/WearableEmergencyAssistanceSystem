@@ -281,3 +281,17 @@ Notes:
 | Observed | 22/22 tests passed (15 existing + 7 new). Mutation check: with the ack moved before the save, 6 of the 7 new tests failed; code restored afterwards. |
 | Result | PASS (host logic only; no new hardware or iPhone run) |
 
+## T18 — One hour without a reboot: BLE alert/ACK soak (2026-10-18)
+
+| Field | Value |
+|---|---|
+| Setup | Production firmware (`nano33ble`) on the board, USB to the Mac for serial. `tests/bench/ble_bench.py --soak 60` (new mode): the board is rebooted once at the start, then never again; the Mac (bleak) stays connected as the gateway. Every cycle injects a hold over serial (types rotate Emergency, Medical, Family), waits for the ALERT notification, writes the ACK, and waits for ACKNOWLEDGED then IDLE (about 7.5 s per cycle). A failed cycle is recorded and the run continues; a lost link is reconnected. iPhone app closed. |
+| Expected | Every cycle delivered and acknowledged; `alert_id` increases by one each cycle (no reset); no ERROR; no BLE disconnect; no malformed log lines. |
+| Observed | 60 min, 417 cycles: 410 passed, 7 failed. Each failure coincided with a BLE disconnect (7 disconnects, at cycles 80, 158, 176, 210, 278, 280, 381). In every case the device logged `unsubscribed` for both characteristics, then `disconnected`, i.e. the link was closed from the Mac side; the disconnect reason is not logged, so the cause (macOS BLE stack, radio) is not known. The drops came at different points in the cycle (pending, just after an ACK), with the device otherwise idle. Unexpected resets: 0 (heartbeat continuous, `alert_id` sequence continuous between drops). Malformed lines: 0. On each drop the firmware spent no attempts while not connected (`attempt=0`) and entered ERROR after the 20 s delivery budget. Host-observed latencies over the 410 passing cycles: hold command to ALERT notification median 5039.7 ms, p95 5304.9 ms, max 6325.3 ms (includes the 5000 ms cancel window); ACK write to ACKNOWLEDGED median 22.4 ms, p95 274.8 ms, max 573.0 ms. |
+| Result | FAIL against the expected "no disconnect" (7 drops in an hour, 410/417 delivered). The firmware handled every drop as designed and never reported an undelivered alert as delivered. |
+
+Notes:
+- Test design limit: after a failed cycle the harness waits about 25 s before reconnecting, longer than the 20 s delivery budget, so every drop became one ERROR. The iPhone gateway reconnects at once and the pendant resends on subscription (T10, T15); this run does not measure how many alerts that would save.
+- Finding: if the gateway cannot reconnect within 20 s of a drop, the alert in flight ends in ERROR. The drop rate with the iPhone as gateway over a long run has not been measured.
+- Raw data: `tests/bench/results/20261018-093532_soak_cycles.csv`, `20261018-093532_soak_serial.log`.
+

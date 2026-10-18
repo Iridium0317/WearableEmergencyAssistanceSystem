@@ -7,6 +7,7 @@ Requires the production firmware (pio run -e nano33ble), not the _sim build.
 Usage:
     python tests/bench/ble_bench.py
     python tests/bench/ble_bench.py --only happy_path --repeat 10
+    python tests/bench/ble_bench.py --soak 60    # one boot, alert/ack cycles for 60 min
 
 Timing caveat: host-side latencies compare the arrival time of a serial log
 line with the arrival time of a BLE packet on the same host clock. Both paths
@@ -316,13 +317,110 @@ async def run(port: str, plan: list[str], out_dir: Path) -> bool:
     return all(r["result"] == "PASS" for r in results)
 
 
+# --- soak --------------------------------------------------------------------
+#
+# Unlike the scenarios, the board boots once and the BLE link is kept for the
+# whole run, so state that only builds up over time (alert_id, queues, the BLE
+# stack) is exercised. Holds are injected over serial, as in T11. A failed
+# cycle is recorded and the run continues; a lost link is reconnected and counted.
+
+
+async def soak_cycle(dev: Device, host: Host, alert_type: int, expected_id: int | None) -> dict:
+    t_hold = dev.send(f"hold {alert_type}")
+    await expect(dev, "SM", 1.0, to="PENDING", alert=ALERT_NAMES[alert_type])
+    t_notify, alert = await host.next_alert(PENDING_MS / 1000 + 2)
+    if alert["msg"] != MSG_ALERT or alert["attempt"] != 1 or alert["alert"] != ALERT_NAMES[alert_type]:
+        raise BenchFailure(f"unexpected alert packet {alert}")
+    if expected_id is not None and alert["id"] != expected_id:
+        raise BenchFailure(f"alert_id {alert['id']} != expected {expected_id} (reset?)")
+    t_ack = await host.write_ack(ack_packet(alert["id"]))
+    ackd = await expect(dev, "SM", 2.0, to="ACKNOWLEDGED")
+    await expect(dev, "SM", 5.0, to="IDLE")
+    return {"id": alert["id"], "hold_to_notify_ms": ms(t_hold, t_notify),
+            "ack_to_acknowledged_ms": ms(t_ack, ackd.host_t)}
+
+
+async def run_soak(port: str, minutes: float, out_dir: Path) -> bool:
+    run_id = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rows, reconnects = [], 0
+    with (out_dir / f"{run_id}_soak_serial.log").open("w") as raw_log:
+        dev = Device(port, raw_log)
+        dev.open()
+        host = Host()
+        try:
+            await asyncio.to_thread(dev.reboot)
+            dev.cursor = start_mark = dev.mark()
+            await expect(dev, "BLE", 5.0, ev="advertising")
+            await host.connect()
+            await expect(dev, "BLE", 5.0, ev="subscribed", char="alert")
+            start = time.monotonic()
+            end = start + minutes * 60
+            expected_id, n = None, 0
+            while time.monotonic() < end:
+                n += 1
+                alert_type = (n - 1) % 3 + 1
+                t0 = time.monotonic()
+                try:
+                    r = await soak_cycle(dev, host, alert_type, expected_id)
+                    expected_id = r["id"] + 1
+                    rows.append({"cycle": n, "elapsed_s": f"{t0 - start:.1f}", "result": "PASS", **r, "detail": ""})
+                except BenchFailure as exc:
+                    rows.append({"cycle": n, "elapsed_s": f"{t0 - start:.1f}", "result": "FAIL", "id": "",
+                                 "hold_to_notify_ms": "", "ack_to_acknowledged_ms": "", "detail": str(exc)})
+                    print(f"FAIL  cycle {n}: {exc}", flush=True)
+                    expected_id = None  # resync on the next alert
+                    await asyncio.sleep(DELIVERY_TIMEOUT_MS / 1000 + 5)  # let the device settle
+                    dev.cursor = dev.mark()
+                    while not host.alerts.empty():
+                        host.alerts.get_nowait()
+                if host.client is None or not host.client.is_connected:
+                    reconnects += 1
+                    print(f"link lost after cycle {n}, reconnecting", flush=True)
+                    await host.disconnect()
+                    await host.connect()
+                if n % 30 == 0:
+                    print(f"{(time.monotonic() - start) / 60:5.1f} min  {n} cycles", flush=True)
+            resets = len(dev.find(start_mark, None, "BOOT"))
+            disconnects = len(dev.find(start_mark, None, "BLE", ev="disconnected"))
+            errors = len(dev.find(start_mark, None, "SM", to="ERROR"))
+            malformed = len(dev.malformed)
+        finally:
+            try:
+                await host.disconnect()
+            except Exception:  # noqa: BLE001 - cleanup must not mask the result
+                pass
+            dev.close()
+
+    fields = ["cycle", "elapsed_s", "result", "id", "hold_to_notify_ms", "ack_to_acknowledged_ms", "detail"]
+    with (out_dir / f"{run_id}_soak_cycles.csv").open("w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=fields)
+        w.writeheader()
+        w.writerows(rows)
+    passed = [r for r in rows if r["result"] == "PASS"]
+    print(f"\ncycles {len(rows)}, passed {len(passed)}, failed {len(rows) - len(passed)}")
+    print(f"unexpected resets: {resets}, ERROR states: {errors}, "
+          f"BLE disconnects: {disconnects}, host reconnects: {reconnects}, malformed lines: {malformed}")
+    for key in ("hold_to_notify_ms", "ack_to_acknowledged_ms"):
+        values = sorted(float(r[key]) for r in passed)
+        if values:
+            p95 = values[min(len(values) - 1, int(len(values) * 0.95))]
+            print(f"{key:<24} min {values[0]:8.1f}  median {values[len(values) // 2]:8.1f}  "
+                  f"p95 {p95:8.1f}  max {values[-1]:8.1f}")
+    print(f"\nartifacts: {out_dir}/{run_id}_soak_*")
+    return len(passed) == len(rows) and resets == 0 and errors == 0 and disconnects == 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--port", help="serial port (default: auto-detect Arduino)")
     parser.add_argument("--only", nargs="+", choices=SCENARIOS, help="run only these scenarios")
     parser.add_argument("--repeat", type=int, default=1, help="run each scenario N times")
     parser.add_argument("--out", type=Path, default=Path(__file__).parent / "results")
+    parser.add_argument("--soak", type=float, metavar="MIN", help="one boot, alert/ack cycles for MIN minutes")
     args = parser.parse_args()
+    if args.soak:
+        return 0 if asyncio.run(run_soak(args.port or find_port(), args.soak, args.out)) else 1
     plan = [name for name in (args.only or SCENARIOS) for _ in range(args.repeat)]
     return 0 if asyncio.run(run(args.port or find_port(), plan, args.out)) else 1
 

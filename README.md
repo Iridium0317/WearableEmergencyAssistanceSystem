@@ -196,6 +196,7 @@ forces one retransmission for testing.
 | Full chain to "Contact accepted" | Pass | T14 |
 | Backend offline, app relaunch, board reset, lost ack | Pass on the phone side | T15 |
 | Gateway phone locked: receive, ack | Pass | T16 |
+| One hour without a reboot (Mac as gateway) | 410/417 delivered; 7 BLE drops closed from the Mac side, no resets, each shown as ERROR | T18 |
 
 ## Prototype findings
 
