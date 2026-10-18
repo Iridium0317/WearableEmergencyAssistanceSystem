@@ -196,3 +196,16 @@ Notes:
 - Intermediate version (resend on LinkUp only, run `20261017-213113`): 8/10. The resend itself worked (2–8 ms after subscription), but backoff ticks that fell between reconnect and subscription were still spent with `not_subscribed`; in the 2 failures attempt 3 was spent 550 ms before the subscription and 55 ms before the reconnect. That led to the not-ready refund and the time budget.
 - User-visible trade-off: with no phone at all, the red ERROR light now comes 20 s after the first send instead of about 4 s (9 s after the hold instead of 25 s). 20 s is a prototype value chosen to cover the ~5 s reconnects seen here with margin; it is not validated, and iPhone background reconnects may need a different value.
 - After the serial bench, flashing the production build back failed twice ("No device found" from the bootloader after the 1200-baud touch). A manual double-tap reset by the operator recovered it; the image was then written and verified with bossac and the console confirmed the production build (`link` → `not_simulated`).
+
+## T11 — Repeated-cycle reliability: BLE happy path ×100 (2026-10-17)
+
+| Field | Value |
+|---|---|
+| Setup | Firmware `9dd21bb` (production image SHA-256 `d9f03c26…5c81`), Mac + bleak as BLE central, `ble_bench.py --only happy_path --repeat 100`, run `20261017-225159`, about 16 min. The Mac was downloading a macOS installer during the run. |
+| Expected | 100/100 PASS; no event-queue drops; no error lines. |
+| Observed | 100/100 PASS. `q_dropped=0` in all 108 heartbeats; no `BLE_ERR`, `BTN_ERR` or overflow lines. Pending window median 5006 ms (p95 5011, max 5012); event queueing latency median 1 ms (max 7); CONFIRMED log → notification at host median 30.6 ms (p95 61.0, max 96.4); ack write → ACKNOWLEDGED median 34.9 ms (p95 42.5, max 63.8). |
+| Result | PASS |
+
+Notes:
+- The bench reboots the board before every scenario, so this shows 100 consecutive reliable alert cycles, not long uptime. A continuous run without reboots is still to do.
+- Notification latency p95 (61 ms) is higher than in T9 (31.8 ms, n=20). The concurrent download may explain it; not established. Well inside the 5 s ack window either way.
