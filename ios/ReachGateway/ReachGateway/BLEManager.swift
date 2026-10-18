@@ -8,9 +8,12 @@ protocol BLEManagerDelegate: AnyObject {
     func bleLog(_ line: String)
 }
 
-// Foreground BLE central for the Reach wearable: scan by service UUID, connect,
-// subscribe to Alert and Status, write Acks. Reconnects automatically after a
-// disconnect. All callbacks arrive on the main queue.
+// BLE central for the Reach wearable: scan by service UUID, connect, subscribe
+// to Alert and Status, write Acks. Runs in the background (bluetooth-central
+// mode) and uses state restoration, so iOS can relaunch the app for a wearable
+// event after terminating it for memory. After a disconnect it issues a
+// pending connect to the known wearable, which also works in the background.
+// All callbacks arrive on the main queue.
 final class BLEManager: NSObject {
     enum Link: Equatable {
         case bluetoothOff(String)
@@ -37,7 +40,8 @@ final class BLEManager: NSObject {
 
     func start() {
         if central == nil {
-            central = CBCentralManager(delegate: self, queue: .main)
+            central = CBCentralManager(delegate: self, queue: .main,
+                                       options: [CBCentralManagerOptionRestoreIdentifierKey: "reach-central"])
         } else {
             startScan()
         }
@@ -78,10 +82,27 @@ final class BLEManager: NSObject {
 }
 
 extension BLEManager: CBCentralManagerDelegate {
+    func centralManager(_ central: CBCentralManager, willRestoreState dict: [String: Any]) {
+        guard let restored = (dict[CBCentralManagerRestoredStatePeripheralsKey] as? [CBPeripheral])?.first
+        else { return }
+        peripheral = restored
+        restored.delegate = self
+        delegate?.bleLog("restored by iOS (state \(restored.state.rawValue))")
+    }
+
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
         case .poweredOn:
-            startScan()
+            if let peripheral, peripheral.state == .connected {
+                // Restored while still connected: rediscover to get the characteristics back.
+                link = .connecting
+                peripheral.discoverServices([serviceUUID])
+            } else if let peripheral {
+                link = .connecting
+                central.connect(peripheral)
+            } else {
+                startScan()
+            }
         case .unauthorized:
             link = .bluetoothOff("Bluetooth permission denied. Allow it in Settings > Reach.")
         case .poweredOff:
@@ -113,8 +134,10 @@ extension BLEManager: CBCentralManagerDelegate {
                         error: Error?) {
         delegate?.bleLog("disconnected\(error.map { ": \($0.localizedDescription)" } ?? "")")
         resetCharacteristics()
-        link = .disconnected
-        startScan()
+        // A pending connect never times out and completes in the background
+        // as soon as the wearable advertises again.
+        link = .connecting
+        central.connect(peripheral)
     }
 }
 

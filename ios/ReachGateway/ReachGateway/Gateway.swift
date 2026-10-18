@@ -1,5 +1,7 @@
 import Foundation
 import Observation
+import UIKit
+import UserNotifications
 
 // Alert lifecycle on the phone:
 //   BLE alert -> persist event -> write BLE ack -> upload (retry, same event_id).
@@ -22,15 +24,26 @@ final class Gateway {
     private let store = EventStore()
     private var uploading: Set<String> = []
 
+    // Bluetooth starts here, not when the UI appears: after iOS relaunches the
+    // app in the background for a wearable event, no window may be shown.
     init() {
         events = store.events
         ble.delegate = self
         refreshConfig()
-    }
-
-    func start() {
         ble.start()
         resumeUploads()
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
+    }
+
+    // Shown on the lock screen too. Says only what the phone knows: the alert
+    // was saved here; whether the backend recorded it is a separate step.
+    private func notify(_ title: String, _ body: String) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+        UNUserNotificationCenter.current().add(
+            UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil))
     }
 
     func refreshConfig() {
@@ -94,6 +107,7 @@ final class Gateway {
                 return
             }
             append("ALERT id=\(packet.alertId) \(packet.type.label) attempt=\(packet.attempt) new \(eventId)")
+            notify("Reach: \(packet.type.label) alert", "Saved on this phone. Sending to ReachGuard…")
         }
         events = store.events
         if dropNextAck {
@@ -108,7 +122,18 @@ final class Gateway {
     private func upload(_ eventId: String) {
         guard !uploading.contains(eventId) else { return }
         uploading.insert(eventId)
-        Task { await uploadLoop(eventId) }
+        // Ask iOS for extra background time (usually tens of seconds). If it
+        // runs out the loop is suspended with the app and continues when the
+        // app runs again; the event stays saved and pending meanwhile.
+        var task = UIBackgroundTaskIdentifier.invalid
+        task = UIApplication.shared.beginBackgroundTask(withName: "upload \(eventId)") {
+            UIApplication.shared.endBackgroundTask(task)
+            task = .invalid
+        }
+        Task {
+            await uploadLoop(eventId)
+            if task != .invalid { UIApplication.shared.endBackgroundTask(task) }
+        }
     }
 
     private func uploadLoop(_ eventId: String) async {
@@ -133,6 +158,7 @@ final class Gateway {
                 }
                 events = store.events
                 append("UPLOAD \(state == .uploaded ? "201 received" : "200 duplicate") \(eventId)")
+                notify("Reach: alert recorded", "ReachGuard recorded the alert. No contact has accepted it yet.")
                 return
             case .stop(let reason):
                 try? store.update(eventId) {

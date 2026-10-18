@@ -257,3 +257,16 @@ Notes:
 Notes:
 - Skipped on purpose: cancel inside the 5 s window (nothing reaches the phone; covered by T6–T8) and walking out of range (wearable redelivery after reconnect is covered by T10; the App handles that attempt the same way as in E).
 - The App does not re-upload an event that already got 201/200, so a retransmission after a successful upload produces no second backend request (not exercised here, since the backend was offline).
+
+## T16 — iPhone gateway with the phone locked (2026-10-18)
+
+| Field | Value |
+|---|---|
+| Setup | ReachGateway with `bluetooth-central` background mode, Core Bluetooth state restoration, a local notification per new alert, and a background task around uploads. iPhone SE (3rd gen), iOS 18.1.1. Wearable on a USB power bank (no serial log). Backend upload endpoint still offline (HTTP 404). |
+| Expected | With the App connected and the phone locked, a D2 hold is stored and acked without a retransmission, a notification appears on the lock screen, and the upload keeps retrying with the same event_id. |
+| Observed | Phone locked about 10 s before the hold. The lock screen showed the "Reach: Emergency alert" notification (reported by the operator). After unlocking, the App listed `Emergency`, `alert_id 2`, `attempt 1`, `nano-01-b2793be5-74d4-4dac-b0d2-17e80e322df5`, "Sending to backend… (HTTP 404)", tries 4. Attempt 1 means the ack written while locked was accepted before the wearable's 5 s ack timeout. |
+| Result | PASS for receive, store, ack and notify while locked. Not shown: upload success while locked (backend offline), and relaunch by iOS after it terminates the App (state restoration is implemented but not exercised). |
+
+Notes:
+- iOS gives a background task limited time; if the upload has not succeeded by then, retries continue the next time the App runs. The event stays saved meanwhile.
+- If the user force-quits the App from the app switcher, iOS does not relaunch it for Bluetooth events.

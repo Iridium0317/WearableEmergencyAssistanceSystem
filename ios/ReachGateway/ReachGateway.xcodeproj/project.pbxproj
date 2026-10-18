@@ -31,6 +31,7 @@
 /* Begin PBXFileReference section */
 		34E8777AAF794D047D6923EF /* ReachGateway.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ReachGateway.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		482BE7F64BED6384FD306111 /* GatewayLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatewayLogicTests.swift; sourceTree = "<group>"; };
+		5A707EDB363B67767D6E18C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		7140C19A7FA349492F408B47 /* ReachGatewayTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ReachGatewayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		80EE7841566E181E2D4745E3 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		914929D4E3D559AD3736A11E /* ReachGatewayApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachGatewayApp.swift; sourceTree = "<group>"; };
@@ -51,6 +52,7 @@
 				FF7B105CC26A1000BCBDD91B /* ContentView.swift */,
 				A7D2DE778AFC03C2FE591DC4 /* EventStore.swift */,
 				D4E626AE3DEA3471AF862D09 /* Gateway.swift */,
+				5A707EDB363B67767D6E18C2 /* Info.plist */,
 				914929D4E3D559AD3736A11E /* ReachGatewayApp.swift */,
 				80EE7841566E181E2D4745E3 /* Settings.swift */,
 				934F54A32B810FB75D47675E /* Uploader.swift */,
@@ -342,6 +344,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ReachGateway/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Reach;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Reach connects to your Reach wearable to receive emergency button alerts.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -362,6 +365,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ReachGateway/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Reach;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Reach connects to your Reach wearable to receive emergency button alerts.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

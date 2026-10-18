@@ -130,6 +130,7 @@ forces one retransmission for testing.
 | First real iPhone run, upload 201 | Pass | T13 |
 | Full chain to "Contact accepted" | Pass | T14 |
 | Backend offline, app relaunch, board reset, lost ack | Pass on the phone side | T15 |
+| Phone locked: receive, ack, lock-screen notification | Pass | T16 |
 
 ## Prototype findings
 
@@ -145,8 +146,9 @@ forces one retransmission for testing.
 
 - Not a medical device. It never contacts emergency services; demos only notify
   team members.
-- The iPhone app is foreground-only for now (it keeps the screen on). Locked or
-  background operation is not implemented or tested.
+- The iPhone app receives, acks and notifies with the phone locked (T16), but
+  iOS limits background time: a failed upload may wait until the app runs
+  again, and a force-quit app is not relaunched for Bluetooth events.
 - The phone must be within BLE range of the wearable (roughly the same room).
   If it is not, the wearable retries and then shows ERROR; the alert is not sent.
 - No voice. The wearable has no speaker and no cellular or Wi-Fi radio; a

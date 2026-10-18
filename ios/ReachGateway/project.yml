@@ -13,6 +13,10 @@ targets:
     type: application
     platform: iOS
     sources: [ReachGateway]
+    info:
+      path: ReachGateway/Info.plist
+      properties:
+        UIBackgroundModes: [bluetooth-central]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.iridium0317.reachgateway

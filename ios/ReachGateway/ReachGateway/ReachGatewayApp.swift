@@ -11,9 +11,9 @@ struct ReachGatewayApp: App {
             ContentView()
                 .environment(gateway)
                 .onAppear {
-                    // Phase 1 is foreground-only: keep the screen on while testing.
+                    // Keeps the screen on while the app is open (demos); locking the
+                    // phone is fine, Bluetooth keeps running in the background.
                     UIApplication.shared.isIdleTimerDisabled = true
-                    gateway.start()
                 }
                 .onChange(of: scenePhase) { _, phase in
                     if phase == .active { gateway.resumeUploads() }
