@@ -7,10 +7,28 @@ and a host application decides what to do with them (call, message, etc.).
 
 Status and measured results: see [TEST_RESULTS.md](TEST_RESULTS.md).
 
+## End-to-end system (ReachGuard)
+
+```
+wearable (this repo) ──BLE──► iPhone gateway app (ios/ReachGateway, this repo)
+                                   │ HTTPS, device credential
+                                   ▼
+                         backend device inbox + help service
+                         (github.com/Cyberchopin/reachguard)
+                                   │
+                                   ▼
+                     contact page ("I can help") and Dashboard
+```
+
+First full run on 2026-10-18 (TEST_RESULTS.md T14): a D2 Emergency hold went
+from the wearable over BLE to a real iPhone, was uploaded (HTTP 201), and the
+contact accepted it on the contact page. "Contact accepted" means someone took
+responsibility; it does not mean help arrived.
+
 ## Architecture
 
 ```
-GPIO ISR (next) ─┐
+GPIO ISR ───────┐
 serial console ──┼─► AppEventQueue (rtos::Mail, ISR-safe) ─► app thread
 BLE callbacks ───┘                                            ├─ StateMachine (pure, host-tested)
                                                               └─ AlertTransport: BleLink | SimulatedLink
@@ -20,7 +38,7 @@ BLE callbacks ───┘                                            ├─ Sta
 - `lib/button_logic` — debounce and deliberate-hold detection
 - `lib/protocol` — BLE packet encoding/validation
 - `src/app` — event queue and the controller thread
-- `src/drivers` — BLE GATT transport
+- `src/drivers` — buttons (D2 Emergency, D3 Medical, D4 Family), status LED, BLE GATT transport
 - `src/services` — diagnostics log, serial console, simulated link
 
 The app thread is the only thread that touches the state machine and ArduinoBLE,
@@ -76,3 +94,65 @@ python3 -m venv .venv && .venv/bin/pip install -r tests/bench/requirements.txt
 
 Serial console commands (115200 baud): `ping`, `reboot`, `hold <1-3>`, `press`,
 `ack <id>`, `link up|down` (sim build only).
+
+## iPhone gateway app
+
+`ios/ReachGateway` is a SwiftUI app (iOS 17+) that connects to `WEA-Nano33`,
+stores each alert on the phone, writes the BLE Ack, and uploads a
+`help_request` to the backend, retrying with the same `event_id` until it gets
+201/200. A retransmission (`attempt` > 1) reuses its event; `attempt` 1 always
+starts a new one, so a board reset cannot merge alarms. 401/403/409/413/422
+stop retrying and show the reason.
+
+```sh
+brew install xcodegen
+cd ios/ReachGateway && xcodegen generate     # project.yml -> ReachGateway.xcodeproj
+xcodebuild test -project ReachGateway.xcodeproj -scheme ReachGateway \
+  -destination 'platform=iOS Simulator,name=<any iPhone>'   # 15 unit tests
+```
+
+Run on a phone: open the project in Xcode, pick your team under Signing &
+Capabilities, select the iPhone, Run. With a free Apple ID the install expires
+after 7 days. In the app's settings enter the backend base URL (without
+`/api/device-events`) and the device credential; the credential is kept only in
+the iOS Keychain and is never committed. "Test tools → Skip the next ACK"
+forces one retransmission for testing.
+
+## Validation summary
+
+| Area | Result | Record |
+|---|---|---|
+| State machine, debouncer, protocol (host) | Unit tests pass | T1, T3 |
+| Real buttons, LED, cancel, simultaneous holds | Pass on hardware | T6–T8 |
+| BLE alert/ack with a Mac host, retry on reconnect | Pass | T5, T9, T10 |
+| BLE happy path ×100 | 100/100 | T11 |
+| iPhone gateway unit tests | 15/15 | T12 |
+| First real iPhone run, upload 201 | Pass | T13 |
+| Full chain to "Contact accepted" | Pass | T14 |
+| Backend offline, app relaunch, board reset, lost ack | Pass on the phone side | T15 |
+
+## Prototype findings
+
+- **Three buttons may be too many.** While testing, the developers themselves
+  could not always tell which button was which. For an older person, choosing
+  between Emergency, Medical and Family in an emergency is a burden. The next
+  iteration explores a single button; the firmware keeps three-button support.
+- **One contact is not enough.** If the only contact misses the alert, nothing
+  else happens. A rule for automatically notifying contacts in turn until
+  someone responds is designed but not implemented.
+
+## Limitations
+
+- Not a medical device. It never contacts emergency services; demos only notify
+  team members.
+- The iPhone app is foreground-only for now (it keeps the screen on). Locked or
+  background operation is not implemented or tested.
+- The phone must be within BLE range of the wearable (roughly the same room).
+  If it is not, the wearable retries and then shows ERROR; the alert is not sent.
+- No voice. The wearable has no speaker and no cellular or Wi-Fi radio; a
+  cellular voice module is the likely path for a later version.
+- The backend does not store the alert type yet, so the contact page shows only
+  "Device event".
+- Timing parameters (1.5 s hold, 5 s cancel window, 5 s ack timeout, 3
+  attempts, 20 s delivery budget) are prototype defaults, not validated with
+  older users.
