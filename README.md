@@ -17,15 +17,48 @@ that needs no gateway). Family members respond on the contact page; a primary
 family member (the "owner" role, e.g. the wearer's son) follows every step on
 the Dashboard.
 
+```mermaid
+flowchart LR
+    W["Pendant<br/>Nano 33 BLE Sense<br/>(this repo: firmware)"]
+    G["Home gateway<br/>iPhone app<br/>(this repo: ios/ReachGateway)"]
+    I["Device inbox<br/>idempotent by event_id"]
+    H["Help service<br/>contact rotation, audit"]
+    C["Contact pages<br/>family: I can help"]
+    D["Owner Dashboard<br/>every step, can cancel"]
+    W -- "BLE alert / ack" --> G
+    G -- "HTTPS + device credential" --> I
+    I --> H
+    H --> C
+    H --> D
+    subgraph Backend ["Backend (Cyberchopin/reachguard)"]
+        I
+        H
+    end
 ```
-wearable (this repo) ──BLE──► home gateway: iPhone app (ios/ReachGateway, this repo)
-                                   │ HTTPS, device credential
-                                   ▼
-                         backend device inbox + help service
-                         (github.com/Cyberchopin/reachguard)
-                                   │
-                                   ▼
-                     contact page ("I can help") and Dashboard
+
+### Life of one alert
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Wearer
+    participant P as Pendant
+    participant G as Gateway app
+    participant B as Backend
+    actor F as Family
+    Wearer->>P: hold button 1.5 s, release
+    Note over P: 5 s cancel window<br/>(press again = cancel, nothing sent)
+    P->>G: ALERT (alert_id, type, attempt 1)
+    G->>G: save event (new event_id)
+    G->>P: ACK alert_id
+    Note over P: no ACK in 5 s - resend same alert_id,<br/>3 attempts / 20 s, then ERROR
+    G->>B: POST help_request (event_id)
+    B-->>G: 201 recorded (200 if retried)
+    loop until someone accepts
+        B->>F: notify next contact, wait 20 s
+    end
+    F->>B: I can help
+    Note over B,F: accepted = someone took responsibility,<br/>not "help has arrived"
 ```
 
 First full run on 2026-10-18 (TEST_RESULTS.md T14): a D2 Emergency hold went
@@ -33,7 +66,26 @@ from the wearable over BLE to a real iPhone, was uploaded (HTTP 201), and the
 contact accepted it on the contact page. "Contact accepted" means someone took
 responsibility; it does not mean help arrived.
 
-## Architecture
+## Design decisions
+
+Each decision, why it was made, and where it is tested.
+
+| Decision | Why | Evidence |
+|---|---|---|
+| A deliberate 1.5 s hold, then a 5 s cancel window before anything is sent | False alarms are the main failure of alert buttons; short presses and contact bounce must never alert, and a wrong press must be undoable | T6–T8 |
+| An explicit application ACK for every alert | A BLE notification is not a delivery confirmation; only the gateway's ACK counts | T5, T9 |
+| Bounded retries (3 attempts, 20 s), then a sticky ERROR | The wearer must never see "sent" for an alert nobody received; failure is shown, not hidden | T5, T10 |
+| No attempt is spent while the gateway is not listening | Found on the bench: retries burned while the host reconnected, failing 2 of 10 redeliveries. Sends now need connected **and** subscribed, and resend the moment it subscribes | T10 |
+| The gateway saves an alert before it ACKs | An ACK is a promise to keep the alarm; if the phone cannot save it, no ACK is sent and the pendant falls back to ERROR | T13, T15 |
+| `event_id`: attempt 1 always creates a new ID, a retry reuses it | `alert_id` restarts at 1 after a board reset, so it cannot be the identity; retries must not create a second help request (the backend also answers 200 for a repeated ID) | T15 |
+| Upload retries transient failures with the same ID, and stops on credential or schema errors | Retrying cannot fix a wrong credential; the reason is shown and a manual retry keeps the original ID | T13 |
+| "Received", "recorded" and "accepted" are three different claims | BLE ACK = the gateway has it; HTTP 201 = the backend recorded it; accepted = a contact took responsibility. None of them means help arrived, and the UI wording says so | T14 |
+| The gateway is silent | It stands in for a device left at home; telling family is the backend's job | — |
+| Rotation lives in the backend; the wearer presses once | Keep the wearer's side simple and put the complexity in the system: close family first, alternating, then others, round after round until someone accepts. After downtime it resumes one step at a time instead of firing every missed notification | Backend PR #5 |
+| Pure logic is separate from hardware | State machine, debouncer, packet protocol and gateway rules run as host unit tests; timers are overflow-safe | T1, T3, T12 |
+| Least-privilege credentials | The gateway holds only the device credential (iOS Keychain); contacts, owner and dashboard have separate roles; nothing is committed | — |
+
+## Firmware architecture
 
 ```
 GPIO ISR ───────┐
