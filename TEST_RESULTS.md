@@ -231,3 +231,16 @@ Notes:
 Notes:
 - The press was on D3, which is correct for `Medical`; the earlier confusion was about which physical button is D2 (the left one).
 - 401 is a stop condition in the App by design (retrying cannot fix a wrong credential); the manual Retry after fixing it is the intended recovery and kept the original event_id.
+
+## T14 — First full chain: button → BLE → iPhone → backend → contact accepted (2026-10-18)
+
+| Field | Value |
+|---|---|
+| Setup | Same as T13 (iPhone SE 3rd gen, iOS 18.1.1, App in the foreground, device credential corrected). Contact page on the Mac browser through the teammate's temporary help tunnel, signed in with the contact credential. |
+| Expected | One event in the App with a 201 upload; the same event_id visible on the contact page; "I can help" moves it to Contact accepted. |
+| Observed | App event `nano-01-c41ea862-09b5-4b2b-8379-8275b2e99fdb`. Contact page listed request `b2e99fdb` (device `nano-01`) recorded 01:33:39, history "Recorded from the device inbox" 01:33:40; after "I can help" it showed Contact accepted at 01:58:30 ("Separate contact access"). The T13 event (`…d18e4078`) was also listed, recorded 01:32:52 (the Retry after the credential fix), state Recorded by backend. |
+| Result | PASS for the chain as observed. Not shown in this record: the alert type of this event in the App (the backend does not store alert type yet, so the contact page shows only "Device event"). |
+
+Notes:
+- Contact accepted means a contact took responsibility, not that help arrived; the contact page states this.
+- The temporary help tunnel (localhost.run) dropped three times during the session (`no tunnel`). The ngrok upload URL stayed reachable. For the demo, opening the contact page locally on the backend host avoids that dependency.
