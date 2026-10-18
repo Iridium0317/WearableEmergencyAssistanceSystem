@@ -15,6 +15,7 @@ enum class AlertType : uint8_t {
 enum class EventType : uint8_t {
     ButtonPressed,    // debounced press edge; also the cancel gesture
     ButtonHeld,       // press held past the deliberate-hold threshold
+    ButtonReleased,   // debounced release edge; arms the cancel lockout
     Tick,             // periodic time source for timeouts
     AlertSendOk,      // transport accepted the alert for alert_id
     AlertSendFailed,  // transport could not send alert_id
@@ -26,7 +27,7 @@ enum class EventType : uint8_t {
 struct Event {
     EventType type;
     uint32_t timestamp_ms;
-    AlertType alert;    // ButtonPressed / ButtonHeld
+    AlertType alert;    // ButtonPressed / ButtonHeld / ButtonReleased
     uint16_t alert_id;  // AlertSendOk / AlertSendFailed / HostAck
 };
 

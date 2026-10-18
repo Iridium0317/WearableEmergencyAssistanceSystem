@@ -1,7 +1,7 @@
-# Wearable Emergency Assistance System
+# Reach
 
-Educational prototype of a wearable emergency-alert controller on an Arduino
-Nano 33 BLE Rev2 (nRF52840, Cortex-M4, Mbed OS). It is **not** a medical device
+Reach is an educational prototype of a wearable emergency-alert controller on
+an Arduino Nano 33 BLE Sense Rev2 (nRF52840, Cortex-M4, Mbed OS). It is **not** a medical device
 and does not contact emergency services itself: it raises alert events over BLE,
 and a host application decides what to do with them (call, message, etc.).
 
@@ -41,6 +41,22 @@ Advertised name `WEA-Nano33`. No pairing (prototype only).
 Notifications are not delivery-confirmed by BLE, so an alert counts as
 delivered only when the host writes an Ack. Unacknowledged alerts are retried
 (3 attempts max, 5 s ack timeout, 2 s backoff) and then end in a sticky ERROR.
+
+Requirements and limits the host (iPhone gateway) must respect:
+
+- **Deduplicate by `alert_id`.** Every retry of one alert reuses its
+  `alert_id` (only `attempt` changes, 1..3), and a late ack from an earlier
+  attempt still counts. The host must create at most one event per
+  `alert_id`. IDs live in RAM and restart at 1 after a board reset, so dedup
+  must be scoped to the current connection or boot, not kept forever.
+- **CANCEL is not acknowledged.** It is sent once, best effort. A successful
+  BLE send only means the packet was handed to the BLE stack; it does not mean
+  the host received it or stopped the alert. If the send fails the firmware
+  logs `cancel_delivery=unknown`. There is no CANCEL ack in this protocol
+  version.
+- **An ack only means the host accepted the alert**, not that a caregiver saw it.
+- **A late ack after ERROR is not accepted.** The firmware stays in ERROR and
+  logs `late_ack_after_error=1` with the alert id.
 
 ## Build and test
 

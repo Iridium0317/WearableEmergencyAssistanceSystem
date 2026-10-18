@@ -68,6 +68,11 @@ void EmergencyController::report(const Event& event, const Result& result, uint3
     } else if (result.outcome == Outcome::Rejected) {
         diag::log("SM_REJECT", "state=%s ev=%s ev_id=%u reason=%s",
                   toString(result.from), toString(event.type), event.alert_id, result.reason);
+        if (event.type == EventType::HostAck && result.from == State::Error &&
+            event.alert_id == machine_.alertId()) {
+            diag::log("ACK", "late_ack_after_error=1 id=%u alert=%s", event.alert_id,
+                      toString(machine_.alertType()));
+        }
     }
 }
 
@@ -85,10 +90,12 @@ void EmergencyController::execute(Action action, uint32_t now) {
             return;
         }
         case Action::SendCancel: {
-            // Best effort: the user already cancelled locally either way.
+            // Best effort, sent once: the user already cancelled locally
+            // either way. There is no CANCEL ack in the protocol, so even a
+            // successful send does not mean the host has cancelled.
             const bool ok = transport_.sendCancel(id, machine_.alertType());
             if (!ok) {
-                diag::log("ERR", "op=send_cancel id=%u reason=link_unavailable", id);
+                diag::log("ERR", "op=send_cancel id=%u reason=link_unavailable cancel_delivery=unknown", id);
             }
             return;
         }

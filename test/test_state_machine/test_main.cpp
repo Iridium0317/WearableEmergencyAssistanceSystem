@@ -9,7 +9,8 @@ Event ev(EventType type, uint32_t t, AlertType alert = AlertType::None, uint16_t
 }
 
 Event held(uint32_t t, AlertType a = AlertType::Emergency) { return ev(EventType::ButtonHeld, t, a); }
-Event pressed(uint32_t t) { return ev(EventType::ButtonPressed, t); }
+Event pressed(uint32_t t, AlertType a = AlertType::None) { return ev(EventType::ButtonPressed, t, a); }
+Event released(uint32_t t, AlertType a) { return ev(EventType::ButtonReleased, t, a); }
 Event tick(uint32_t t) { return ev(EventType::Tick, t); }
 Event sendOk(uint32_t t, uint16_t id) { return ev(EventType::AlertSendOk, t, AlertType::None, id); }
 Event sendFail(uint32_t t, uint16_t id) { return ev(EventType::AlertSendFailed, t, AlertType::None, id); }
@@ -179,6 +180,212 @@ void test_new_hold_during_ack_display_starts_new_alert() {
     TEST_ASSERT_EQUAL_UINT16(2, sm.alertId());
 }
 
+// Cancel and a new alert are separate actions. A wrong-button hold is
+// corrected by pressing another button (cancels), releasing it, then holding
+// the intended one. The cancelling press's own hold must not start an alert,
+// even after CANCELLED has timed out to IDLE.
+void test_cancel_press_hold_does_not_start_new_alert() {
+    StateMachine sm;
+    sm.handle(held(0, AlertType::Family));
+    assertTransition(sm.handle(pressed(1000, AlertType::Emergency)), State::Pending, State::Cancelled,
+                     Action::None);
+    assertTransition(sm.handle(tick(2000)), State::Cancelled, State::Idle, Action::None);
+    const Result r = sm.handle(held(2500, AlertType::Emergency));  // same press, still down
+    assertRejected(r, sm, State::Idle);
+    TEST_ASSERT_EQUAL_STRING("hold_after_consumed_press", r.reason);
+
+    sm.handle(released(3000, AlertType::Emergency));
+    sm.handle(pressed(4000, AlertType::Emergency));
+    assertTransition(sm.handle(held(5500, AlertType::Emergency)), State::Idle, State::Pending, Action::None);
+    TEST_ASSERT_EQUAL_STRING("EMERGENCY", toString(sm.alertType()));
+    TEST_ASSERT_EQUAL_UINT16(2, sm.alertId());
+}
+
+void test_cancel_press_hold_after_send_does_not_start_new_alert() {
+    StateMachine sm;
+    driveToAlertSent(sm);  // alert 1
+    assertTransition(sm.handle(pressed(3500, AlertType::Medical)), State::AlertSent, State::Cancelled,
+                     Action::SendCancel);
+    assertRejected(sm.handle(held(5000, AlertType::Medical)), sm, State::Cancelled);
+
+    sm.handle(released(5200, AlertType::Medical));
+    sm.handle(pressed(6000, AlertType::Medical));
+    assertTransition(sm.handle(held(7500, AlertType::Medical)), State::Cancelled, State::Pending, Action::None);
+    TEST_ASSERT_EQUAL_STRING("MEDICAL", toString(sm.alertType()));
+    TEST_ASSERT_EQUAL_UINT16(2, sm.alertId());
+}
+
+// A press rejected by the lockout is consumed too: if the alert fails while
+// it is still down, its hold must not start a new alert from ERROR.
+void test_lockout_rejected_press_hold_does_not_start_alert_from_error() {
+    StateMachine sm;
+    sm.handle(held(0, AlertType::Emergency));
+    sm.handle(tick(3000));
+    sm.handle(sendFail(3000, 1));
+    sm.handle(tick(5000));
+    sm.handle(sendFail(5000, 1));
+    sm.handle(released(6800, AlertType::Emergency));
+    assertRejected(sm.handle(pressed(6900, AlertType::Emergency)), sm, State::Retry);  // lockout
+    sm.handle(tick(7000));
+    assertTransition(sm.handle(sendFail(7000, 1)), State::Confirmed, State::Error, Action::None);
+    assertRejected(sm.handle(held(8400, AlertType::Emergency)), sm, State::Error);
+    TEST_ASSERT_EQUAL_UINT16(1, sm.alertId());
+}
+
+// If a release event is lost, the next press outside an alert proves the
+// button was released, so it clears the stale mark.
+void test_fresh_press_outside_alert_clears_consumed_mark() {
+    StateMachine sm;
+    sm.handle(held(0, AlertType::Family));
+    sm.handle(pressed(1000, AlertType::Emergency));  // cancels; its release is never seen
+    sm.handle(tick(2000));                           // IDLE
+    sm.handle(pressed(5000, AlertType::Emergency));
+    assertTransition(sm.handle(held(6500, AlertType::Emergency)), State::Idle, State::Pending, Action::None);
+}
+
+// Holds of presses that started outside an alert are unaffected (T12; the
+// ERROR case is test_error_is_sticky_until_new_hold).
+void test_fresh_hold_from_cancelled_starts_new_alert() {
+    StateMachine sm;
+    sm.handle(held(0, AlertType::Family));
+    sm.handle(pressed(1000, AlertType::Medical));  // cancel
+    sm.handle(released(1100, AlertType::Medical));
+    sm.handle(pressed(1200, AlertType::Medical));  // fresh press while CANCELLED
+    assertTransition(sm.handle(held(2700, AlertType::Medical)), State::Cancelled, State::Pending, Action::None);
+}
+
+// Two holds in the same instant: the first event wins and keeps its type.
+// The button task posts same-tick events in pin order D2, D3, D4, so on a tie
+// Emergency beats Medical beats Family.
+void test_simultaneous_holds_first_event_wins() {
+    StateMachine sm;
+    sm.handle(held(1500, AlertType::Emergency));
+    assertRejected(sm.handle(held(1500, AlertType::Medical)), sm, State::Pending);
+    TEST_ASSERT_EQUAL_STRING("EMERGENCY", toString(sm.alertType()));
+    TEST_ASSERT_EQUAL_UINT16(1, sm.alertId());
+}
+
+// Wobble guard: a finger slipping off the held button and back on (observed
+// on hardware: a single clean 48 ms open) must not cancel the alert.
+void test_held_button_repress_within_lockout_does_not_cancel() {
+    StateMachine sm;
+    sm.handle(held(1500, AlertType::Emergency));
+    TEST_ASSERT_EQUAL(Outcome::Unchanged, sm.handle(released(2000, AlertType::Emergency)).outcome);
+    assertRejected(sm.handle(pressed(2048, AlertType::Emergency)), sm, State::Pending);
+    assertRejected(sm.handle(pressed(2299, AlertType::Emergency)), sm, State::Pending);
+    // The alert carries on as if nothing happened.
+    assertTransition(sm.handle(tick(4500)), State::Pending, State::Confirmed, Action::SendAlert);
+}
+
+void test_held_button_repress_after_lockout_cancels() {
+    StateMachine sm;
+    sm.handle(held(1500, AlertType::Emergency));
+    sm.handle(released(2000, AlertType::Emergency));
+    assertTransition(sm.handle(pressed(2300, AlertType::Emergency)), State::Pending, State::Cancelled,
+                     Action::None);
+}
+
+void test_other_button_cancels_during_lockout() {
+    StateMachine sm;
+    sm.handle(held(1500, AlertType::Emergency));
+    sm.handle(released(2000, AlertType::Emergency));
+    assertTransition(sm.handle(pressed(2010, AlertType::Medical)), State::Pending, State::Cancelled,
+                     Action::None);
+}
+
+void test_held_button_repress_within_lockout_does_not_cancel_in_flight() {
+    StateMachine sm;
+    driveToAlertSent(sm);  // Emergency, alert 1
+    sm.handle(released(3200, AlertType::Emergency));
+    assertRejected(sm.handle(pressed(3250, AlertType::Emergency)), sm, State::AlertSent);
+    assertTransition(sm.handle(pressed(3260, AlertType::Family)), State::AlertSent, State::Cancelled,
+                     Action::SendCancel);
+}
+
+// Releasing a button other than the alert's own does not arm the lockout.
+void test_other_button_release_does_not_arm_lockout() {
+    StateMachine sm;
+    sm.handle(held(1500, AlertType::Emergency));
+    sm.handle(released(2000, AlertType::Medical));
+    assertTransition(sm.handle(pressed(2050, AlertType::Emergency)), State::Pending, State::Cancelled,
+                     Action::None);
+}
+
+void test_cancel_lockout_survives_millis_wraparound() {
+    StateMachine sm;
+    const uint32_t release = 0xFFFFFFFFu - 100;
+    sm.handle(held(release - 500, AlertType::Medical));
+    sm.handle(released(release, AlertType::Medical));
+    assertRejected(sm.handle(pressed(release + 200, AlertType::Medical)), sm, State::Pending);  // wrapped
+    assertTransition(sm.handle(pressed(release + 300, AlertType::Medical)), State::Pending, State::Cancelled,
+                     Action::None);
+}
+
+// A press rejected by the lockout is dropped, not deferred: the lockout
+// expiring later must not turn it into a cancel.
+void test_lockout_rejected_press_is_not_replayed_after_lockout() {
+    StateMachine sm;
+    sm.handle(held(1500, AlertType::Emergency));
+    sm.handle(released(2000, AlertType::Emergency));
+    assertRejected(sm.handle(pressed(2100, AlertType::Emergency)), sm, State::Pending);
+    TEST_ASSERT_EQUAL(Outcome::Unchanged, sm.handle(tick(2400)).outcome);
+    TEST_ASSERT_EQUAL_STRING("PENDING", toString(sm.state()));
+    assertTransition(sm.handle(tick(4500)), State::Pending, State::Confirmed, Action::SendAlert);
+}
+
+// Cancel racing the retry timer: once CANCELLED, the old retry deadline is
+// gone and late send results for that alert are stale.
+void test_cancel_during_retry_kills_pending_resend() {
+    StateMachine sm;
+    sm.handle(held(0));
+    sm.handle(tick(3000));
+    assertTransition(sm.handle(sendFail(3000, 1)), State::Confirmed, State::Retry, Action::None);  // resend due 5000
+    assertTransition(sm.handle(pressed(4999, AlertType::Family)), State::Retry, State::Cancelled,
+                     Action::SendCancel);
+    TEST_ASSERT_EQUAL(Outcome::Unchanged, sm.handle(tick(5000)).outcome);
+    TEST_ASSERT_EQUAL_STRING("CANCELLED", toString(sm.state()));
+    assertRejected(sm.handle(sendOk(5001, 1)), sm, State::Cancelled);
+    assertTransition(sm.handle(tick(5999)), State::Cancelled, State::Idle, Action::None);
+    TEST_ASSERT_EQUAL_UINT8(1, sm.attempts());
+}
+
+void test_late_ack_after_error_is_rejected_and_keeps_alert_id() {
+    StateMachine sm;
+    sm.handle(held(0, AlertType::Medical));
+    for (uint32_t t = 3000, i = 0; i < kDefaultTiming.max_attempts; ++i, t += kDefaultTiming.retry_backoff_ms) {
+        sm.handle(tick(t));
+        sm.handle(sendFail(t, 1));
+    }
+    TEST_ASSERT_EQUAL_STRING("ERROR", toString(sm.state()));
+    const Result late = sm.handle(ack(9000, 1));
+    assertRejected(late, sm, State::Error);
+    TEST_ASSERT_EQUAL_STRING("late_ack_after_error", late.reason);
+    TEST_ASSERT_EQUAL_UINT16(1, sm.alertId());
+    TEST_ASSERT_EQUAL_STRING("MEDICAL", toString(sm.alertType()));
+    const Result wrong = sm.handle(ack(9001, 7));
+    assertRejected(wrong, sm, State::Error);
+    TEST_ASSERT_EQUAL_STRING("unexpected_ack", wrong.reason);
+}
+
+// Ack timeout and retry backoff deadlines straddling the millis() wrap; every
+// attempt reuses the original alert id.
+void test_ack_timeout_and_backoff_survive_millis_wraparound_with_same_id() {
+    StateMachine sm;
+    const uint32_t start = 0xFFFFFFFFu - 4000;
+    sm.handle(held(start));
+    const uint16_t id = sm.alertId();
+    sm.handle(tick(start + 3000));
+    sm.handle(sendOk(start + 3000, id));  // ack deadline wraps past 0
+    TEST_ASSERT_EQUAL(Outcome::Unchanged, sm.handle(tick(start + 7999)).outcome);
+    assertTransition(sm.handle(tick(start + 8000)), State::AlertSent, State::Retry, Action::None);
+    TEST_ASSERT_EQUAL(Outcome::Unchanged, sm.handle(tick(start + 9999)).outcome);
+    assertTransition(sm.handle(tick(start + 10000)), State::Retry, State::Confirmed, Action::SendAlert);
+    TEST_ASSERT_EQUAL_UINT8(2, sm.attempts());
+    TEST_ASSERT_EQUAL_UINT16(id, sm.alertId());
+    sm.handle(sendOk(start + 10000, id));
+    assertTransition(sm.handle(ack(start + 10100, id)), State::AlertSent, State::Acknowledged, Action::None);
+}
+
 void test_pending_deadline_survives_millis_wraparound() {
     StateMachine sm;
     const uint32_t start = 0xFFFFFFFFu - 1000;
@@ -203,6 +410,22 @@ int main() {
     RUN_TEST(test_invalid_alert_type_is_rejected);
     RUN_TEST(test_error_is_sticky_until_new_hold);
     RUN_TEST(test_new_hold_during_ack_display_starts_new_alert);
+    RUN_TEST(test_cancel_press_hold_does_not_start_new_alert);
+    RUN_TEST(test_cancel_press_hold_after_send_does_not_start_new_alert);
+    RUN_TEST(test_lockout_rejected_press_hold_does_not_start_alert_from_error);
+    RUN_TEST(test_fresh_press_outside_alert_clears_consumed_mark);
+    RUN_TEST(test_fresh_hold_from_cancelled_starts_new_alert);
+    RUN_TEST(test_simultaneous_holds_first_event_wins);
+    RUN_TEST(test_held_button_repress_within_lockout_does_not_cancel);
+    RUN_TEST(test_held_button_repress_after_lockout_cancels);
+    RUN_TEST(test_other_button_cancels_during_lockout);
+    RUN_TEST(test_held_button_repress_within_lockout_does_not_cancel_in_flight);
+    RUN_TEST(test_other_button_release_does_not_arm_lockout);
+    RUN_TEST(test_cancel_lockout_survives_millis_wraparound);
+    RUN_TEST(test_lockout_rejected_press_is_not_replayed_after_lockout);
+    RUN_TEST(test_cancel_during_retry_kills_pending_resend);
+    RUN_TEST(test_late_ack_after_error_is_rejected_and_keeps_alert_id);
+    RUN_TEST(test_ack_timeout_and_backoff_survive_millis_wraparound_with_same_id);
     RUN_TEST(test_pending_deadline_survives_millis_wraparound);
     return UNITY_END();
 }

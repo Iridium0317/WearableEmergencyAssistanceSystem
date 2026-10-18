@@ -70,6 +70,8 @@ void ButtonInput::run() {
         drainEdges();
         const uint32_t now_ms = millis();
         resyncAfterOverflow(now_ms);
+        // Pin order is the tie-break: holds that complete in the same wake-up
+        // are posted D2, D3, D4, and the state machine keeps the first.
         for (uint8_t b = 0; b < kButtonCount; ++b) {
             serviceButton(b, now_ms);
         }
@@ -127,6 +129,9 @@ void ButtonInput::serviceButton(uint8_t button, uint32_t now_ms) {
                 break;
             }
             case ButtonEvent::Released:
+                if (!events_.post(Event{EventType::ButtonReleased, now_ms, alert, 0})) {
+                    diag::log("BTN_ERR", "reason=queue_full btn=%u", button + 1);
+                }
                 diag::log("BTN", "ev=RELEASED btn=%u edges=%" PRIu32 " isr_to_task_max_us=%" PRIu32, button + 1,
                           d.rawEdgeCount(), max_isr_to_task_us_[button]);
                 max_isr_to_task_us_[button] = 0;

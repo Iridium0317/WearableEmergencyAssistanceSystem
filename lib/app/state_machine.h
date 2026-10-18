@@ -19,9 +19,25 @@
 //  T10 CONFIRMED|ALERT_SENT|RETRY   ButtonPressed      CANCELLED     SendCancel (host may hold the alert)
 //  T11 ACKNOWLEDGED|CANCELLED       Tick >= deadline   IDLE          status display period over
 //  T12 ACKNOWLEDGED|CANCELLED|ERROR ButtonHeld(type)   PENDING       never drop a new alert
+// Overlapping buttons: any button's press is the cancel gesture (T2/T10).
+// Cancelling and starting an alert are separate actions: a press that arrives
+// while an alert is active is consumed, and its own ButtonHeld can never start
+// a new alert (T1/T12 reject it), even after the machine has left the alert.
+// Only a release followed by a fresh press can. So a user who held the wrong
+// button cancels it, lets go, and holds the intended one. Holds that arrive
+// while an alert is active are rejected, so for holds in the same instant the
+// first event wins.
+//
+// Cancel lockout (wobble guard): for cancel_lockout_ms after the alert's own
+// button is released, a press of that same button is rejected instead of
+// cancelling (T2/T10). A shaky finger slipping off and back on is a real
+// contact change that debouncing cannot filter (hardware showed a single clean
+// 48 ms open). Other buttons cancel at any time.
 //
 // ERROR is deliberately sticky (only T12 leaves it): an undelivered emergency
-// must stay visible to the user rather than silently reverting to IDLE.
+// must stay visible to the user rather than silently reverting to IDLE. A late
+// HostAck for the failed alert is rejected as late_ack_after_error (alert_id
+// kept) instead of turning the failure into ACKNOWLEDGED after the fact.
 //
 // Events not in the table either leave the state unchanged silently (normal
 // noise such as Tick with no deadline, or the ButtonPressed that precedes
@@ -69,6 +85,7 @@ struct Timing {
     uint8_t max_attempts;       // total send attempts per alert, including the first
     uint32_t ack_display_ms;    // how long ACKNOWLEDGED is shown before IDLE
     uint32_t cancel_display_ms; // how long CANCELLED is shown before IDLE
+    uint32_t cancel_lockout_ms; // own-button re-press ignored this long after its release
 };
 
 constexpr Timing kDefaultTiming = {
@@ -78,6 +95,7 @@ constexpr Timing kDefaultTiming = {
     3,     // max_attempts
     3000,  // ack_display_ms
     1000,  // cancel_display_ms
+    300,   // cancel_lockout_ms (prototype default, not validated with users)
 };
 
 class StateMachine {
@@ -105,6 +123,11 @@ private:
     Result failAttempt(const Event& event, const char* reason);
     Result acknowledge(const Event& event);
     Result cancelInFlight(const Event& event);
+    Result noteRelease(const Event& event);
+    bool inCancelLockout(const Event& event) const;
+    void trackPress(const Event& event);
+    bool pressConsumed(AlertType alert) const;
+    bool alertActive() const;
 
     Result transition(State to, Action action, const char* reason = nullptr);
     Result unchanged() const;
@@ -120,6 +143,9 @@ private:
     uint8_t attempts_ = 0;
     bool deadline_armed_ = false;
     uint32_t deadline_ms_ = 0;
+    bool lockout_armed_ = false;
+    uint32_t lockout_until_ms_ = 0;
+    uint8_t consumed_presses_ = 0;  // bit per AlertType: press arrived during an alert
 };
 
 const char* toString(State state);

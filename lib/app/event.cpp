@@ -14,6 +14,7 @@ const char* toString(EventType type) {
     switch (type) {
         case EventType::ButtonPressed: return "BUTTON_PRESSED";
         case EventType::ButtonHeld: return "BUTTON_HELD";
+        case EventType::ButtonReleased: return "BUTTON_RELEASED";
         case EventType::Tick: return "TICK";
         case EventType::AlertSendOk: return "ALERT_SEND_OK";
         case EventType::AlertSendFailed: return "ALERT_SEND_FAILED";

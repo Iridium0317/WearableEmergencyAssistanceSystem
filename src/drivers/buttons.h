@@ -5,7 +5,7 @@
 //
 // Context split:
 //   GPIO ISR     : timestamp + level -> EdgeRing, wake the button task. Nothing else.
-//   button task  : drain ring -> ButtonDebouncer -> post ButtonPressed/ButtonHeld
+//   button task  : drain ring -> ButtonDebouncer -> post ButtonPressed/ButtonHeld/ButtonReleased
 //                  to the app queue, and log button diagnostics.
 //
 // The task waits on a thread flag: indefinitely while all buttons are idle,

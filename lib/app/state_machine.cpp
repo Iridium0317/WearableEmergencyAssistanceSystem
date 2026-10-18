@@ -3,6 +3,7 @@
 StateMachine::StateMachine(const Timing& timing) : timing_(timing) {}
 
 Result StateMachine::handle(const Event& event) {
+    trackPress(event);
     switch (state_) {
         case State::Idle: return onIdle(event);
         case State::Pending: return onPending(event);
@@ -31,6 +32,9 @@ Result StateMachine::onIdle(const Event& event) {
 Result StateMachine::onPending(const Event& event) {
     switch (event.type) {
         case EventType::ButtonPressed:  // T2
+            if (inCancelLockout(event)) {
+                return reject("cancel_lockout");
+            }
             setDeadline(event.timestamp_ms, timing_.cancel_display_ms);
             return transition(State::Cancelled, Action::None, "user_cancel");
         case EventType::Tick:
@@ -39,6 +43,7 @@ Result StateMachine::onPending(const Event& event) {
             }
             return unchanged();
         case EventType::ButtonHeld: return reject("alert_in_progress");
+        case EventType::ButtonReleased: return noteRelease(event);
         case EventType::HostAck: return reject("ack_before_send");
         case EventType::AlertSendOk:
         case EventType::AlertSendFailed: return reject("stale_send_result");
@@ -62,6 +67,7 @@ Result StateMachine::onConfirmed(const Event& event) {
         case EventType::HostAck: return acknowledge(event);       // T6
         case EventType::ButtonPressed: return cancelInFlight(event);  // T10
         case EventType::ButtonHeld: return reject("alert_in_progress");
+        case EventType::ButtonReleased: return noteRelease(event);
         default: return unchanged();
     }
 }
@@ -77,6 +83,7 @@ Result StateMachine::onAlertSent(const Event& event) {
         case EventType::LinkDown: return failAttempt(event, "link_down");  // T8
         case EventType::ButtonPressed: return cancelInFlight(event);       // T10
         case EventType::ButtonHeld: return reject("alert_in_progress");
+        case EventType::ButtonReleased: return noteRelease(event);
         case EventType::AlertSendOk:
         case EventType::AlertSendFailed: return reject("stale_send_result");
         default: return unchanged();
@@ -93,6 +100,7 @@ Result StateMachine::onRetry(const Event& event) {
         case EventType::HostAck: return acknowledge(event);            // T6
         case EventType::ButtonPressed: return cancelInFlight(event);  // T10
         case EventType::ButtonHeld: return reject("alert_in_progress");
+        case EventType::ButtonReleased: return noteRelease(event);
         case EventType::AlertSendOk:
         case EventType::AlertSendFailed: return reject("stale_send_result");
         default: return unchanged();
@@ -123,7 +131,13 @@ Result StateMachine::onDisplay(const Event& event) {
 Result StateMachine::onError(const Event& event) {
     switch (event.type) {
         case EventType::ButtonHeld: return startAlert(event);  // T12
-        case EventType::HostAck: return reject("unexpected_ack");
+        case EventType::HostAck:
+            // The host did get this alert, but too late: stay in ERROR (the
+            // user was already told it failed) and let the caller log it.
+            if (event.alert_id == alert_id_) {
+                return reject("late_ack_after_error");
+            }
+            return reject("unexpected_ack");
         case EventType::AlertSendOk:
         case EventType::AlertSendFailed: return reject("stale_send_result");
         default: return unchanged();
@@ -136,12 +150,16 @@ Result StateMachine::startAlert(const Event& event) {
     if (event.alert == AlertType::None) {
         return reject("invalid_alert_type");
     }
+    if (pressConsumed(event.alert)) {
+        return reject("hold_after_consumed_press");
+    }
     alert_type_ = event.alert;
     ++alert_id_;
     if (alert_id_ == 0) {
         alert_id_ = 1;  // 0 is reserved as "no alert" on the wire
     }
     attempts_ = 0;
+    lockout_armed_ = false;
     setDeadline(event.timestamp_ms, timing_.pending_ms);
     return transition(State::Pending, Action::None);
 }
@@ -171,8 +189,53 @@ Result StateMachine::acknowledge(const Event& event) {
 }
 
 Result StateMachine::cancelInFlight(const Event& event) {
+    if (inCancelLockout(event)) {
+        return reject("cancel_lockout");
+    }
     setDeadline(event.timestamp_ms, timing_.cancel_display_ms);
     return transition(State::Cancelled, Action::SendCancel, "user_cancel");
+}
+
+Result StateMachine::noteRelease(const Event& event) {
+    if (event.alert == alert_type_) {
+        lockout_until_ms_ = event.timestamp_ms + timing_.cancel_lockout_ms;
+        lockout_armed_ = true;
+    }
+    return unchanged();
+}
+
+void StateMachine::trackPress(const Event& event) {
+    if (event.alert == AlertType::None) {
+        return;
+    }
+    const uint8_t bit = static_cast<uint8_t>(1u << static_cast<uint8_t>(event.alert));
+    if (event.type == EventType::ButtonPressed) {
+        // Decided by the state the press arrives in. A press outside an alert
+        // also clears a stale mark, so a lost release event cannot lock a
+        // button out of starting alerts.
+        if (alertActive()) {
+            consumed_presses_ |= bit;
+        } else {
+            consumed_presses_ &= static_cast<uint8_t>(~bit);
+        }
+    } else if (event.type == EventType::ButtonReleased) {
+        consumed_presses_ &= static_cast<uint8_t>(~bit);
+    }
+}
+
+bool StateMachine::pressConsumed(AlertType alert) const {
+    return (consumed_presses_ & (1u << static_cast<uint8_t>(alert))) != 0;
+}
+
+bool StateMachine::alertActive() const {
+    return state_ == State::Pending || state_ == State::Confirmed || state_ == State::AlertSent ||
+           state_ == State::Retry;
+}
+
+bool StateMachine::inCancelLockout(const Event& event) const {
+    // Same signed-difference wrap handling as deadlineReached().
+    return lockout_armed_ && event.alert == alert_type_ &&
+           static_cast<int32_t>(event.timestamp_ms - lockout_until_ms_) < 0;
 }
 
 Result StateMachine::transition(State to, Action action, const char* reason) {
