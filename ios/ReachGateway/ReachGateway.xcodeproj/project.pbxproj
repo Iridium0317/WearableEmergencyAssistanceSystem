@@ -1,0 +1,429 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		185FC9B4A1583886778F7D6B /* Uploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934F54A32B810FB75D47675E /* Uploader.swift */; };
+		37E4D339B7F0B271B98E1634 /* ReachGatewayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914929D4E3D559AD3736A11E /* ReachGatewayApp.swift */; };
+		38B716673AA7F599FA4C4973 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EE7841566E181E2D4745E3 /* Settings.swift */; };
+		573AFE410555BAD23040BAB9 /* AlertProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BF412735A2C0D3C7E4DB82 /* AlertProtocol.swift */; };
+		5A36BC77AA7A419693EA05FE /* BLEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF396AABCC5DBB0397517D36 /* BLEManager.swift */; };
+		6FB705AD8449F2C1E3171B69 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF7B105CC26A1000BCBDD91B /* ContentView.swift */; };
+		90685E6D073D33E37B8DED97 /* GatewayLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 482BE7F64BED6384FD306111 /* GatewayLogicTests.swift */; };
+		90ADA5D1E17ACE1369191DC7 /* Gateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E626AE3DEA3471AF862D09 /* Gateway.swift */; };
+		BE6B65E2B8A6699DDCD1C158 /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D2DE778AFC03C2FE591DC4 /* EventStore.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		835701126FBB30509706C4B3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D670BF0A9D35DE7559A3CD6E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D79EB85054DF3F9DF83133D6;
+			remoteInfo = ReachGateway;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		34E8777AAF794D047D6923EF /* ReachGateway.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ReachGateway.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		482BE7F64BED6384FD306111 /* GatewayLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatewayLogicTests.swift; sourceTree = "<group>"; };
+		7140C19A7FA349492F408B47 /* ReachGatewayTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ReachGatewayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		80EE7841566E181E2D4745E3 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		914929D4E3D559AD3736A11E /* ReachGatewayApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachGatewayApp.swift; sourceTree = "<group>"; };
+		934F54A32B810FB75D47675E /* Uploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Uploader.swift; sourceTree = "<group>"; };
+		A7D2DE778AFC03C2FE591DC4 /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
+		B2BF412735A2C0D3C7E4DB82 /* AlertProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertProtocol.swift; sourceTree = "<group>"; };
+		D4E626AE3DEA3471AF862D09 /* Gateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gateway.swift; sourceTree = "<group>"; };
+		EF396AABCC5DBB0397517D36 /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
+		FF7B105CC26A1000BCBDD91B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		72CFBFD8EAAB52C65E2449BF /* ReachGateway */ = {
+			isa = PBXGroup;
+			children = (
+				B2BF412735A2C0D3C7E4DB82 /* AlertProtocol.swift */,
+				EF396AABCC5DBB0397517D36 /* BLEManager.swift */,
+				FF7B105CC26A1000BCBDD91B /* ContentView.swift */,
+				A7D2DE778AFC03C2FE591DC4 /* EventStore.swift */,
+				D4E626AE3DEA3471AF862D09 /* Gateway.swift */,
+				914929D4E3D559AD3736A11E /* ReachGatewayApp.swift */,
+				80EE7841566E181E2D4745E3 /* Settings.swift */,
+				934F54A32B810FB75D47675E /* Uploader.swift */,
+			);
+			path = ReachGateway;
+			sourceTree = "<group>";
+		};
+		9CF46A4FAB1FCB3364258036 = {
+			isa = PBXGroup;
+			children = (
+				72CFBFD8EAAB52C65E2449BF /* ReachGateway */,
+				C4848649A2A8E46EC72EC2FB /* ReachGatewayTests */,
+				F16957889803099691BCB2B4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C4848649A2A8E46EC72EC2FB /* ReachGatewayTests */ = {
+			isa = PBXGroup;
+			children = (
+				482BE7F64BED6384FD306111 /* GatewayLogicTests.swift */,
+			);
+			path = ReachGatewayTests;
+			sourceTree = "<group>";
+		};
+		F16957889803099691BCB2B4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				34E8777AAF794D047D6923EF /* ReachGateway.app */,
+				7140C19A7FA349492F408B47 /* ReachGatewayTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D46209641710AC76E4885AFB /* ReachGatewayTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 20CFF43D449F790AE23242C5 /* Build configuration list for PBXNativeTarget "ReachGatewayTests" */;
+			buildPhases = (
+				AA42CBB155B1D00E247BB35D /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				99038967A7F358A91F5C85B2 /* PBXTargetDependency */,
+			);
+			name = ReachGatewayTests;
+			packageProductDependencies = (
+			);
+			productName = ReachGatewayTests;
+			productReference = 7140C19A7FA349492F408B47 /* ReachGatewayTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D79EB85054DF3F9DF83133D6 /* ReachGateway */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5381F2DE78BB7D6B0B101826 /* Build configuration list for PBXNativeTarget "ReachGateway" */;
+			buildPhases = (
+				720E737048D9350D2198DD87 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ReachGateway;
+			packageProductDependencies = (
+			);
+			productName = ReachGateway;
+			productReference = 34E8777AAF794D047D6923EF /* ReachGateway.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D670BF0A9D35DE7559A3CD6E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					D46209641710AC76E4885AFB = {
+						DevelopmentTeam = 4JHUUU37V8;
+						ProvisioningStyle = Automatic;
+					};
+					D79EB85054DF3F9DF83133D6 = {
+						DevelopmentTeam = 4JHUUU37V8;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 1943B239E728B8897EE27E16 /* Build configuration list for PBXProject "ReachGateway" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 9CF46A4FAB1FCB3364258036;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F16957889803099691BCB2B4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D79EB85054DF3F9DF83133D6 /* ReachGateway */,
+				D46209641710AC76E4885AFB /* ReachGatewayTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		720E737048D9350D2198DD87 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				573AFE410555BAD23040BAB9 /* AlertProtocol.swift in Sources */,
+				5A36BC77AA7A419693EA05FE /* BLEManager.swift in Sources */,
+				6FB705AD8449F2C1E3171B69 /* ContentView.swift in Sources */,
+				BE6B65E2B8A6699DDCD1C158 /* EventStore.swift in Sources */,
+				90ADA5D1E17ACE1369191DC7 /* Gateway.swift in Sources */,
+				37E4D339B7F0B271B98E1634 /* ReachGatewayApp.swift in Sources */,
+				38B716673AA7F599FA4C4973 /* Settings.swift in Sources */,
+				185FC9B4A1583886778F7D6B /* Uploader.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA42CBB155B1D00E247BB35D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90685E6D073D33E37B8DED97 /* GatewayLogicTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		99038967A7F358A91F5C85B2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D79EB85054DF3F9DF83133D6 /* ReachGateway */;
+			targetProxy = 835701126FBB30509706C4B3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1BE4E8F6792209DB4209F7CF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4JHUUU37V8;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		5D5E2D0C76EDE4009DD58EE0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.iridium0317.ReachGatewayTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReachGateway.app/ReachGateway";
+			};
+			name = Release;
+		};
+		CB3F3498E5DECCEB9CB31C9F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4JHUUU37V8;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		CF76627186350A0E865F4193 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Reach;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Reach connects to your Reach wearable to receive emergency button alerts.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.iridium0317.reachgateway;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		DA3FB98A12577A0B231BFFC8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Reach;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Reach connects to your Reach wearable to receive emergency button alerts.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.iridium0317.reachgateway;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		FDF1EBEFCFBABF350759035A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.iridium0317.ReachGatewayTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReachGateway.app/ReachGateway";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1943B239E728B8897EE27E16 /* Build configuration list for PBXProject "ReachGateway" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1BE4E8F6792209DB4209F7CF /* Debug */,
+				CB3F3498E5DECCEB9CB31C9F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		20CFF43D449F790AE23242C5 /* Build configuration list for PBXNativeTarget "ReachGatewayTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FDF1EBEFCFBABF350759035A /* Debug */,
+				5D5E2D0C76EDE4009DD58EE0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5381F2DE78BB7D6B0B101826 /* Build configuration list for PBXNativeTarget "ReachGateway" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA3FB98A12577A0B231BFFC8 /* Debug */,
+				CF76627186350A0E865F4193 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D670BF0A9D35DE7559A3CD6E /* Project object */;
+}
