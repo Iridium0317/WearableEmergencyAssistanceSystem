@@ -270,3 +270,4 @@ Notes:
 Notes:
 - iOS gives a background task limited time; if the upload has not succeeded by then, retries continue the next time the App runs. The event stays saved meanwhile.
 - If the user force-quits the App from the app switcher, iOS does not relaunch it for Bluetooth events.
+- The lock-screen notifications were removed afterwards: the gateway is a home device that nobody watches, and notifying family is the backend's job. Background receive and ack are unchanged.

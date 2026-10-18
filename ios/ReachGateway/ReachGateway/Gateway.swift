@@ -1,7 +1,6 @@
 import Foundation
 import Observation
 import UIKit
-import UserNotifications
 
 // Alert lifecycle on the phone:
 //   BLE alert -> persist event -> write BLE ack -> upload (retry, same event_id).
@@ -32,19 +31,8 @@ final class Gateway {
         refreshConfig()
         ble.start()
         resumeUploads()
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
     }
 
-    // Shown on the lock screen too. Says only what the phone knows: the alert
-    // was saved here; whether the backend recorded it is a separate step.
-    private func notify(_ title: String, _ body: String) {
-        let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = body
-        content.sound = .default
-        UNUserNotificationCenter.current().add(
-            UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil))
-    }
 
     func refreshConfig() {
         configured = !Settings.baseURL.isEmpty && Settings.hasToken
@@ -107,7 +95,6 @@ final class Gateway {
                 return
             }
             append("ALERT id=\(packet.alertId) \(packet.type.label) attempt=\(packet.attempt) new \(eventId)")
-            notify("Reach: \(packet.type.label) alert", "Saved on this phone. Sending to ReachGuard…")
         }
         events = store.events
         if dropNextAck {
@@ -158,7 +145,6 @@ final class Gateway {
                 }
                 events = store.events
                 append("UPLOAD \(state == .uploaded ? "201 received" : "200 duplicate") \(eventId)")
-                notify("Reach: alert recorded", "ReachGuard recorded the alert. No contact has accepted it yet.")
                 return
             case .stop(let reason):
                 try? store.update(eventId) {

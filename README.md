@@ -9,8 +9,16 @@ Status and measured results: see [TEST_RESULTS.md](TEST_RESULTS.md).
 
 ## End-to-end system (ReachGuard)
 
+The wearer only has the pendant; they are not expected to own or use a
+smartphone. A home gateway relays alerts to the internet. In this prototype the
+gateway is an iPhone running `ios/ReachGateway`, standing in for a spare phone
+kept plugged in at home (later: a small dedicated hub, or a cellular pendant
+that needs no gateway). Family members respond on the contact page; a primary
+family member (the "owner" role, e.g. the wearer's son) follows every step on
+the Dashboard.
+
 ```
-wearable (this repo) ──BLE──► iPhone gateway app (ios/ReachGateway, this repo)
+wearable (this repo) ──BLE──► home gateway: iPhone app (ios/ReachGateway, this repo)
                                    │ HTTPS, device credential
                                    ▼
                          backend device inbox + help service
@@ -130,7 +138,7 @@ forces one retransmission for testing.
 | First real iPhone run, upload 201 | Pass | T13 |
 | Full chain to "Contact accepted" | Pass | T14 |
 | Backend offline, app relaunch, board reset, lost ack | Pass on the phone side | T15 |
-| Phone locked: receive, ack, lock-screen notification | Pass | T16 |
+| Gateway phone locked: receive, ack | Pass | T16 |
 
 ## Prototype findings
 
@@ -139,18 +147,24 @@ forces one retransmission for testing.
   between Emergency, Medical and Family in an emergency is a burden. The next
   iteration explores a single button; the firmware keeps three-button support.
 - **One contact is not enough.** If the only contact misses the alert, nothing
-  else happens. A rule for automatically notifying contacts in turn until
-  someone responds is designed but not implemented.
+  else happens. Contact rotation (notify close family first, alternating, then
+  others, round after round until someone accepts) is implemented in the
+  backend as an open pull request (Cyberchopin/reachguard#5), tested with
+  synthetic data, not yet with the wearable.
 
 ## Limitations
 
 - Not a medical device. It never contacts emergency services; demos only notify
   team members.
-- The iPhone app receives, acks and notifies with the phone locked (T16), but
+- The gateway app keeps receiving and acking with the phone locked (T16), but
   iOS limits background time: a failed upload may wait until the app runs
   again, and a force-quit app is not relaunched for Bluetooth events.
-- The phone must be within BLE range of the wearable (roughly the same room).
-  If it is not, the wearable retries and then shows ERROR; the alert is not sent.
+- Family members are not pushed: the contact page and Dashboard must be open to
+  see a new turn (they beep and, where the browser allows, show a notification).
+  A family app with push notifications is future work.
+- The gateway must be within BLE range of the wearable (roughly the same room
+  or the next one). If it is not, the wearable retries and then shows ERROR;
+  the alert is not sent.
 - No voice. The wearable has no speaker and no cellular or Wi-Fi radio; a
   cellular voice module is the likely path for a later version.
 - The backend does not store the alert type yet, so the contact page shows only
