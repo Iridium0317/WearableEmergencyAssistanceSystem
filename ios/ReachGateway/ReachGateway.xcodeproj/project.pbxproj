@@ -15,7 +15,9 @@
 		6FB705AD8449F2C1E3171B69 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF7B105CC26A1000BCBDD91B /* ContentView.swift */; };
 		90685E6D073D33E37B8DED97 /* GatewayLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 482BE7F64BED6384FD306111 /* GatewayLogicTests.swift */; };
 		90ADA5D1E17ACE1369191DC7 /* Gateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E626AE3DEA3471AF862D09 /* Gateway.swift */; };
+		B51A1B85176CE311E89AB975 /* AlertIntakeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EF7970EDB420EA132ECB97D /* AlertIntakeTests.swift */; };
 		BE6B65E2B8A6699DDCD1C158 /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D2DE778AFC03C2FE591DC4 /* EventStore.swift */; };
+		FEF8F50D540611632D77A7DD /* AlertIntake.swift in Sources */ = {isa = PBXBuildFile; fileRef = A888192DBAB8A6EF217CFB6D /* AlertIntake.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0EF7970EDB420EA132ECB97D /* AlertIntakeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertIntakeTests.swift; sourceTree = "<group>"; };
 		34E8777AAF794D047D6923EF /* ReachGateway.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ReachGateway.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		482BE7F64BED6384FD306111 /* GatewayLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatewayLogicTests.swift; sourceTree = "<group>"; };
 		5A707EDB363B67767D6E18C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -37,6 +40,7 @@
 		914929D4E3D559AD3736A11E /* ReachGatewayApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachGatewayApp.swift; sourceTree = "<group>"; };
 		934F54A32B810FB75D47675E /* Uploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Uploader.swift; sourceTree = "<group>"; };
 		A7D2DE778AFC03C2FE591DC4 /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
+		A888192DBAB8A6EF217CFB6D /* AlertIntake.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertIntake.swift; sourceTree = "<group>"; };
 		B2BF412735A2C0D3C7E4DB82 /* AlertProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertProtocol.swift; sourceTree = "<group>"; };
 		D4E626AE3DEA3471AF862D09 /* Gateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gateway.swift; sourceTree = "<group>"; };
 		EF396AABCC5DBB0397517D36 /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
@@ -47,6 +51,7 @@
 		72CFBFD8EAAB52C65E2449BF /* ReachGateway */ = {
 			isa = PBXGroup;
 			children = (
+				A888192DBAB8A6EF217CFB6D /* AlertIntake.swift */,
 				B2BF412735A2C0D3C7E4DB82 /* AlertProtocol.swift */,
 				EF396AABCC5DBB0397517D36 /* BLEManager.swift */,
 				FF7B105CC26A1000BCBDD91B /* ContentView.swift */,
@@ -72,6 +77,7 @@
 		C4848649A2A8E46EC72EC2FB /* ReachGatewayTests */ = {
 			isa = PBXGroup;
 			children = (
+				0EF7970EDB420EA132ECB97D /* AlertIntakeTests.swift */,
 				482BE7F64BED6384FD306111 /* GatewayLogicTests.swift */,
 			);
 			path = ReachGatewayTests;
@@ -168,6 +174,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FEF8F50D540611632D77A7DD /* AlertIntake.swift in Sources */,
 				573AFE410555BAD23040BAB9 /* AlertProtocol.swift in Sources */,
 				5A36BC77AA7A419693EA05FE /* BLEManager.swift in Sources */,
 				6FB705AD8449F2C1E3171B69 /* ContentView.swift in Sources */,
@@ -183,6 +190,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B51A1B85176CE311E89AB975 /* AlertIntakeTests.swift in Sources */,
 				90685E6D073D33E37B8DED97 /* GatewayLogicTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

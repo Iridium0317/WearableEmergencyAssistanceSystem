@@ -78,7 +78,7 @@ Each decision, why it was made, and where it is tested.
 | An explicit application ACK for every alert | A BLE notification is not a delivery confirmation; only the gateway's ACK counts | T5, T9 |
 | Bounded retries (3 attempts, 20 s), then a sticky ERROR | The wearer must never see "sent" for an alert nobody received; failure is shown, not hidden | T5, T10 |
 | No attempt is spent while the gateway is not listening | Found on the bench: retries burned while the host reconnected, failing 2 of 10 redeliveries. Sends now need connected **and** subscribed, and resend the moment it subscribes | T10 |
-| The gateway saves an alert before it ACKs | An ACK is a promise to keep the alarm; if the phone cannot save it, no ACK is sent and the pendant falls back to ERROR | T13, T15 |
+| The gateway saves an alert before it ACKs | An ACK is a promise to keep the alarm; if the phone cannot save it, no ACK is sent and the pendant falls back to ERROR | T13, T15, T17 |
 | `event_id`: attempt 1 always creates a new ID, a retry reuses it | `alert_id` restarts at 1 after a board reset, so it cannot be the identity; retries must not create a second help request (the backend also answers 200 for a repeated ID) | T15 |
 | Upload retries transient failures with the same ID, and stops on credential or schema errors | Retrying cannot fix a wrong credential; the reason is shown and a manual retry keeps the original ID | T13 |
 | "Received", "recorded" and "accepted" are three different claims | BLE ACK = the gateway has it; HTTP 201 = the backend recorded it; accepted = a contact took responsibility. None of them means help arrived, and the UI wording says so | T14 |
@@ -173,7 +173,7 @@ stop retrying and show the reason.
 brew install xcodegen
 cd ios/ReachGateway && xcodegen generate     # project.yml -> ReachGateway.xcodeproj
 xcodebuild test -project ReachGateway.xcodeproj -scheme ReachGateway \
-  -destination 'platform=iOS Simulator,name=<any iPhone>'   # 15 unit tests
+  -destination 'platform=iOS Simulator,name=<any iPhone>'   # 22 unit tests
 ```
 
 Run on a phone: open the project in Xcode, pick your team under Signing &
@@ -191,7 +191,7 @@ forces one retransmission for testing.
 | Real buttons, LED, cancel, simultaneous holds | Pass on hardware | T6–T8 |
 | BLE alert/ack with a Mac host, retry on reconnect | Pass | T5, T9, T10 |
 | BLE happy path ×100 | 100/100 | T11 |
-| iPhone gateway unit tests | 15/15 | T12 |
+| iPhone gateway unit tests | 15/15, then 22/22 with store-then-ack tests | T12, T17 |
 | First real iPhone run, upload 201 | Pass | T13 |
 | Full chain to "Contact accepted" | Pass | T14 |
 | Backend offline, app relaunch, board reset, lost ack | Pass on the phone side | T15 |

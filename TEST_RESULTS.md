@@ -271,3 +271,13 @@ Notes:
 - iOS gives a background task limited time; if the upload has not succeeded by then, retries continue the next time the App runs. The event stays saved meanwhile.
 - If the user force-quits the App from the app switcher, iOS does not relaunch it for Bluetooth events.
 - The lock-screen notifications were removed afterwards: the gateway is a home device that nobody watches, and notifying family is the backend's job. Background receive and ack are unchanged.
+
+## T17 — Host unit tests: gateway store-then-ack (2026-10-18)
+
+| Field | Value |
+|---|---|
+| Setup | Alert intake moved out of `Gateway.swift` into `AlertIntake.swift` behind two small protocols (`EventStoring`, `AckSending`); `EventStore` and `BLEManager` conform unchanged. `AlertIntakeTests` uses a fake store and fake BLE link that write to one shared journal, so the order of save and ack is checked. `xcodebuild test` on the iOS 27.1 simulator (Xcode 27.1), and in GitHub Actions CI. |
+| Expected | New alert: saved, then acked. Save fails (new or retransmission): no ack. Retransmission: same event_id, acked again, `lastAttempt` updated. Link down: event kept, the later retransmission reuses it. Test tool skip: saved, no ack. Board reset (alert_id 1, attempt 1 again): new event. |
+| Observed | 22/22 tests passed (15 existing + 7 new). Mutation check: with the ack moved before the save, 6 of the 7 new tests failed; code restored afterwards. |
+| Result | PASS (host logic only; no new hardware or iPhone run) |
+

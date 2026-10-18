@@ -71,37 +71,30 @@ final class Gateway {
     }
 
     private func handleAlert(_ packet: AlertPacket) {
-        let now = Date()
+        let skipAck = dropNextAck
+        dropNextAck = false
         let eventId: String
-        if let existing = EventMatcher.existingEvent(for: packet, in: store.events, now: now) {
-            eventId = existing.eventId
-            do {
-                try store.update(eventId) { $0.lastAttempt = max($0.lastAttempt, packet.attempt) }
-            } catch {
-                append("SAVE FAILED, no ack: \(error.localizedDescription)")
-                return
-            }
-            append("ALERT id=\(packet.alertId) attempt=\(packet.attempt) retransmission of \(eventId)")
-        } else {
-            eventId = EventMatcher.newEventId(deviceId: Settings.deviceId)
-            let event = AlertEvent(eventId: eventId, alertId: packet.alertId, type: packet.type,
-                                   receivedAt: now, lastAttempt: packet.attempt)
-            do {
-                try store.insert(event)
-            } catch {
-                // Without an ack the wearable retries and eventually shows ERROR,
-                // which is the honest outcome if the phone cannot keep the alarm.
-                append("SAVE FAILED, no ack: \(error.localizedDescription)")
-                return
-            }
+        let ack: AlertIntake.Ack
+        switch AlertIntake.receive(packet, store: store, acker: ble, deviceId: Settings.deviceId,
+                                   now: Date(), skipAck: skipAck) {
+        case .saveFailed(let error):
+            dropNextAck = skipAck
+            append("SAVE FAILED, no ack: \(error.localizedDescription)")
+            return
+        case .new(let id, let a):
+            eventId = id
+            ack = a
             append("ALERT id=\(packet.alertId) \(packet.type.label) attempt=\(packet.attempt) new \(eventId)")
+        case .retransmission(let id, let a):
+            eventId = id
+            ack = a
+            append("ALERT id=\(packet.alertId) attempt=\(packet.attempt) retransmission of \(eventId)")
         }
         events = store.events
-        if dropNextAck {
-            dropNextAck = false
-            append("ACK skipped on purpose (test tool), id=\(packet.alertId)")
-        } else if !ble.sendAck(alertId: packet.alertId) {
-            append("ACK not sent: link down (wearable will retry)")
+        switch ack {
+        case .sent: break
+        case .skipped: append("ACK skipped on purpose (test tool), id=\(packet.alertId)")
+        case .linkDown: append("ACK not sent: link down (wearable will retry)")
         }
         upload(eventId)
     }
